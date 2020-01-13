@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.ceryle:FitGridView:v1.0.5@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8c0cb1d3e70ab737c4ebe7d98f7c809e/FitGridView-v1.0.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8c0cb1d3e70ab737c4ebe7d98f7c809e/FitGridView-v1.0.5/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.ceryle/FitGridView/v1.0.5/eedac01cb94bf5f31a83ee91e25a50c05720522/FitGridView-v1.0.5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.ceryle/FitGridView/v1.0.5/c4b70985d13b33780015135f543ad558cb33efd7/FitGridView-v1.0.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

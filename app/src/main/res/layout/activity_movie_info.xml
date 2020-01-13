@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.MovieInfoActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="290dp">
+
+        <ImageView
+            android:id="@+id/poster_bg"
+            android:layout_width="match_parent"
+            android:layout_height="185dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/barazanabanner" />
+
+        <VideoView
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"
+            android:id="@+id/vdVw"
+            android:layout_width="match_parent"
+            android:layout_height="185dp"
+            android:scaleType="fitXY" />
+
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="64dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/play"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                app:cardCornerRadius="7dp">
+
+                <ImageView
+                    android:id="@+id/poster"
+                    android:layout_width="107.7dp"
+                    android:layout_height="142dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/barazana"/>
+
+
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="20.7dp"
+                android:paddingBottom="3dp"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="17dp"
+                    android:orientation="horizontal">
+
+
+                    <customfonts.MyTextView_PTSans_Bold
+                        android:id="@+id/title"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textSize="18.2sp"
+                        android:textColor="#263238"
+                        android:lineSpacingExtra="-13.3sp"
+                        android:text="Barazana"
+                        />
+
+                    <ImageView
+                        android:layout_width="11.7dp"
+                        android:layout_height="10.3dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="4dp"
+                        android:src="@drawable/ic8_wallet"/>
+
+
+                    <customfonts.MyTextView_PTSans_Regular
+                        android:id="@+id/price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12.7sp"
+                        android:textColor="#9d9d9d"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="14.3dp"
+                        android:lineSpacingExtra="-8.7sp"
+                        android:text="83%"
+                        />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+
+
+                    <customfonts.MyTextView_PTSans_Regular
+                        android:id="@+id/release_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12.7sp"
+                        android:textColor="#9d9d9d"
+                        android:lineSpacingExtra="-8.7sp"
+                        android:text="Hindi, English"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="17.3dp"
+                    android:orientation="horizontal">
+
+
+                    <customfonts.MyTextView_PTSans_Regular
+                        android:id="@+id/buy"
+                        android:layout_width="120dp"
+                        android:layout_height="23dp"
+                        android:textSize="11.7sp"
+                        android:gravity="center"
+                        android:textColor="#ffffff"
+                        android:lineSpacingExtra="-7.7sp"
+                        android:text="Buy Now"
+                        android:background="@drawable/gradient_roundshape"
+                        />
+
+
+                    <customfonts.MyTextView_PTSans_Regular
+                        android:id="@+id/trailer"
+                        android:layout_width="80dp"
+                        android:layout_height="23dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/gradient_roundshape"
+                        android:gravity="center"
+                        android:lineSpacingExtra="-7.7sp"
+                        android:text="Watch Trailer"
+                        android:textColor="#ffffff"
+                        android:textSize="11.7sp" />
+
+
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical">
+
+
+        <customfonts.MyTextView_PTSans_Bold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#263238"
+            android:lineSpacingExtra="-11sp"
+            android:gravity="center_horizontal"
+            android:text="Description"
+            />
+
+
+        <View
+            android:layout_width="47.7dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="4.3dp"
+            android:background="@drawable/gradient"/>
+
+        <customfonts.MyTextView_PTSans_Regular
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12.7sp"
+            android:textColor="#9d9d9d"
+            android:layout_marginRight="34.7dp"
+            android:lineSpacingExtra="5sp"
+            android:text="@string/desc"
+            android:layout_marginTop="21.7dp"
+            />
+
+        <customfonts.MyTextView_PTSans_Bold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#263238"
+            android:layout_marginTop="30.3dp"
+            android:lineSpacingExtra="-11sp"
+            android:text="Cast"
+            />
+
+        <View
+            android:layout_width="17.3dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="4.3dp"
+            android:background="@drawable/gradient"/>
+
+
+
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cast_recycleview"
+        android:clipToPadding="false"
+        android:paddingTop="16.7dp"
+        android:paddingLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+    </LinearLayout>
+
+
+<!--    <customfonts.MyTextView_PTSans_Bold-->
+<!--        android:id="@+id/txtbooknow"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:paddingLeft="22.3dp"-->
+<!--        android:paddingRight="19dp"-->
+<!--        android:paddingBottom="8.7dp"-->
+<!--        android:paddingTop="7.3dp"-->
+<!--        android:textSize="13.3sp"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:textColor="#ffffff"-->
+<!--        android:gravity="center"-->
+<!--        android:layout_marginBottom="16.3dp"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:background="@drawable/gradient_roundshape"-->
+<!--        android:lineSpacingExtra="-9.3sp"-->
+<!--        android:text="Book Tickets"-->
+<!--        />-->
+
+    <FrameLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/bottom_sheet_behavior" />
+
+</android.support.design.widget.CoordinatorLayout>

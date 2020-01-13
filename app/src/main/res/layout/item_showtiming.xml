@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginLeft="9dp"
+    android:layout_marginRight="9dp"
+    android:layout_marginBottom="12dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="9dp"
+            android:paddingTop="16dp"
+            android:paddingLeft="14.5dp"
+            android:paddingBottom="18dp"
+            android:orientation="horizontal">
+
+
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="14dp"
+            android:layout_marginTop="3dp"
+            android:src="@drawable/destination" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="11.7dp"
+            android:orientation="vertical">
+
+
+        <customfonts.MyTextView_PTSans_Bold
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cinepolis: Inorbit Vadodara Mall copy"
+            android:textColor="#263238"
+            android:layout_marginBottom="14dp"
+            android:textSize="15sp" />
+
+            <me.gujun.android.taggroup.TagGroup
+                android:id="@+id/tag_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:atg_borderColor="#9d9d9d"
+                app:atg_borderStrokeWidth="1.5dp"
+                app:atg_horizontalPadding="12dp"
+                app:atg_horizontalSpacing="8dp"
+                app:atg_textColor="#9d9d9d"
+                app:atg_textSize="13sp"
+                app:atg_verticalPadding="7dp"
+                app:atg_verticalSpacing="10dp"></me.gujun.android.taggroup.TagGroup>
+
+
+        </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
