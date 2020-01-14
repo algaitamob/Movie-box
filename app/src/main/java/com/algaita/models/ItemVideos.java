@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 public class ItemVideos {
 
+    private String uri;
     private String id, CategoryId, CategoryName, artist, Mp3Url,imageBig, imageSmall, Mp3Name, Duration, Description, totalRate, averageRating="0", userRating="", views, downloads;
     private Bitmap image;
 
@@ -24,11 +25,26 @@ public class ItemVideos {
         this.downloads = downloads;
     }
 
-    public ItemVideos(String id, String Mp3Name) {
+    public ItemVideos(String id, String Mp3Name, String uri) {
         this.id = id;
+        this.Mp3Url = uri;
         this.Mp3Name = Mp3Name;
 
     }
+
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
 
 
     public String getId() {

@@ -98,19 +98,19 @@ public class AdapterVIdeoList extends RecyclerView.Adapter<AdapterVIdeoList.MyVi
 //            holder.imageView.setImageBitmap(arrayList.get(position).getBitmap());
 //        }
 
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                recyclerClickListener.onClick(holder.getAdapterPosition());
-            }
-        });
+//        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                recyclerClickListener.onClick(holder.getAdapterPosition());
+//            }
+//        });
 
-        holder.imageView_option.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                openOptionPopUp(holder.imageView_option, holder.getAdapterPosition());
-            }
-        });
+//        holder.imageView_option.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                openOptionPopUp(holder.imageView_option, holder.getAdapterPosition());
+//            }
+//        });
     }
 
     @Override
