@@ -40,17 +40,11 @@ import modalclass.TheaterModalClass;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    Spinner sp_city;
     ImageView img_user;
     RecyclerView theaters_recycleview;
     RecyclerView comingsoon_recycleview;
     RequestQueue requestQueue;
     JsonArrayRequest jsonArrayRequest;
-
-
-//    Theater_RecycleviewAdapter theater_recycleviewAdapter;
-//    ComingSoon_RecycleviewAdapter comingsoon_recycleviewAdapter;
 
 //    Theater Recyler
     List<Videos> GetVideosAdapterTheater;
@@ -148,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         }));
 
 
-;
+
 
 
     }
@@ -188,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 getVideosAdapterTheater.setPoster(json.getString("poster"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
-                getVideosAdapterTheater.setVideoid(Integer.parseInt(json.getString("id")));
+                getVideosAdapterTheater.setVideoid(json.getString("id"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -238,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 getVideosAdapterComingsoon.setPoster(json.getString("poster"));
                 getVideosAdapterComingsoon.setRelease_date(json.getString("release_date"));
                 getVideosAdapterComingsoon.setStatus(Integer.parseInt(json.getString("sstatus")));
-                getVideosAdapterComingsoon.setVideoid(Integer.parseInt(json.getString("id")));
+                getVideosAdapterComingsoon.setVideoid(json.getString("id"));
 
             } catch (JSONException e) {
                 e.printStackTrace();

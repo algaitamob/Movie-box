@@ -30,4 +30,11 @@
     </style>
 
 
+
+    <style name="NavigationTheme" parent="AppTheme">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+
 </resources>

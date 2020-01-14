@@ -9,6 +9,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
 
     <application
@@ -33,6 +36,9 @@
         <activity android:name="com.algaita.activities.MainActivity"/>
         <activity android:name=".activities.LoginActivity"/>
         <activity android:name=".activities.SignupActivity"/>
+        <activity android:name=".activities.PaymetWeb"/>
+
+        <activity android:name=".activities.BaseActivity"/>
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
     </application>

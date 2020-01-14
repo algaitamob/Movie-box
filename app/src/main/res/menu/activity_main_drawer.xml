@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:icon="@drawable/ic_homenavi"
+        android:id="@+id/nav_home"
+        android:title="Dashboard"/>
+
+
+
+
+    <item
+        android:icon="@drawable/ic_movie"
+        android:id="@+id/nav_myvideos"
+        android:title="My Videos"/>
+
+    <item
+        android:iconTint="@color/white"
+        android:icon="@drawable/ic_file_download"
+        android:id="@+id/nav_downloads"
+        android:title="Downloads"/>
+
+
+
+
+    <item
+        android:iconTint="@color/white"
+        android:icon="@drawable/ic_format_list_bulleted"
+        android:id="@+id/nav_transactions"
+        android:title="Transactions"/>
+
+
+    <item
+        android:icon="@drawable/ic_share"
+        android:id="@+id/nav_share"
+        android:title="Share"/>
+
+    <item
+        android:iconTint="@color/white"
+
+        android:icon="@drawable/ic_comment"
+        android:id="@+id/nav_feedback"
+        android:title="FeedBack"/>
+
+    <item
+        android:icon="@drawable/ic_help"
+        android:id="@+id/nav_help"
+        android:title="Help"/>
+
+
+
+    <item
+        android:icon="@drawable/ic_settings"
+        android:id="@+id/nav_setting"
+        android:title="Settings"/>
+
+
+
+    <item
+        android:iconTint="@color/white"
+        android:icon="@drawable/ic_logout"
+        android:id="@+id/nav_logout"
+        android:title="Logout"/>
+
+
+
+
+</menu>

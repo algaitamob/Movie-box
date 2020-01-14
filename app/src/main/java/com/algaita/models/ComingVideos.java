@@ -1,9 +1,9 @@
 package com.algaita.models;
 
 public class ComingVideos {
-    int videoid, status;
+    int status;
 
-    String title, description, trailer_url, video_url, price, release_date, poster;
+    String title, description, trailer_url, video_url, price, release_date, poster, videoid;
 
     public int getStatus() {
         return status;
@@ -21,7 +21,7 @@ public class ComingVideos {
         return price;
     }
 
-    public int getVideoid() {
+    public String getVideoid() {
         return videoid;
     }
 
@@ -69,7 +69,7 @@ public class ComingVideos {
         this.video_url = video_url;
     }
 
-    public void setVideoid(int videoid) {
+    public void setVideoid(String videoid) {
         this.videoid = videoid;
     }
 

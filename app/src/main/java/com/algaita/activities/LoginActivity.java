@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void loadDashboard() {
-        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+        Intent i = new Intent(getApplicationContext(), BaseActivity.class);
         startActivity(i);
         finish();
     }

@@ -2,4 +2,12 @@
     <string name="app_name">Algaita Dub</string>
     <string name="desc">Under the tutelage of Rocky Balboa, newly crowned light heavy weight champion Adonis Creed faces off against Viktor Drago, the son of Ivan Drago.</string>
 
+    <string name="please_wait">Please wait...</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="closeMsg">Are your sure you want to close Algaita Dub?</string>
+
+    <string name="title">Title</string>
+    <string name="artist">Artist</string>
+
 </resources>
