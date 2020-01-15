@@ -5,7 +5,7 @@
         android:top="-200dp">
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="oval">
-            <solid android:color="#CCC812" />
+            <solid android:color="#AAA717" />
         </shape>
     </item>
 </layer-list>
