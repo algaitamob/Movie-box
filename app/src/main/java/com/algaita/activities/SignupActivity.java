@@ -123,9 +123,7 @@ public class SignupActivity extends AppCompatActivity {
                         try {
                             //Check if user got registered successfully
                             if (response.getInt(KEY_STATUS) == 0) {
-                                //Set the user session
-//                                session.loginUser(txtemail,txtfullanme,txtprogram,response.getString("pic"),response.getString("appid"), "NO", response.getString("app_status"));
-
+                                //Set the user sessio
 
                                 View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
                                 TextView text = layout.findViewById(R.id.text);
@@ -134,8 +132,6 @@ public class SignupActivity extends AppCompatActivity {
                                 toast.setDuration(Toast.LENGTH_LONG);
                                 toast.setView(layout);
                                 toast.show();
-
-//                                loadDashboard();
 
 
                                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);

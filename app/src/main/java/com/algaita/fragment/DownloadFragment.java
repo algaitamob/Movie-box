@@ -1,7 +1,10 @@
 package com.algaita.fragment;
 
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -10,7 +13,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +30,7 @@ import android.widget.Toast;
 import com.algaita.R;
 import com.algaita.RecyclerClickListener;
 import com.algaita.ViewDialog;
+import com.algaita.activities.MovieInfoActivity;
 import com.algaita.activities.PlayerService;
 import com.algaita.activities.RecyclerTouchListener;
 import com.algaita.activities.ShowTimeActivity;
@@ -54,16 +60,15 @@ public class DownloadFragment extends Fragment {
     ArrayList<ItemVideos> arrayList;
     public static AdapterVIdeoList adapterSongList;
     LinearLayoutManager linearLayoutManager;
+    private final static int REQUEST_ID_MULTIPLE_PERMISSIONS = 0x2;
+
 
     ViewDialog viewDialog;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_downloads, container, false);
-
         viewDialog = new ViewDialog(getActivity());
-
-
         arrayList = new ArrayList<>();
         recyclerView = rootView.findViewById(R.id.recyclerView_downloads);
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -71,14 +76,12 @@ public class DownloadFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setHasFixedSize(true);
 
-        new LoadSongs().execute();
-
+        checkPermissions();
 
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-//                Toast.makeText(getActivity(), arrayList.get(position).getMp3Url(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getActivity(), PlayerService.class);
                 intent.putExtra("name", arrayList.get(position).getMp3Name());
                 intent.putExtra("uri", arrayList.get(position).getMp3Url());
@@ -118,22 +121,12 @@ public class DownloadFragment extends Fragment {
                 adapterSongList = new AdapterVIdeoList(getActivity(), arrayList, new RecyclerClickListener() {
                     @Override
                     public void onClick(int position) {
-//                        Constant.isOnline = false;
-//                        Constant.frag = "download";
-//                        Constant.arrayList_play.clear();
-//                        Constant.arrayList_play.addAll(arrayList);
-//                        Constant.playPos = position;
-//                        ((MainActivity) getActivity()).changeText(arrayList.get(position).getMp3Name(), arrayList.get(position).getArtist(), position + 1, arrayList.size(), arrayList.get(position).getDuration(), arrayList.get(position).getBitmap(), "download");
 //
-
-                        Toast.makeText(getActivity(), "heeeeee", Toast.LENGTH_LONG).show();
-//                        Constant.context = getActivity();
-                        Intent intent = new Intent(getActivity(), PlayerService.class);
-                        intent.putExtra("name", arrayList.get(position).getMp3Name());
-                        intent.putExtra("uri", arrayList.get(position).getMp3Url());
-//                        intent.setAction(PlayerService.ACTION_FIRST_PLAY);
-//                        getActivity().startService(intent);
-                        startActivity(intent);
+//                        Toast.makeText(getActivity(), "heeeeee", Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(getActivity(), PlayerService.class);
+//                        intent.putExtra("name", arrayList.get(position).getMp3Name());
+//                        intent.putExtra("uri", arrayList.get(position).getMp3Url());
+//                        startActivity(intent);
                     }
                 }, "offline");
                 recyclerView.setAdapter(adapterSongList);
@@ -149,7 +142,9 @@ public class DownloadFragment extends Fragment {
 
 
     private void loadDownloaded() {
-        File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name));
+
+        File root = new File("/data/data/" + getActivity().getPackageName() + "/files/");
+//        File[] songs = root.listFiles();
         File[] songs = root.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -159,23 +154,43 @@ public class DownloadFragment extends Fragment {
 
         if (songs != null) {
             for (int i = 0; i < songs.length; i++) {
-
-                MediaMetadataRetriever md = new MediaMetadataRetriever();
-                md.setDataSource(songs[i].getAbsolutePath());
                 String title = songs[i].getName();
-                String duration = md.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-//                duration = JsonUtils.milliSecondsToTimerDownload(Long.parseLong(duration));
-                String artist = md.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 String url = songs[i].getAbsolutePath();
 
-                String desc = getString(R.string.title) + " - " + title + "</br>" +
-                        getString(R.string.artist) + " - " + artist;
-
-                ItemVideos itemSong = new ItemVideos(String.valueOf(i), title.substring(0, title.length() - 4), url.substring(0, url.length() - 4));
+                ItemVideos itemSong = new ItemVideos(String.valueOf(i), title.substring(0, title.length() - 4), url);
                 arrayList.add(itemSong);
             }
         }
     }
+
+
+    private void checkPermissions() {
+        int permissionLocation = ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (!listPermissionsNeeded.isEmpty()) {
+                ActivityCompat.requestPermissions(getActivity(),
+                        listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            }
+        } else {
+            new LoadSongs().execute();
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        int permissionLocation = ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+            new LoadSongs().execute();
+        }
+    }
+
+
 
 
 }

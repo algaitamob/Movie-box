@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +35,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,18 +77,12 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     private Handler handler;
     private Runnable runnable;
-
-
+    ProgressDialog progressDialog;
     RecyclerView cast_recycleview;
-
     Cast_RecycleviewAdapter cast_recycleviewAdapter;
-
     private ArrayList<CastModalClass> castArrayList;
-
     TextView txttitle, txtrelease_date, txtprice, txtdescription, btn_trailer, btn_buy, btn_download;
-
     ImageView poster, poster_bg;
-
     SessionHandlerUser sessionHandlerUser;
     private BottomSheetBehavior mBehavior;
     private BottomSheetDialog mBottomSheetDialog;
@@ -121,14 +121,17 @@ public class MovieInfoActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 poster_bg.setVisibility(View.GONE);
                 videoView.setVisibility(View.VISIBLE);
-                MediaController mediaController= new MediaController(getApplicationContext());
-                mediaController.setAnchorView(videoView);
-                Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
-                //Starting VideView By Setting MediaController and URI
-                videoView.setMediaController(mediaController);
-                videoView.setVideoURI(uri);
-                videoView.requestFocus();
-                videoView.start();
+
+               try {
+                   Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
+                   videoView.setVideoURI(uri);
+                   videoView.requestFocus();
+                   videoView.start();
+               }catch (Exception e){
+
+                   e.printStackTrace();
+               }
+
             }
         });
         btn_buy = findViewById(R.id.buy);
@@ -154,21 +157,13 @@ public class MovieInfoActivity extends AppCompatActivity {
 
         Glide.with(this)
                 .load(intent.getStringExtra("poster"))
-//                .centerCrop(150, 150)
-//                .resize(150, 150)
-//                .fit()
                 .placeholder(R.drawable.imgloader)
-//                .centerInside()
                 .error(R.drawable.icon)
                 .into(poster);
 
         Glide.with(this)
                 .load(intent.getStringExtra("poster"))
-//                .centerCrop(150, 150)
-//                .resize(150, 150)
-//                .fit()
                 .placeholder(R.drawable.imgloader)
-//                .centerInside()
                 .error(R.drawable.icon)
                 .into(poster_bg);
 //
@@ -287,9 +282,7 @@ public class MovieInfoActivity extends AppCompatActivity {
                         long seconds = diff / 1000;
                         txtrelease_date.setText("Kwana: "+String.format("%02d", days) + "Sa'a: "+ String.format("%02d", hours) + "Minti: " + String.format("%02d", minutes) + "Daqiqa: " + String.format("%02d", seconds));
                     } else {
-//                        tvEventStart.setVisibility(View.VISIBLE);
-//                        tvEventStart.setText("The event started!");
-//                        textViewGone();
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -339,46 +332,167 @@ public class MovieInfoActivity extends AppCompatActivity {
     }
 
 
-    private void download() {
 
-            Intent intent = getIntent();
-            File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name));
-            if (!root.exists()) {
-                root.mkdirs();
-            }
 
-            File file = new File(root, intent.getStringExtra("title") + ".alg");
+//    New Download
+    private class DownloadingTask extends AsyncTask<Void, Void, Void> {
 
-            if (!file.exists()) {
+        File apkStorage = null;
+        File outputFile = null;
 
-                String url = intent.getStringExtra("video_url");
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-                request.setDescription("Downloading - " +  intent.getStringExtra("title"));
-                request.setTitle(intent.getStringExtra("title"));
-                // in order for this if to run, you must use the android 3.2 to compile your app
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog=new ProgressDialog(MovieInfoActivity.this);
+            progressDialog.setMessage("Downloading...");
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
 
-                request.allowScanningByMediaScanner();
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-                // request.setDestinationInExternalPublicDir(getString(R.string.download_desti), Constant.arrayList_play.get(Constant.playPos).getMp3Name() + ".mp3");
-                request.setDestinationUri(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + intent.getStringExtra("title") + ".alg"));
+        /**
+         * Updating progress bar
+         */
+        protected void onProgressUpdate(String... progress) {
+            // setting progress percentage
+            progressDialog.setProgress(Integer.parseInt(progress[0]));
+        }
 
-                // get download service and enqueue file
-                DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                manager.enqueue(request);
+        @Override
+        protected void onPostExecute(Void result) {
+            try {
+                if (outputFile != null) {
+                    progressDialog.dismiss();
+                    View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                    TextView text = layout.findViewById(R.id.text);
+                    text.setText(getIntent().getStringExtra("title") + "Downloaded Succesfully");
+                    Toast toast = new Toast(getApplicationContext());
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setView(layout);
+                    toast.show();
 
-                new AsyncTask<String, String, String>() {
+                } else {
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    }, 3000);
+
+                    View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                    TextView text = layout.findViewById(R.id.text);
+                    text.setText(getIntent().getStringExtra("title") + "Download Failed!");
+                    Toast toast = new Toast(getApplicationContext());
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setView(layout);
+                    toast.show();
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                //Change button text if an exception occurs
+
+                new Handler().postDelayed(new Runnable() {
                     @Override
-                    protected String doInBackground(String... strings) {
-//                        String json = JsonUtils.getJSONString(Constant.URL_DOWNLOAD_COUNT + Constant.arrayList_play.get(viewpager.getCurrentItem()).getId());
-//                        Log.e("aaa - ", json);
-                        return null;
+                    public void run() {
+
                     }
-                }.execute();
-            } else {
-                Toast.makeText(MovieInfoActivity.this, "Already Download", Toast.LENGTH_SHORT).show();
+                }, 3000);
+                Log.e("result", "Download Failed with Exception - " + e.getLocalizedMessage());
+
             }
 
+
+            super.onPostExecute(result);
+        }
+
+
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            Intent intent = getIntent();
+            String url_ = intent.getStringExtra("video_url");
+            try {
+                URL url = new URL(url_);//Create Download URl
+                HttpURLConnection c = (HttpURLConnection) url.openConnection();//Open Url Connection
+                c.setRequestMethod("GET");//Set Request Method to "GET" since we are grtting data
+                c.connect();//connect the URL Connection
+
+                //If Connection response is not OK then show Logs
+                if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
+//                    Log.e("Server returned HTTP " + c.getResponseCode()
+//                            + " " + c.getResponseMessage());
+
+                }
+
+
+                //Get File if SD card is present
+                if (new CheckForSDCard().isSDCardPresent()) {
+
+//                    File myDir = getApplicationContext().getDir("AdabulMufrad", Context.MODE_PRIVATE);
+                    apkStorage = new File("/data/data/" + getPackageName() + "/files/");
+
+//                    Uri.parse("/data/data/" + getPackageName() + "/app_AdabulMufrad/" + myFile.getName().trim());
+                } else
+                    Toast.makeText(getApplicationContext(), "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
+
+                //If File is not present create directory
+                if (!apkStorage.exists()) {
+                    apkStorage.mkdir();
+                    Log.e("result", "Directory Created.");
+                }
+
+                outputFile = new File(apkStorage, intent.getStringExtra("title") + ".mp4");//Create Output file in Main File
+
+                //Create New File if not present
+                if (!outputFile.exists()) {
+                    outputFile.createNewFile();
+                    Log.e("result", "File Created");
+                }
+
+                FileOutputStream fos = new FileOutputStream(outputFile);//Get OutputStream for NewFile Location
+
+                InputStream is = c.getInputStream();//Get InputStream for connection
+
+                byte[] buffer = new byte[1024];//Set buffer type
+                int len1 = 0;//init length
+                while ((len1 = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len1);//Write new file
+                }
+
+                //Close all connection after doing task
+                fos.close();
+                is.close();
+
+            } catch (Exception e) {
+
+                //Read exception if something went wrong
+                e.printStackTrace();
+                outputFile = null;
+                Log.e("result", "Download Error Exception " + e.getMessage());
+            }
+
+            return null;
+        }
+    }
+
+
+
+    public class CheckForSDCard {
+
+
+        //Check If SD Card is present or not method
+        public boolean isSDCardPresent() {
+            if (Environment.getExternalStorageState().equals(
+
+                    Environment.MEDIA_MOUNTED)) {
+                return true;
+            }
+            return false;
+        }
     }
 
 
@@ -394,8 +508,8 @@ public class MovieInfoActivity extends AppCompatActivity {
                         listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
         } else {
+            new DownloadingTask().execute();
 
-                download();
         }
 
     }
@@ -405,9 +519,10 @@ public class MovieInfoActivity extends AppCompatActivity {
         int permissionLocation = ContextCompat.checkSelfPermission(MovieInfoActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
-            download();
+            new DownloadingTask().execute();
         }
     }
+
 
 
 }

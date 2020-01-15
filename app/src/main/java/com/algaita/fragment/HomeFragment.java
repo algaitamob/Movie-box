@@ -16,7 +16,7 @@ import com.algaita.R;
 import com.algaita.ViewDialog;
 import com.algaita.activities.BaseActivity;
 import com.algaita.activities.LoginActivity;
-import com.algaita.activities.MainActivity;
+//import com.algaita.activities.MainActivity;
 import com.algaita.activities.MovieInfoActivity;
 import com.algaita.activities.RecyclerTouchListener;
 import com.algaita.adapters.ComingVideosAdapter;
@@ -63,21 +63,8 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
-
-
-
         sessionHandlerUser = new SessionHandlerUser(getActivity());
         viewDialog = new ViewDialog(getActivity());
-
-//        img_user = view.findViewById(R.id.profile);
-//
-//        img_user.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(), LoginActivity.class);
-//                startActivity(intent);
-//            }
-//        });
 
         //Recycleview
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
@@ -208,7 +195,6 @@ public class HomeFragment extends Fragment {
         jsonArrayRequest = new JsonArrayRequest(Config.url + "coming_videos.php", new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-//                viewDialog.hideDialog();
                 GetCardWebCall2(response);
             }
         }, new Response.ErrorListener() {

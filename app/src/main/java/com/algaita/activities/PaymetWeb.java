@@ -7,12 +7,15 @@ import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.algaita.Config;
 import com.algaita.R;
@@ -53,7 +56,7 @@ public class PaymetWeb extends AppCompatActivity {
             url = Config.url + "airtime/index.php?userid="+sessionHandlerUser.getUserDetail().getUserid() + "&videoid=" + intent.getStringExtra("videoid") + "&amount=" + intent.getStringExtra("amount");
         }
 
-        wvPayment = (WebView) findViewById(R.id.wvPayment);
+        wvPayment = findViewById(R.id.wvPayment);
 
 
         WebSettings settings = wvPayment.getSettings();
@@ -106,9 +109,15 @@ public class PaymetWeb extends AppCompatActivity {
             ProjectUtils.pauseProgressDialog();
             //Page load finished
             if (url.equals(PAYMENT_SUCCESS)) {
-                ProjectUtils.showToast(mContext, "Payment was successful.");
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText("Payment was successful.");
+                Toast toast = new Toast(getApplicationContext());
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
                 super.onPageFinished(view, PAYMENT_SUCCESS);
-                Intent intent = new Intent(PaymetWeb.this, MainActivity.class);
+                Intent intent = new Intent(PaymetWeb.this, BaseActivity.class);
                 startActivity(intent);
                 finish();
                 wvPayment.clearCache(true);
@@ -117,10 +126,17 @@ public class PaymetWeb extends AppCompatActivity {
 
                 wvPayment.destroy();
             } else if (url.equals(PAYMENT_FAIL)) {
-                ProjectUtils.showToast(mContext, "Payment fail.");
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText("Payment fail");
+                Toast toast = new Toast(getApplicationContext());
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+//                ProjectUtils.showToast(mContext, "Payment fail.");
                 //view.loadUrl("https://www.youtube.com");
                 super.onPageFinished(view, PAYMENT_FAIL);
-                Intent intent = new Intent(PaymetWeb.this, MainActivity.class);
+                Intent intent = new Intent(PaymetWeb.this, BaseActivity.class);
                 startActivity(intent);
                 finish();
 

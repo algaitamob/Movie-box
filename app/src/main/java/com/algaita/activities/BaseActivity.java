@@ -28,8 +28,12 @@ import com.algaita.R;
 import com.algaita.fragment.DownloadFragment;
 import com.algaita.fragment.HomeFragment;
 import com.algaita.fragment.MyVideosFragment;
+import com.algaita.fragment.SettingsFragment;
 import com.algaita.fragment.TransactionFragment;
 import com.algaita.sessions.SessionHandlerUser;
+
+import io.sentry.Sentry;
+import io.sentry.android.AndroidSentryClientFactory;
 
 public class BaseActivity extends AppCompatActivity {
     private String TAG = BaseActivity.class.getSimpleName();
@@ -48,6 +52,7 @@ public class BaseActivity extends AppCompatActivity {
     public static final String TAG_HOME = "home";
     public static final String TAG_MYVIDEOS = "my videos";
     public static final String TAG_TRANSACTION = "transactions";
+    public static final String TAG_SETTING = "setting";
 
     public static String CURRENT_TAG = TAG_HOME;
     public static int navItemIndex = 0;
@@ -69,18 +74,23 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
+
+        Sentry.init("https://8363b9dd7a5f4c71a6aac7e0b5e4d79b@sentry.io/1522542", new AndroidSentryClientFactory(this));
+
+
+
         mContext = BaseActivity.this;
         mHandler = new Handler();
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         sessionHandlerUser = new SessionHandlerUser(this);
 
-        frame = (FrameLayout) findViewById(R.id.frame);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        frame =  findViewById(R.id.frame);
+        drawer =  findViewById(R.id.drawer_layout);
+        navigationView =  findViewById(R.id.nav_view);
         contentView = findViewById(R.id.content);
-        menuLeftIV = (ImageView) findViewById(R.id.menuLeftIV);
-        ivFilter = (ImageView) findViewById(R.id.profile);
+        menuLeftIV =  findViewById(R.id.menuLeftIV);
+        ivFilter =  findViewById(R.id.profile);
 
 
         navHeader = navigationView.getHeaderView(0);
@@ -103,15 +113,10 @@ public class BaseActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             if (type != null) {
-                if (type.equalsIgnoreCase("10007")) {
-                    navItemIndex = 1;
-                    CURRENT_TAG = TAG_HOME;
-                    loadHomeFragment(new DownloadFragment(), CURRENT_TAG);
-                } else {
                     navItemIndex = 0;
-                    CURRENT_TAG = TAG_DOWNLOADS;
+                    CURRENT_TAG = TAG_HOME;
                     loadHomeFragment(new HomeFragment(), CURRENT_TAG);
-                }
+
             } else {
                 navItemIndex = 0;
                 CURRENT_TAG = TAG_HOME;
@@ -130,25 +135,6 @@ public class BaseActivity extends AppCompatActivity {
         });
 
         setUpNavigationView();
-//        Menu menu = navigationView.getMenu();
-//
-//        changeColorItem(menu, R.id.nav_home_features);
-//        changeColorItem(menu, R.id.nav_bookings_and_job);
-//        changeColorItem(menu, R.id.nav_personal);
-//        changeColorItem(menu, R.id.other);
-//
-//        for (int i = 0; i < menu.size(); i++) {
-//            MenuItem mi = menu.getItem(i);
-//            SubMenu subMenu = mi.getSubMenu();
-//            if (subMenu != null && subMenu.size() > 0) {
-//                for (int j = 0; j < subMenu.size(); j++) {
-//                    MenuItem subMenuItem = subMenu.getItem(j);
-//                    applyCustomFont(subMenuItem);
-//                }
-//            }
-//            applyCustomFont(mi);
-//        }
-
 
         drawer.setScrimColor(Color.TRANSPARENT);
         drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -238,7 +224,7 @@ public class BaseActivity extends AppCompatActivity {
                         ivFilter.setVisibility(View.VISIBLE);
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_HOME;
-                        fragmentTransaction.replace(R.id.frame, new DownloadFragment());
+                        fragmentTransaction.replace(R.id.frame, new HomeFragment());
                         break;
                     case R.id.nav_downloads:
                         ivFilter.setVisibility(View.GONE);
@@ -260,6 +246,13 @@ public class BaseActivity extends AppCompatActivity {
                         navItemIndex = 3;
                         CURRENT_TAG = TAG_TRANSACTION;
                         fragmentTransaction.replace(R.id.frame, new TransactionFragment());
+                        break;
+
+                    case R.id.nav_setting:
+                        ivFilter.setVisibility(View.GONE);
+                        navItemIndex = 4;
+                        CURRENT_TAG = TAG_SETTING;
+                        fragmentTransaction.replace(R.id.frame, new SettingsFragment());
                         break;
 
                     case R.id.nav_logout:

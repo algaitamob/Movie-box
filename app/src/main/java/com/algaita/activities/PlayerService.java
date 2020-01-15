@@ -19,21 +19,15 @@ public class PlayerService extends AppCompatActivity {
     public  void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_player);
-
-//        CustomVideoPlayer customVideoPlayer = findViewById(R.id.customVideoPlayer);
-
         Intent intent = getIntent();
-//        customVideoPlayer.setMediaUrl(intent.getStringExtra("uri"));
 
-        VideoView videoView =(VideoView)findViewById(R.id.vdVw);
-
-        Toast.makeText(getApplicationContext(), intent.getStringExtra("uri"), Toast.LENGTH_LONG).show();
+        VideoView videoView = findViewById(R.id.vdVw);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 
         MediaController mediaController= new MediaController(this);
         mediaController.setAnchorView(videoView);
-        Uri uri = Uri.parse(intent.getStringExtra("uri") + ".mp4");
+        Uri uri = Uri.parse(intent.getStringExtra("uri"));
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(uri);
         videoView.requestFocus();

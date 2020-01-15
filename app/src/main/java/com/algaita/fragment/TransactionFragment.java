@@ -1,6 +1,9 @@
 package com.algaita.fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -10,7 +13,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.algaita.Config;
 import com.algaita.R;
@@ -67,8 +73,6 @@ public class TransactionFragment extends Fragment {
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-//        theaters_recycleview.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
         theaters_recycleview.setLayoutManager(layoutManager);
         theaters_recycleview.setItemAnimator(new DefaultItemAnimator());
         GetVideosAdapterTheater = new ArrayList<>();
@@ -77,17 +81,12 @@ public class TransactionFragment extends Fragment {
         theaters_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getContext(), theaters_recycleview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-//                Intent intent = new Intent(getContext(), MovieInfoActivity.class);
-//                intent.putExtra("title", GetVideosAdapterTheater.get(position).getTitle());
-//                intent.putExtra("description", GetVideosAdapterTheater.get(position).getDescription());
-//                intent.putExtra("trailer_url", GetVideosAdapterTheater.get(position).getTrailer_url());
-//                intent.putExtra("video_url", GetVideosAdapterTheater.get(position).getVideo_url());
-//                intent.putExtra("price", GetVideosAdapterTheater.get(position).getPrice());
-//                intent.putExtra("poster", GetVideosAdapterTheater.get(position).getPoster());
-//                intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
-//                intent.putExtra("status", "out");
-//                intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
-//                startActivity(intent);
+                String name = GetVideosAdapterTheater.get(position).getTitle();
+                String amount = GetVideosAdapterTheater.get(position).getAmount();
+                String ondate = GetVideosAdapterTheater.get(position).getOndate();
+                String ref = GetVideosAdapterTheater.get(position).getRef();
+                String type = GetVideosAdapterTheater.get(position).getType();
+                showDialogReceipt(name, amount, ondate, ref, type);
             }
 
             @Override
@@ -148,6 +147,43 @@ public class TransactionFragment extends Fragment {
         theaters_recycleview.setAdapter(recyclerViewAdapterTheater);
         recyclerViewAdapterTheater.notifyDataSetChanged();
 
+    }
+
+    private void showDialogReceipt(String name, String amount, String ondate, String ref, String type) {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_payment_receipt);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        TextView tname, tamount, tondate, tref, ttype;
+
+        tname = dialog.findViewById(R.id.name);
+        tamount = dialog.findViewById(R.id.amount);
+        tondate = dialog.findViewById(R.id.date);
+        ttype = dialog.findViewById(R.id.payment_type);
+        tref = dialog.findViewById(R.id.ref);
+
+        tname.setText(name);
+        tamount.setText("₦"+amount);
+        tondate.setText(ondate);
+        ttype.setText(type);
+        tref.setText(ref);
+
+        ((View) dialog.findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 
 }

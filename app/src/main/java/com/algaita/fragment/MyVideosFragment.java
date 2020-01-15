@@ -65,11 +65,7 @@ public class MyVideosFragment extends Fragment {
 
         //Recycleview
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
-
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
         theaters_recycleview.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
-//        theaters_recycleview.setLayoutManager(layoutManager);
         theaters_recycleview.setItemAnimator(new DefaultItemAnimator());
         GetVideosAdapterTheater = new ArrayList<>();
 

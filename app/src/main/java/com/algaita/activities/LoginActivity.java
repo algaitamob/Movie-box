@@ -46,12 +46,9 @@ public class LoginActivity extends AppCompatActivity {
         if (sessionHandlerUser.isLoggedIn()){
             loadDashboard();
         }
-
         etphone = findViewById(R.id.phone);
         etpassword = findViewById(R.id.password);
-
         txtregister = findViewById(R.id.create_account);
-
         txtregister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,16 +108,8 @@ public class LoginActivity extends AppCompatActivity {
                             //Check if user got logged in successfully
                             if (response.getInt(KEY_STATUS) == 0) {
                                 sessionHandlerUser.loginUser(response.getString("email"), response.getString("fullname"), response.getString("phone"), response.getString("userid"));
-
-//
-//                                if (response.getString("verify_status").contains("0")){
-//                                    Intent intent = new Intent(LoginActivity.this, OtpActivity.class);
-//                                    intent.putExtra("phone", response.getString("phone"));
-//                                    startActivity(intent);
-//
-//                                }else{
                                     loadDashboard();
-//                                }
+
                             } else {
 
                                 View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
