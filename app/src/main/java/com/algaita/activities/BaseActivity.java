@@ -1,5 +1,6 @@
 package com.algaita.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,19 +19,31 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.algaita.Config;
+import com.algaita.MySingleton;
 import com.algaita.R;
 import com.algaita.fragment.DownloadFragment;
 import com.algaita.fragment.HomeFragment;
 import com.algaita.fragment.MyVideosFragment;
 import com.algaita.fragment.SettingsFragment;
 import com.algaita.fragment.TransactionFragment;
+import com.algaita.fragment.WalletFragment;
 import com.algaita.sessions.SessionHandlerUser;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
@@ -53,6 +66,7 @@ public class BaseActivity extends AppCompatActivity {
     public static final String TAG_MYVIDEOS = "my videos";
     public static final String TAG_TRANSACTION = "transactions";
     public static final String TAG_SETTING = "setting";
+    public static final String TAG_WALLET = "wallet";
 
     public static String CURRENT_TAG = TAG_HOME;
     public static int navItemIndex = 0;
@@ -63,7 +77,10 @@ public class BaseActivity extends AppCompatActivity {
     private boolean shouldLoadHomeFragOnBackPress = true;
     String type = "";
 
-    private TextView tvName, tvEmail, tvOther, tvEnglish;
+    EditText et_search;
+    ImageView btn_search;
+
+    private TextView tvName, tvWalletBalance, tvOther, tvEnglish;
 
     SessionHandlerUser sessionHandlerUser;
     private LinearLayout llProfileClick;
@@ -77,8 +94,6 @@ public class BaseActivity extends AppCompatActivity {
 
         Sentry.init("https://8363b9dd7a5f4c71a6aac7e0b5e4d79b@sentry.io/1522542", new AndroidSentryClientFactory(this));
 
-
-
         mContext = BaseActivity.this;
         mHandler = new Handler();
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -91,20 +106,23 @@ public class BaseActivity extends AppCompatActivity {
         contentView = findViewById(R.id.content);
         menuLeftIV =  findViewById(R.id.menuLeftIV);
         ivFilter =  findViewById(R.id.profile);
+        et_search =  findViewById(R.id.et_search);
+        btn_search =  findViewById(R.id.btn_search);
 
 
         navHeader = navigationView.getHeaderView(0);
         tvName = navHeader.findViewById(R.id.tvName);
         txtprofile = navHeader.findViewById(R.id.img_profile);
-        tvEmail = navHeader.findViewById(R.id.tvEmail);
+        tvWalletBalance = navHeader.findViewById(R.id.tvWalletBalance);
 
+        CheckBalance();
         tvEnglish = navHeader.findViewById(R.id.tvEnglish);
         tvOther = navHeader.findViewById(R.id.tvOther);
         tvOther = navHeader.findViewById(R.id.tvOther);
         llProfileClick = navHeader.findViewById(R.id.llProfileClick);
 
 
-        tvEmail.setText(sessionHandlerUser.getUserDetail().getEmail());
+        tvWalletBalance.setText(sessionHandlerUser.getUserDetail().getEmail());
         tvName.setText(sessionHandlerUser.getUserDetail().getFullname());
 
         char first = sessionHandlerUser.getUserDetail().getFullname().charAt(0);
@@ -125,6 +143,20 @@ public class BaseActivity extends AppCompatActivity {
 
 
         }
+
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String filter = et_search.getText().toString();
+                if (filter.isEmpty()){
+
+                }else{
+                    Intent intent = new Intent(BaseActivity.this, SearchActivity.class);
+                    intent.putExtra("filter", filter);
+                    startActivity(intent);
+                }
+            }
+        });
 
         menuLeftIV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,6 +287,13 @@ public class BaseActivity extends AppCompatActivity {
                         fragmentTransaction.replace(R.id.frame, new SettingsFragment());
                         break;
 
+                    case R.id.nav_wallet:
+                        ivFilter.setVisibility(View.GONE);
+                        navItemIndex = 5;
+                        CURRENT_TAG = TAG_WALLET;
+                        fragmentTransaction.replace(R.id.frame, new WalletFragment());
+                        break;
+
                     case R.id.nav_logout:
                         sessionHandlerUser.logoutUser();
                         Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
@@ -336,5 +375,39 @@ public class BaseActivity extends AppCompatActivity {
                 .show();
     }
 
+
+
+
+
+    private void CheckBalance() {
+        String url_ = Config.user_wallet+"?userid="+ sessionHandlerUser.getUserDetail().getUserid();
+        JSONObject request = new JSONObject();
+        JsonObjectRequest jsArrayRequest = new JsonObjectRequest
+                (Request.Method.POST, url_, request, new Response.Listener<JSONObject>() {
+                    @SuppressLint("ResourceAsColor")
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            if (response.getInt("status") == 0) {
+
+                                tvWalletBalance.setText("₦" + response.getString("balance"));
+                                sessionHandlerUser.WalletBalance(response.getString("balance"));
+
+                            } else {
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
+    }
 
 }

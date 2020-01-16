@@ -4,8 +4,9 @@ package com.algaita.models;
 import java.util.Date;
 
 public class User {
-    public String fullname, phone, email;
+    public String fullname, phone, email, balance;
     public int userid, user_status;
+
 
     Date sessionExpiryDate;
 
@@ -59,4 +60,12 @@ public class User {
         this.sessionExpiryDate = sessionExpiryDate;
     }
 
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
 }

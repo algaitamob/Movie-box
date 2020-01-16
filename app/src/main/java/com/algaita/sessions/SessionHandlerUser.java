@@ -54,10 +54,10 @@ public class SessionHandlerUser {
 //        mEditor.commit();
 //    }
 //
-//    public void EditPaymentStatus(String payment_status){
-//        mEditor.putString(KEY_PAYMENT_STATUS, payment_status);
-//        mEditor.commit();
-//    }
+    public void WalletBalance(String balance){
+        mEditor.putString("balance", balance);
+        mEditor.commit();
+    }
 
     /**
      * Checks whether user is logged in
@@ -100,6 +100,7 @@ public class SessionHandlerUser {
         student.setSessionExpiryDate(new Date(mPreferences.getLong(KEY_EXPIRES, 0)));
         student.setPhone(mPreferences.getString("phone", KEY_EMPTY));
         student.setUserid(Integer.parseInt(mPreferences.getString("userid", KEY_EMPTY)));
+        student.setBalance(mPreferences.getString("balance", KEY_EMPTY));
 //        student.setUserid(Integer.parseInt(mPreferences.getString("userid", KEY_EMPTY)));
 //        student.setVerify_status(Integer.parseInt(mPreferences.getString("verify_status", KEY_EMPTY)));
 

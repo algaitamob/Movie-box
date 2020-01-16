@@ -26,27 +26,27 @@
             android:orientation="horizontal">
 
 
-            <LinearLayout
-                android:layout_width="56dp"
-                android:layout_height="57dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/circle"
-                android:gravity="center">
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="56dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/circle">
 
-                <TextView
-                    android:id="@+id/img_profile"
-                    android:layout_width="27dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="15.3dp"
-                    android:fontFamily="sans-serif"
-                    android:text="A"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="21.7sp"
-                    android:textStyle="normal" />
+                    <TextView
+                        android:id="@+id/img_profile"
+                        android:layout_width="27dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15.3dp"
+                        android:fontFamily="sans-serif"
+                        android:text="A"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="21.7sp"
+                        android:textStyle="normal" />
 
-            </LinearLayout>
+                </LinearLayout>
 
 
 
@@ -68,10 +68,11 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/tvEmail"
+                    android:id="@+id/tvWalletBalance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
+                    android:textStyle="bold"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
 

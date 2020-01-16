@@ -3,12 +3,11 @@ package com.algaita.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,7 +18,6 @@ import android.os.StrictMode;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +27,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -42,6 +39,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import adapter.Cast_RecycleviewAdapter;
@@ -49,6 +47,7 @@ import adapter.Cast_RecycleviewAdapter;
 import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
+import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.Request;
@@ -56,7 +55,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,6 +70,7 @@ public class MovieInfoActivity extends AppCompatActivity {
     private final static int REQUEST_ID_MULTIPLE_PERMISSIONS = 0x2;
     String urlString;
     Dialog downloadDialog;
+    int WalletBalance;
 
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
 
@@ -104,6 +103,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         poster_bg = findViewById(R.id.poster_bg);
 
 
+        CheckBalance();
         final VideoView videoView =(VideoView)findViewById(R.id.vdVw);
         //Set MediaController  to enable play, pause, forward, etc options.
 
@@ -191,16 +191,16 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
 //    ButtomSheetPayment
-
     private void showBottomSheetDialog() {
         if (mBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
         final View view = getLayoutInflater().inflate(R.layout.sheet_select_payment_method, null);
 
-        LinearLayout card_airtime, card_credit;
+        LinearLayout card_airtime, card_credit, card_wallet;
         card_credit = view.findViewById(R.id.card_credit);
         card_airtime = view.findViewById(R.id.card_airtime);
+        card_wallet = view.findViewById(R.id.card_wallet);
 
         card_airtime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,6 +224,33 @@ public class MovieInfoActivity extends AppCompatActivity {
                 intent.putExtra("videoid", i.getStringExtra("id"));
 
                 startActivity(intent);
+            }
+        });
+
+        card_wallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mBottomSheetDialog.hide();
+                Intent i = getIntent();
+                    int bal = Integer.parseInt(sessionHandlerUser.getUserDetail().getBalance());
+                    int price = Integer.parseInt(i.getStringExtra("price"));
+                    if (bal < price) {
+                        View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                        TextView text = layout.findViewById(R.id.text);
+                        text.setText("Insufficent Wallet Balance!");
+                        Toast toast = new Toast(getApplicationContext());
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+
+                    } else {
+                        String type = "Wallet";
+                        String amount = i.getStringExtra("price");
+                        String videoid = i.getStringExtra("videoid");
+                        ChargeWallet(amount, videoid);
+
+                    }
+
             }
         });
 
@@ -256,7 +283,6 @@ public class MovieInfoActivity extends AppCompatActivity {
     }
 
 
-
     private void countDownStart() {
         handler = new Handler();
         runnable = new Runnable() {
@@ -280,7 +306,7 @@ public class MovieInfoActivity extends AppCompatActivity {
                         long minutes = diff / (60 * 1000);
                         diff -= minutes * (60 * 1000);
                         long seconds = diff / 1000;
-                        txtrelease_date.setText("Kwana: "+String.format("%02d", days) + "Sa'a: "+ String.format("%02d", hours) + "Minti: " + String.format("%02d", minutes) + "Daqiqa: " + String.format("%02d", seconds));
+                        txtrelease_date.setText(String.format("%02d", days) + "days  "+ String.format("%02d", hours) + "hr  " + String.format("%02d", minutes) + "min  " + String.format("%02d", seconds) + "sec");
                     } else {
 
                     }
@@ -345,7 +371,7 @@ public class MovieInfoActivity extends AppCompatActivity {
             super.onPreExecute();
             progressDialog=new ProgressDialog(MovieInfoActivity.this);
             progressDialog.setMessage("Downloading...");
-//            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setCancelable(false);
             progressDialog.show();
         }
@@ -415,11 +441,18 @@ public class MovieInfoActivity extends AppCompatActivity {
         protected Void doInBackground(Void... arg0) {
             Intent intent = getIntent();
             String url_ = intent.getStringExtra("video_url");
+            int count = 0;
+
             try {
                 URL url = new URL(url_);//Create Download URl
                 HttpURLConnection c = (HttpURLConnection) url.openConnection();//Open Url Connection
                 c.setRequestMethod("GET");//Set Request Method to "GET" since we are grtting data
                 c.connect();//connect the URL Connection
+
+                int lengthOfFile = c.getContentLength();
+
+
+
 
                 //If Connection response is not OK then show Logs
                 if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
@@ -447,6 +480,9 @@ public class MovieInfoActivity extends AppCompatActivity {
 
                 outputFile = new File(apkStorage, intent.getStringExtra("title") + ".mp4");//Create Output file in Main File
 
+
+
+
                 //Create New File if not present
                 if (!outputFile.exists()) {
                     outputFile.createNewFile();
@@ -459,8 +495,19 @@ public class MovieInfoActivity extends AppCompatActivity {
 
                 byte[] buffer = new byte[1024];//Set buffer type
                 int len1 = 0;//init length
+                long total = 0;
+
                 while ((len1 = is.read(buffer)) != -1) {
+
+                    total += count;
+                    // publishing the progress....
+                    // After this onProgressUpdate will be called
+                    onProgressUpdate("" + (int) ((total * 100) / lengthOfFile));
+                    Log.d("ptogress", "Progress: " + (int) ((total * 100) / lengthOfFile));
+
+                    // writing data to file
                     fos.write(buffer, 0, len1);//Write new file
+
                 }
 
                 //Close all connection after doing task
@@ -522,6 +569,85 @@ public class MovieInfoActivity extends AppCompatActivity {
             new DownloadingTask().execute();
         }
     }
+
+
+    private boolean CheckBalance() {
+        String url_ = Config.user_wallet+"?userid="+ sessionHandlerUser.getUserDetail().getUserid();
+        JSONObject request = new JSONObject();
+        JsonObjectRequest jsArrayRequest = new JsonObjectRequest
+                (Request.Method.POST, url_, request, new Response.Listener<JSONObject>() {
+                    @SuppressLint("ResourceAsColor")
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            if (response.getInt("status") == 0) {
+
+                                sessionHandlerUser.WalletBalance(response.getString("balance"));
+
+//                                WalletBalance = Integer.parseInt(response.getString("balance"));
+
+                            } else {
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
+        return true;
+    }
+
+
+
+    private void ChargeWallet(String amount, String videoid) {
+        viewDialog.showDialog();
+        class chargee extends AsyncTask<Bitmap,Void,String> {
+
+            RequestHandler rh = new RequestHandler();
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                viewDialog.hideDialog();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                viewDialog.hideDialog();
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText(s);
+                Toast toast = new Toast(getApplicationContext());
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+
+                data.put("amount", amount);
+                data.put("userid", String.valueOf(sessionHandlerUser.getUserDetail().getUserid()));
+                data.put("videoid", videoid);
+                String result = rh.sendPostRequest(Config.url + "charge_wallet.php?amount=" + amount + "&userid=" + sessionHandlerUser.getUserDetail().getUserid() + "&videoid=" + videoid,data);
+
+                return result;
+            }
+        }
+
+        chargee ui = new chargee();
+        ui.execute();
+    }
+
 
 
 

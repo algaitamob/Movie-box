@@ -10,6 +10,11 @@
 
 
 
+    <item
+        android:icon="@drawable/ic_wallet"
+        android:id="@+id/nav_wallet"
+        android:title="Wallet"/>
+
 
     <item
         android:icon="@drawable/ic_movie"
