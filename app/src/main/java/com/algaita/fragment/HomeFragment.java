@@ -112,6 +112,7 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("video_url", GetVideosAdapterTheater.get(position).getVideo_url());
                 intent.putExtra("price", GetVideosAdapterTheater.get(position).getPrice());
                 intent.putExtra("poster", GetVideosAdapterTheater.get(position).getPoster());
+                intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "out");
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
@@ -135,6 +136,7 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("video_url", GetVideosAdapterComingsoon.get(position).getVideo_url());
                 intent.putExtra("price", GetVideosAdapterComingsoon.get(position).getPrice());
                 intent.putExtra("poster", GetVideosAdapterComingsoon.get(position).getPoster());
+                intent.putExtra("cover", GetVideosAdapterComingsoon.get(position).getCover());
                 intent.putExtra("release_date", GetVideosAdapterComingsoon.get(position).getRelease_date());
                 intent.putExtra("status", "coming");
                 intent.putExtra("id", GetVideosAdapterComingsoon.get(position).getVideoid());
@@ -161,7 +163,7 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("total_episode", GetSeriesAdapter.get(position).getTotal_episode());
                 intent.putExtra("cover", GetSeriesAdapter.get(position).getCover());
                 intent.putExtra("release_date", GetSeriesAdapter.get(position).getRelease_date());
-                intent.putExtra("id", GetVideosAdapterComingsoon.get(position).getVideoid());
+                intent.putExtra("id", GetSeriesAdapter.get(position).getId());
                 startActivity(intent);
 
             }
@@ -261,6 +263,7 @@ public class HomeFragment extends Fragment {
                 getVideosAdapterTheater.setVideo_url(json.getString("video_url"));
                 getVideosAdapterTheater.setPrice(json.getString("price"));
                 getVideosAdapterTheater.setPoster(json.getString("poster"));
+                getVideosAdapterTheater.setCover(json.getString("cover"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));
@@ -310,6 +313,7 @@ public class HomeFragment extends Fragment {
                 getVideosAdapterComingsoon.setVideo_url(json.getString("video_url"));
                 getVideosAdapterComingsoon.setPrice(json.getString("price"));
                 getVideosAdapterComingsoon.setPoster(json.getString("poster"));
+                getVideosAdapterComingsoon.setCover(json.getString("cover"));
                 getVideosAdapterComingsoon.setRelease_date(json.getString("release_date"));
                 getVideosAdapterComingsoon.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterComingsoon.setVideoid(json.getString("id"));

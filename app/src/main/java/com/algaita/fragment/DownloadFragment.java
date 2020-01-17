@@ -10,11 +10,13 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -82,10 +84,10 @@ public class DownloadFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Intent intent = new Intent(getActivity(), PlayerService.class);
-                intent.putExtra("name", arrayList.get(position).getMp3Name());
-                intent.putExtra("uri", arrayList.get(position).getMp3Url());
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), PlayerService.class);
+//                intent.putExtra("name", arrayList.get(position).getMp3Name());
+//                intent.putExtra("uri", arrayList.get(position).getMp3Url());
+//                startActivity(intent);
             }
 
             @Override
@@ -118,17 +120,40 @@ public class DownloadFragment extends Fragment {
         protected void onPostExecute(String s) {
             if (getActivity() != null) {
                 viewDialog.hideDialog();
-                adapterSongList = new AdapterVIdeoList(getActivity(), arrayList, new RecyclerClickListener() {
-                    @Override
-                    public void onClick(int position) {
+//                adapterSongList = new AdapterVIdeoList(getActivity(), arrayList, new RecyclerClickListener() {
+//                    @Override
+//                    public void onClick(int position) {
 //
-//                        Toast.makeText(getActivity(), "heeeeee", Toast.LENGTH_LONG).show();
-//                        Intent intent = new Intent(getActivity(), PlayerService.class);
-//                        intent.putExtra("name", arrayList.get(position).getMp3Name());
-//                        intent.putExtra("uri", arrayList.get(position).getMp3Url());
-//                        startActivity(intent);
+//                    }
+//                }, "offline");
+
+                adapterSongList = new AdapterVIdeoList(getActivity(), arrayList, new AdapterVIdeoList.DetailsAdapterListener() {
+                    @Override
+                    public void classOnClick(View v, int position) {
+//                        String id = GetFoodAdaper1.get(position).getId();
+//                        AddToCart(id);
+
+//                        File dir = new File(arrayList.get(position).getMp3Url());
+//                        File file = new File(arrayList.get(position).getMp3Url());
+//                        boolean deleted = file.delete();
+
+                        new File(arrayList.get(position).getMp3Url()).delete();
+
+//                        arrayList.get(position).getMp3Url();
+                        Toast.makeText(getContext(), "Deleted Successfully!", Toast.LENGTH_LONG).show();
+
+
                     }
-                }, "offline");
+
+                    @Override
+                    public void favOnclick(View v, int position) {
+                        Intent intent = new Intent(getActivity(), PlayerService.class);
+                        intent.putExtra("name", arrayList.get(position).getMp3Name());
+                        intent.putExtra("uri", arrayList.get(position).getMp3Url());
+                        startActivity(intent);
+                    }
+
+                });
                 recyclerView.setAdapter(adapterSongList);
                 if (arrayList.size() == 0) {
                     recyclerView.setVisibility(View.GONE);
@@ -140,6 +165,15 @@ public class DownloadFragment extends Fragment {
         }
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // Refresh your fragment here
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+            Log.i("IsRefresh", "Yes");
+        }
+    }
 
     private void loadDownloaded() {
 

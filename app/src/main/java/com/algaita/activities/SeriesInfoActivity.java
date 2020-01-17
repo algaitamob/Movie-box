@@ -71,6 +71,11 @@ import java.util.List;
 public class SeriesInfoActivity extends AppCompatActivity {
 
 
+    // Progress Dialog
+    private ProgressDialog pDialog;
+
+    // Progress dialog type (0 - for Horizontal progress bar)
+    public static final int progress_bar_type = 0;
     String fileN = null ;
     public static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 123;
     boolean result;
@@ -117,6 +122,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
         poster = findViewById(R.id.poster);
         poster_bg = findViewById(R.id.poster_bg);
 
+        checkPermissions();
         series_recycleview =  findViewById(R.id.movie_recycleview);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(SeriesInfoActivity.this);
@@ -135,19 +141,10 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 id = GetSeriesAdapter.get(position).getId();
                 title = GetSeriesAdapter.get(position).getTitle();
                 price = GetSeriesAdapter.get(position).getPrice();
-                video_url = GetSeriesAdapter.get(position).getPrice();
+                video_url = GetSeriesAdapter.get(position).getVideo_url();
 
                 CheckVideoStatus(id, title, price, video_url);
-//                Intent intent = new Intent(getContext(), SeriesInfoActivity.class);
-//                intent.putExtra("title", GetSeriesAdapter.get(position).getTitle());
-//                intent.putExtra("description", GetSeriesAdapter.get(position).getDescription());
-//                intent.putExtra("trailer_url", GetSeriesAdapter.get(position).getTrailer_url());
-//                intent.putExtra("poster", GetSeriesAdapter.get(position).getPoster());
-//                intent.putExtra("total_episode", GetSeriesAdapter.get(position).getTotal_episode());
-//                intent.putExtra("cover", GetSeriesAdapter.get(position).getCover());
-//                intent.putExtra("release_date", GetSeriesAdapter.get(position).getRelease_date());
-//                intent.putExtra("id", GetVideosAdapterComingsoon.get(position).getVideoid());
-//                startActivity(intent);
+
 
             }
 
@@ -282,8 +279,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
 //                        ChargeWallet(amount, videoid);
                         Intent ii = getIntent();
                         Intent intent = new Intent(SeriesInfoActivity.this, ChargeWallet.class);
-                        intent.putExtra("amount", ii.getStringExtra("price"));
-                        intent.putExtra("videoid", ii.getStringExtra("id"));
+                        intent.putExtra("amount", price);
+                        intent.putExtra("videoid", id);
                         startActivity(intent);
 
 
@@ -374,6 +371,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
 //                                    btn_buy.setVisibility(View.GONE);
 //                                    btn_download.setVisibility(View.VISIBLE);
                                     String type = "YES";
+//                                    Toast.makeText(getApplicationContext(), video_url, Toast.LENGTH_LONG).show();
+
                                     showDialogPay(id, title, price, type, video_url);
                                 }else {
                                     String type = "NO";
@@ -399,176 +398,6 @@ public class SeriesInfoActivity extends AppCompatActivity {
     }
 
 
-
-
-//    New Download
-    private class DownloadingTask extends AsyncTask<Void, Void, Void> {
-
-        File apkStorage = null;
-        File outputFile = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog=new ProgressDialog(SeriesInfoActivity.this);
-            progressDialog.setMessage("Downloading...");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-
-
-        /**
-         * Updating progress bar
-         */
-        protected void onProgressUpdate(String... progress) {
-            // setting progress percentage
-            progressDialog.setProgress(Integer.parseInt(progress[0]));
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            try {
-                if (outputFile != null) {
-                    progressDialog.dismiss();
-                    View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
-                    TextView text = layout.findViewById(R.id.text);
-                    text.setText(getIntent().getStringExtra("title") + "Downloaded Succesfully");
-                    Toast toast = new Toast(getApplicationContext());
-                    toast.setDuration(Toast.LENGTH_LONG);
-                    toast.setView(layout);
-                    toast.show();
-
-                } else {
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    }, 3000);
-
-                    View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
-                    TextView text = layout.findViewById(R.id.text);
-                    text.setText(getIntent().getStringExtra("title") + "Download Failed!");
-                    Toast toast = new Toast(getApplicationContext());
-                    toast.setDuration(Toast.LENGTH_LONG);
-                    toast.setView(layout);
-                    toast.show();
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-
-                //Change button text if an exception occurs
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                }, 3000);
-                Log.e("result", "Download Failed with Exception - " + e.getLocalizedMessage());
-
-            }
-
-
-            super.onPostExecute(result);
-        }
-
-
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            Intent intent = getIntent();
-            String url_ = intent.getStringExtra("video_url");
-            int count = 0;
-
-            try {
-                URL url = new URL(url_);//Create Download URl
-                HttpURLConnection c = (HttpURLConnection) url.openConnection();//Open Url Connection
-                c.setRequestMethod("GET");//Set Request Method to "GET" since we are grtting data
-                c.connect();//connect the URL Connection
-
-                int lengthOfFile = c.getContentLength();
-
-
-
-
-                //If Connection response is not OK then show Logs
-                if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
-//                    Log.e("Server returned HTTP " + c.getResponseCode()
-//                            + " " + c.getResponseMessage());
-
-                }
-
-
-                //Get File if SD card is present
-                if (new CheckForSDCard().isSDCardPresent()) {
-
-//                    File myDir = getApplicationContext().getDir("AdabulMufrad", Context.MODE_PRIVATE);
-                    apkStorage = new File("/data/data/" + getPackageName() + "/files/");
-
-//                    Uri.parse("/data/data/" + getPackageName() + "/app_AdabulMufrad/" + myFile.getName().trim());
-                } else
-                    Toast.makeText(getApplicationContext(), "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
-
-                //If File is not present create directory
-                if (!apkStorage.exists()) {
-                    apkStorage.mkdir();
-                    Log.e("result", "Directory Created.");
-                }
-
-                outputFile = new File(apkStorage, intent.getStringExtra("title") + ".mp4");//Create Output file in Main File
-
-
-
-
-                //Create New File if not present
-                if (!outputFile.exists()) {
-                    outputFile.createNewFile();
-                    Log.e("result", "File Created");
-                }
-
-                FileOutputStream fos = new FileOutputStream(outputFile);//Get OutputStream for NewFile Location
-
-                InputStream is = c.getInputStream();//Get InputStream for connection
-
-                byte[] buffer = new byte[1024];//Set buffer type
-                int len1 = 0;//init length
-                long total = 0;
-
-                while ((len1 = is.read(buffer)) != -1) {
-
-                    total += count;
-                    // publishing the progress....
-                    // After this onProgressUpdate will be called
-                    onProgressUpdate("" + (int) ((total * 100) / lengthOfFile));
-                    Log.d("ptogress", "Progress: " + (int) ((total * 100) / lengthOfFile));
-
-                    // writing data to file
-                    fos.write(buffer, 0, len1);//Write new file
-
-                }
-
-                //Close all connection after doing task
-                fos.close();
-                is.close();
-
-            } catch (Exception e) {
-
-                //Read exception if something went wrong
-                e.printStackTrace();
-                outputFile = null;
-                Log.e("result", "Download Error Exception " + e.getMessage());
-            }
-
-            return null;
-        }
-    }
-
-
-
     public class CheckForSDCard {
 
 
@@ -585,7 +414,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
 
-    private void checkPermissions(String video_url) {
+    private void checkPermissions() {
         int permissionLocation = ContextCompat.checkSelfPermission(SeriesInfoActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -597,7 +426,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
             }
         } else {
 //            new DownloadingTask().execute();
-            new DownloadFile().execute(video_url);
+//            new DownloadFile().execute(video_url);
 
 
         }
@@ -657,7 +486,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 viewDialog.showDialog();
         Intent intent = getIntent();
         GetSeriesAdapter.clear();
-        jsonArrayRequest = new JsonArrayRequest(Config.url + "series_video.php?seriesid=1", new Response.Listener<JSONArray>() {
+        jsonArrayRequest = new JsonArrayRequest(Config.url + "series_video.php?seriesid=" + getIntent().getStringExtra("id"), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 viewDialog.hideDialog();
@@ -683,6 +512,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 json = array.getJSONObject(i);
                 getSeriesAdapter.setTitle(json.getString("title"));
                 getSeriesAdapter.setPrice(json.getString("price"));
+                getSeriesAdapter.setVideo_url(json.getString("video_url"));
                 getSeriesAdapter.setRelease_date(json.getString("release_date"));
                 getSeriesAdapter.setId(json.getString("id"));
 
@@ -739,7 +569,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                checkPermissions(video_url);
+                new DownloadFileFromURL().execute(video_url);
+
             }
         });
 
@@ -760,66 +591,63 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
 
+    /**
+     * Showing Dialog
+     * */
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case progress_bar_type:
+                pDialog = new ProgressDialog(this);
+                pDialog.setMessage("Downloading... Please wait...");
+                pDialog.setIndeterminate(false);
+                pDialog.setMax(100);
+                pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                pDialog.setCancelable(true);
+                pDialog.show();
+                return pDialog;
+            default:
+                return null;
+        }
+    }
 
     /**
-     * Async Task to download file from URL
-     */
-    private class DownloadFile extends AsyncTask<String, String, String> {
-
-        private ProgressDialog progressDialog;
-        private String fileName;
-        private String folder;
-        private boolean isDownloaded;
+     * Background Async Task to download file
+     * */
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
         /**
          * Before starting background thread
          * Show Progress Bar Dialog
-         */
+         * */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            this.progressDialog = new ProgressDialog(SeriesInfoActivity.this);
-            this.progressDialog.setMessage("Downloading...");
-            this.progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            this.progressDialog.setCancelable(false);
-            this.progressDialog.show();
+            showDialog(progress_bar_type);
         }
 
         /**
          * Downloading file in background thread
-         */
+         * */
         @Override
         protected String doInBackground(String... f_url) {
             int count;
-            Intent intent = getIntent();
-//            String url_ = intent.getStringExtra("video_url");
             try {
-
                 URL url = new URL(f_url[0]);
-                URLConnection connection = url.openConnection();
-                connection.connect();
+                URLConnection conection = url.openConnection();
+                conection.connect();
                 // getting file length
-                int lengthOfFile = connection.getContentLength();
-
+                int lenghtOfFile = conection.getContentLength();
 
                 // input stream to read file - with 8k buffer
                 InputStream input = new BufferedInputStream(url.openStream(), 8192);
 
-                String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
-                //Extract file name from URL
-                fileName = f_url[0].substring(f_url[0].lastIndexOf('/') + 1, f_url[0].length());
-
-                //Append timestamp to file name
-                fileName = timestamp + "_" + fileName;
-
-                //External directory path to save file
-//                apkStorage = new File("/data/data/" + getPackageName() + "/files/");
-
-                folder = "/data/data/" + getPackageName() + "/files/";
+                String folder = "/data/data/" + getPackageName() + "/files/";
 
                 //Create androiddeft folder if it does not exist
                 File directory = new File(folder);
+
 
                 if (!directory.exists()) {
                     directory.mkdirs();
@@ -828,7 +656,11 @@ public class SeriesInfoActivity extends AppCompatActivity {
 //                outputFile = new File(apkStorage, intent.getStringExtra("title") + ".mp4");//Create Output file in Main File
 
                 // Output stream to write file
-                OutputStream output = new FileOutputStream(folder + intent.getStringExtra("title") + ".mp4");
+                OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
+
+
+                // Output stream to write file
+//                OutputStream output = new FileOutputStream("/sdcard/downloadedfile.jpg");
 
                 byte data[] = new byte[1024];
 
@@ -838,8 +670,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                     total += count;
                     // publishing the progress....
                     // After this onProgressUpdate will be called
-                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
-                    Log.d("x", "Progress: " + (int) ((total * 100) / lengthOfFile));
+                    publishProgress(""+(int)((total*100)/lenghtOfFile));
 
                     // writing data to file
                     output.write(data, 0, count);
@@ -851,34 +682,48 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 // closing streams
                 output.close();
                 input.close();
-                return "Downloaded at: " + folder + fileName;
 
             } catch (Exception e) {
                 Log.e("Error: ", e.getMessage());
             }
 
-            return "Something went wrong";
+            return null;
         }
 
         /**
          * Updating progress bar
-         */
+         * */
         protected void onProgressUpdate(String... progress) {
             // setting progress percentage
-            progressDialog.setProgress(Integer.parseInt(progress[0]));
+            pDialog.setProgress(Integer.parseInt(progress[0]));
         }
 
-
+        /**
+         * After completing background task
+         * Dismiss the progress dialog
+         * **/
         @Override
-        protected void onPostExecute(String message) {
+        protected void onPostExecute(String file_url) {
             // dismiss the dialog after the file was downloaded
-            this.progressDialog.dismiss();
+            dismissDialog(progress_bar_type);
 
-            // Display File path after downloading
-            Toast.makeText(getApplicationContext(),
-                    message, Toast.LENGTH_LONG).show();
+            View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+            TextView text = layout.findViewById(R.id.text);
+            text.setText(getIntent().getStringExtra("title") + "  - Downloaded Successfully!");
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
+            // Displaying downloaded image into image view
+            // Reading image path from sdcard
+//            String imagePath = Environment.getExternalStorageDirectory().toString() + "/downloadedfile.jpg";
+            // setting downloaded into image view
+//            my_image.setImageDrawable(Drawable.createFromPath(imagePath));
         }
+
     }
+
+
 
 
 

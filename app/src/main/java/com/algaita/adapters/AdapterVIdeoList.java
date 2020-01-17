@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,41 +28,33 @@ public class AdapterVIdeoList extends RecyclerView.Adapter<AdapterVIdeoList.MyVi
     private ArrayList<ItemVideos> arrayList;
     private ArrayList<ItemVideos> filteredArrayList;
     private RecyclerClickListener recyclerClickListener;
+    public DetailsAdapterListener onClickListener;
+
     private NameFilter filter;
     private String type;
+
 //    private JsonUtils jsonUtils;
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView textView_song, textView_duration, textView_catname, textView_total_rate, textView_views, textView_downloads;
-//        EqualizerView equalizer;
-        ImageView imageView, imageView_option;
-        LinearLayout linearLayout, ll_counts;
-        RatingBar ratingBar;
+        TextView textView_song;
+        Button btn_delete, btn_play;
+
 
         MyViewHolder(View view) {
             super(view);
-//            linearLayout = view.findViewById(R.id.ll_songlist);
-//            ll_counts = view.findViewById(R.id.ll_counts);
             textView_song = view.findViewById(R.id.textView_songname);
-//            textView_duration = view.findViewById(R.id.textView_songduration);
-//            textView_total_rate = view.findViewById(R.id.textView_totalrate_songlist);
-//            equalizer = view.findViewById(R.id.equalizer_view);
-//            textView_catname = view.findViewById(R.id.textView_catname);
-            imageView = view.findViewById(R.id.imageView_songlist);
-//            imageView_option = view.findViewById(R.id.imageView_option_songlist);
-//            ratingBar = view.findViewById(R.id.ratingBar_songlist);
-//            textView_views = view.findViewById(R.id.textView_views);
-//            textView_downloads = view.findViewById(R.id.textView_downloads);
+            btn_delete = view.findViewById(R.id.btn_delete);
+            btn_play = view.findViewById(R.id.btn_play);
         }
     }
 
-    public AdapterVIdeoList(Context context, ArrayList<ItemVideos> arrayList, RecyclerClickListener recyclerClickListener, String type) {
+    public AdapterVIdeoList(Context context, ArrayList<ItemVideos> arrayList, DetailsAdapterListener listener) {
         this.arrayList = arrayList;
         this.filteredArrayList = arrayList;
         this.context = context;
         this.type = type;
+        this.onClickListener = listener;
         this.recyclerClickListener = recyclerClickListener;
-//        jsonUtils = new JsonUtils(context);
     }
 
     @NonNull
@@ -77,40 +70,28 @@ public class AdapterVIdeoList extends RecyclerView.Adapter<AdapterVIdeoList.MyVi
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
 
         holder.textView_song.setText(arrayList.get(position).getMp3Name());
-//        holder.textView_duration.setText(arrayList.get(position).getDuration());
 
-        if (!type.equals("offline")) {
-//            holder.textView_total_rate.setText(arrayList.get(position).getTotalRate());
-//            holder.ratingBar.setRating(Float.parseFloat(arrayList.get(position).getAverageRating()));
-//            holder.textView_views.setText(jsonUtils.format(Double.parseDouble(arrayList.get(position).getViews())));
-//            holder.textView_downloads.setText(jsonUtils.format(Double.parseDouble(arrayList.get(position).getDownloads())));
-        } else {
-//            holder.textView_total_rate.setVisibility(View.GONE);
-//            holder.ratingBar.setVisibility(View.GONE);
-//            holder.ll_counts.setVisibility(View.GONE);
-        }
+        holder.btn_delete.setOnClickListener(new View.OnClickListener() {
+          @Override
+         public void onClick(View view) {
+              onClickListener.classOnClick(view, position);
 
-//        if (!type.equals("offline") || type.equals("fav")) {
-//            Picasso.
-//                    .load(arrayList.get(position).getImageSmall())
-//                    .into(holder.imageView);
+          }
+        });
+
+        holder.btn_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.favOnclick(v, position);
+            }
+        });
+
+//        if (!type.equals("offline")) {
+//
 //        } else {
-//            holder.imageView.setImageBitmap(arrayList.get(position).getBitmap());
+//
 //        }
 
-//        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                recyclerClickListener.onClick(holder.getAdapterPosition());
-//            }
-//        });
-
-//        holder.imageView_option.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                openOptionPopUp(holder.imageView_option, holder.getAdapterPosition());
-//            }
-//        });
     }
 
     @Override
@@ -126,54 +107,6 @@ public class AdapterVIdeoList extends RecyclerView.Adapter<AdapterVIdeoList.MyVi
     public String getID(int pos) {
         return arrayList.get(pos).getId();
     }
-
-//    private void openOptionPopUp(ImageView imageView, final int pos) {
-//        PopupMenu popup = new PopupMenu(context, imageView);
-//        popup.getMenuInflater().inflate(R.menu.popup_song, popup.getMenu());
-//        if (type.equals("offline")) {
-//            popup.getMenu().findItem(R.id.popup_add_song).setTitle(context.getString(R.string.delete));
-//        }
-//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            public boolean onMenuItemClick(MenuItem item) {
-//                switch (item.getItemId()) {
-//                    case R.id.popup_add_song:
-//                        if (type.equals("offline")) {
-//                            openDeleteDialog(pos);
-//                        } else {
-//                            jsonUtils.openPlaylists(arrayList.get(pos));
-//                        }
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-//        popup.show();
-//    }
-
-//    private void openDeleteDialog(final int pos) {
-//        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-//        dialog.setTitle(context.getString(R.string.delete));
-//        dialog.setMessage(context.getString(R.string.sure_delete));
-//        dialog.setPositiveButton(context.getString(R.string.delete), new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                Boolean isDelete = new File(arrayList.get(pos).getMp3Url()).delete();
-//                if (isDelete) {
-//                    arrayList.remove(pos);
-//                    notifyItemRemoved(pos);
-//                    Toast.makeText(context, context.getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//        dialog.setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//
-//            }
-//        });
-//        dialog.show();
-//    }
-
     public Filter getFilter() {
         if (filter == null) {
             filter = new NameFilter();
@@ -215,5 +148,16 @@ public class AdapterVIdeoList extends RecyclerView.Adapter<AdapterVIdeoList.MyVi
             arrayList = (ArrayList<ItemVideos>) results.values;
             notifyDataSetChanged();
         }
+    }
+
+
+    //region Interface Details listener
+    public interface DetailsAdapterListener {
+
+        void classOnClick(View v, int position);
+        void favOnclick(View v, int position);
+
+
+
     }
 }

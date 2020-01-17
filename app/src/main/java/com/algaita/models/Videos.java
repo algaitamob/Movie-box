@@ -3,7 +3,7 @@ package com.algaita.models;
 public class Videos {
     int status;
 
-    String title, description, trailer_url, video_url, price, release_date, poster, videoid;
+    String title, description, trailer_url, video_url, price, release_date, poster, cover, videoid;
 
     public int getStatus() {
         return status;
@@ -75,6 +75,14 @@ public class Videos {
 
     public void setPoster(String poster) {
         this.poster = poster;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public String getCover() {
+        return cover;
     }
 
 }

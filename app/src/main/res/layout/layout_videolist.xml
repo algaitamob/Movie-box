@@ -10,10 +10,11 @@
     card_view:cardCornerRadius="5dp"
     card_view:cardElevation="5dp"
     android:layout_height="wrap_content">
+
     <LinearLayout
         android:id="@+id/ll_songlist"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal">
 
         <View
@@ -24,8 +25,8 @@
             android:id="@+id/imageView_songlist"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginBottom="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_large"
+            android:layout_marginBottom="@dimen/spacing_large"
             android:scaleType="centerCrop"
             android:src="@drawable/icon" />
 
@@ -54,8 +55,8 @@
                     <TextView
 
                         android:id="@+id/textView_songname"
-                        android:layout_width="210dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="43dp"
                         android:layout_alignParentTop="true"
                         android:text="Locking Up Your Symptoms"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -67,6 +68,24 @@
                     android:layout_width="@dimen/spacing_large"
                     android:layout_height="0dp" />
 
+                <Button
+                    android:id="@+id/btn_play"
+                    android:layout_width="65dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_roundshape"
+                    android:text="PLAY"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp" />
+
+
+                <Button
+                    android:id="@+id/btn_delete"
+                    android:layout_width="67dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_roundshape"
+                    android:text="DELETE"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp" />
 
                 <View
                     android:layout_width="@dimen/spacing_large"
