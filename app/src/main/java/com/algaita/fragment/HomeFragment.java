@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,12 @@ import com.algaita.activities.LoginActivity;
 //import com.algaita.activities.MainActivity;
 import com.algaita.activities.MovieInfoActivity;
 import com.algaita.activities.RecyclerTouchListener;
+import com.algaita.activities.SeriesInfoActivity;
 import com.algaita.adapters.ComingVideosAdapter;
+import com.algaita.adapters.SeriesAdapter;
 import com.algaita.adapters.VideosAdapter;
 import com.algaita.models.ComingVideos;
+import com.algaita.models.Series;
 import com.algaita.models.Videos;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.RequestQueue;
@@ -44,6 +48,7 @@ public class HomeFragment extends Fragment {
     ImageView img_user;
     RecyclerView theaters_recycleview;
     RecyclerView comingsoon_recycleview;
+    RecyclerView series_recycleview;
     RequestQueue requestQueue;
     JsonArrayRequest jsonArrayRequest;
 
@@ -55,6 +60,14 @@ public class HomeFragment extends Fragment {
     List<ComingVideos> GetVideosAdapterComingsoon;
     ComingVideos getVideosAdapterComingsoon;
     RecyclerView.Adapter recyclerViewAdapterComingSoon;
+
+    //    Series Recycler
+    List<Series> GetSeriesAdapter;
+    Series getSeriesAdapter;
+    RecyclerView.Adapter recyclerViewAdapterSeries;
+
+
+    //
 
     SessionHandlerUser sessionHandlerUser;
     ViewDialog viewDialog;
@@ -69,21 +82,26 @@ public class HomeFragment extends Fragment {
         //Recycleview
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
         comingsoon_recycleview =  view.findViewById(R.id.comingsoon_recycleview);
+        series_recycleview =  view.findViewById(R.id.series_recycleview);
 
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         theaters_recycleview.setLayoutManager(new GridLayoutManager(getContext(), 2));
         comingsoon_recycleview.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        series_recycleview.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-//        theaters_recycleview.setLayoutManager(layoutManager);
+//        series_recycleview.setLayoutManager(layoutManager);
         theaters_recycleview.setItemAnimator(new DefaultItemAnimator());
         comingsoon_recycleview.setItemAnimator(new DefaultItemAnimator());
+        series_recycleview.setItemAnimator(new DefaultItemAnimator());
         GetVideosAdapterTheater = new ArrayList<>();
         GetVideosAdapterComingsoon = new ArrayList<>();
+        GetSeriesAdapter = new ArrayList<>();
 
 
 
         GetvideosComingSoon();
         GetVideosTheater();
+        GetSeries();
         theaters_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getContext(), theaters_recycleview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -131,10 +149,81 @@ public class HomeFragment extends Fragment {
 
         }));
 
+        series_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getContext(), series_recycleview, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+                Intent intent = new Intent(getContext(), SeriesInfoActivity.class);
+                intent.putExtra("title", GetSeriesAdapter.get(position).getTitle());
+                intent.putExtra("description", GetSeriesAdapter.get(position).getDescription());
+                intent.putExtra("trailer_url", GetSeriesAdapter.get(position).getTrailer_url());
+                intent.putExtra("poster", GetSeriesAdapter.get(position).getPoster());
+                intent.putExtra("total_episode", GetSeriesAdapter.get(position).getTotal_episode());
+                intent.putExtra("cover", GetSeriesAdapter.get(position).getCover());
+                intent.putExtra("release_date", GetSeriesAdapter.get(position).getRelease_date());
+                intent.putExtra("id", GetVideosAdapterComingsoon.get(position).getVideoid());
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+
+        }));
+
 
 
         return view;
 
+    }
+
+    private void GetSeries() {
+
+        //        viewDialog.showDialog();
+        GetSeriesAdapter.clear();
+        jsonArrayRequest = new JsonArrayRequest(Config.url + "series.php", new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                GetCardWebCall3(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+//                viewDialog.hideDialog();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void GetCardWebCall3(JSONArray array) {
+        for (int i = 0; i < array.length(); i++){
+            getSeriesAdapter = new Series();
+            JSONObject json = null;
+
+            try {
+                json = array.getJSONObject(i);
+                getSeriesAdapter.setTitle(json.getString("title"));
+                getSeriesAdapter.setDescription(json.getString("description"));
+                getSeriesAdapter.setTrailer_url(json.getString("trailer_url"));
+                getSeriesAdapter.setPoster(json.getString("poster"));
+                getSeriesAdapter.setTotal_episode(json.getString("total_episode"));
+                getSeriesAdapter.setCover(json.getString("cover"));
+                getSeriesAdapter.setRelease_date(json.getString("release_date"));
+                getSeriesAdapter.setId(json.getString("id"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            GetSeriesAdapter.add(getSeriesAdapter);
+        }
+
+        recyclerViewAdapterSeries = new SeriesAdapter(GetSeriesAdapter, getContext());
+        series_recycleview.setAdapter(recyclerViewAdapterSeries);
+        recyclerViewAdapterSeries.notifyDataSetChanged();
     }
 
 

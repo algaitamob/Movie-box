@@ -122,7 +122,7 @@ public class BaseActivity extends AppCompatActivity {
         llProfileClick = navHeader.findViewById(R.id.llProfileClick);
 
 
-        tvWalletBalance.setText(sessionHandlerUser.getUserDetail().getEmail());
+//        tvWalletBalance.setText(sessionHandlerUser.getUserDetail().getEmail());
         tvName.setText(sessionHandlerUser.getUserDetail().getFullname());
 
         char first = sessionHandlerUser.getUserDetail().getFullname().charAt(0);

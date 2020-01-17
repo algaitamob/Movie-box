@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:lineSpacingExtra="-11sp"
-                    android:text="Now in theaters"
+                    android:text="New Release"
                     android:textAllCaps="true"
                     android:layout_marginLeft="17dp"
                     android:textColor="#263238"
@@ -56,6 +56,39 @@
                     android:layout_height="wrap_content">
 
                 </android.support.v7.widget.RecyclerView>
+
+
+
+                <customfonts.MyTextView_PTSans_Bold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="-11sp"
+                    android:text="TV SERIES"
+                    android:textAllCaps="true"
+                    android:layout_marginTop="38dp"
+                    android:layout_marginLeft="17dp"
+                    android:textColor="#263238"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="45dp"
+                    android:layout_height="4dp"
+                    android:layout_marginTop="7.5dp"
+                    android:layout_marginLeft="17dp"
+                    android:background="@drawable/gradient"/>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/series_recycleview"
+                    android:clipToPadding="false"
+                    android:paddingTop="19dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+
 
 
 

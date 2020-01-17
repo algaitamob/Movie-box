@@ -40,6 +40,7 @@
         <activity android:name=".activities.PaymetWeb"/>
         <activity android:name=".activities.AddWalletBalanceActivity"/>
         <activity android:name=".activities.PaymetWebWallet"/>
+        <activity android:name=".activities.ChargeWallet"/>
 
         <activity android:name=".activities.PlayerService"
             android:screenOrientation="landscape"
@@ -47,6 +48,8 @@
             />
 
         <activity android:name=".activities.SearchActivity"/>
+
+        <activity android:name=".activities.SeriesInfoActivity"/>
 
         <activity android:name=".activities.BaseActivity"/>
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>

@@ -31,11 +31,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -180,7 +183,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         txttitle.setText(intent.getStringExtra("title"));
         txtdescription.setText(intent.getStringExtra("description"));
         txtprice.setText("₦" + intent.getStringExtra("price"));
-        txttitle.setText(intent.getStringExtra("title"));
+//        txttitle.setText(intent.getStringExtra("title"));
 
 
         bottom_sheet = findViewById(R.id.bottom_sheet);
@@ -230,7 +233,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         card_wallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mBottomSheetDialog.hide();
+//                mBottomSheetDialog.hide();
                 Intent i = getIntent();
                     int bal = Integer.parseInt(sessionHandlerUser.getUserDetail().getBalance());
                     int price = Integer.parseInt(i.getStringExtra("price"));
@@ -245,9 +248,16 @@ public class MovieInfoActivity extends AppCompatActivity {
 
                     } else {
                         String type = "Wallet";
-                        String amount = i.getStringExtra("price");
-                        String videoid = i.getStringExtra("videoid");
-                        ChargeWallet(amount, videoid);
+//                        String amount = i.getStringExtra("price");
+//                        String videoid = i.getStringExtra("videoid");
+
+//                        ChargeWallet(amount, videoid);
+                        Intent ii = getIntent();
+                        Intent intent = new Intent(MovieInfoActivity.this, ChargeWallet.class);
+                        intent.putExtra("amount", ii.getStringExtra("price"));
+                        intent.putExtra("videoid", ii.getStringExtra("id"));
+                        startActivity(intent);
+
 
                     }
 
@@ -556,6 +566,7 @@ public class MovieInfoActivity extends AppCompatActivity {
             }
         } else {
             new DownloadingTask().execute();
+//            new DownloadFile().execute();
 
         }
 
@@ -567,6 +578,7 @@ public class MovieInfoActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
             new DownloadingTask().execute();
+//            new DownloadFile().execute(getIntent().getStringExtra("video_url"));
         }
     }
 
@@ -606,50 +618,126 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
 
-    private void ChargeWallet(String amount, String videoid) {
-        viewDialog.showDialog();
-        class chargee extends AsyncTask<Bitmap,Void,String> {
 
-            RequestHandler rh = new RequestHandler();
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                viewDialog.hideDialog();
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                viewDialog.hideDialog();
-                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
-                TextView text = layout.findViewById(R.id.text);
-                text.setText(s);
-                Toast toast = new Toast(getApplicationContext());
-                toast.setDuration(Toast.LENGTH_LONG);
-                toast.setView(layout);
-                toast.show();
-            }
-
-            @Override
-            protected String doInBackground(Bitmap... params) {
-                HashMap<String,String> data = new HashMap<>();
-
-                data.put("amount", amount);
-                data.put("userid", String.valueOf(sessionHandlerUser.getUserDetail().getUserid()));
-                data.put("videoid", videoid);
-                String result = rh.sendPostRequest(Config.url + "charge_wallet.php?amount=" + amount + "&userid=" + sessionHandlerUser.getUserDetail().getUserid() + "&videoid=" + videoid,data);
-
-                return result;
-            }
-        }
-
-        chargee ui = new chargee();
-        ui.execute();
-    }
-
-
-
+//    /**
+//     * Async Task to download file from URL
+//     */
+//    private class DownloadFile extends AsyncTask<String, String, String> {
+//
+//        private ProgressDialog progressDialog;
+//        private String fileName;
+//        private String folder;
+//        private boolean isDownloaded;
+//
+//        /**
+//         * Before starting background thread
+//         * Show Progress Bar Dialog
+//         */
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            this.progressDialog = new ProgressDialog(MovieInfoActivity.this);
+//            this.progressDialog.setMessage("Downloading...");
+//
+//            this.progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//            this.progressDialog.setCancelable(false);
+//            this.progressDialog.show();
+//        }
+//
+//        /**
+//         * Downloading file in background thread
+//         */
+//        @Override
+//        protected String doInBackground(String... f_url) {
+//            int count;
+//            Intent intent = getIntent();
+////            String url_ = intent.getStringExtra("video_url");
+//            try {
+//
+//                URL url = new URL(f_url[0]);
+//                URLConnection connection = url.openConnection();
+//                connection.connect();
+//                // getting file length
+//                int lengthOfFile = connection.getContentLength();
+//
+//
+//                // input stream to read file - with 8k buffer
+//                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+//
+//                String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+//
+//                //Extract file name from URL
+//                fileName = f_url[0].substring(f_url[0].lastIndexOf('/') + 1, f_url[0].length());
+//
+//                //Append timestamp to file name
+//                fileName = timestamp + "_" + fileName;
+//
+//                //External directory path to save file
+////                apkStorage = new File("/data/data/" + getPackageName() + "/files/");
+//
+//                folder = "/data/data/" + getPackageName() + "/files/";
+//
+//                //Create androiddeft folder if it does not exist
+//                File directory = new File(folder);
+//
+//                if (!directory.exists()) {
+//                    directory.mkdirs();
+//                }
+//
+////                outputFile = new File(apkStorage, intent.getStringExtra("title") + ".mp4");//Create Output file in Main File
+//
+//                // Output stream to write file
+//                OutputStream output = new FileOutputStream(folder + intent.getStringExtra("title") + ".mp4");
+//
+//                byte data[] = new byte[1024];
+//
+//                long total = 0;
+//
+//                while ((count = input.read(data)) != -1) {
+//                    total += count;
+//                    // publishing the progress....
+//                    // After this onProgressUpdate will be called
+//                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
+//                    Log.d("x", "Progress: " + (int) ((total * 100) / lengthOfFile));
+//
+//                    // writing data to file
+//                    output.write(data, 0, count);
+//                }
+//
+//                // flushing output
+//                output.flush();
+//
+//                // closing streams
+//                output.close();
+//                input.close();
+//                return "Downloaded at: " + folder + fileName;
+//
+//            } catch (Exception e) {
+//                Log.e("Error: ", e.getMessage());
+//            }
+//
+//            return "Something went wrong";
+//        }
+//
+//        /**
+//         * Updating progress bar
+//         */
+//        protected void onProgressUpdate(String... progress) {
+//            // setting progress percentage
+//            progressDialog.setProgress(Integer.parseInt(progress[0]));
+//        }
+//
+//
+//        @Override
+//        protected void onPostExecute(String message) {
+//            // dismiss the dialog after the file was downloaded
+//            this.progressDialog.dismiss();
+//
+//            // Display File path after downloading
+//            Toast.makeText(getApplicationContext(),
+//                    message, Toast.LENGTH_LONG).show();
+//        }
+//    }
 
 }
 
