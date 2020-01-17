@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.algaita.R;
 import com.algaita.RecyclerClickListener;
 import com.algaita.ViewDialog;
+import com.algaita.activities.BaseActivity;
 import com.algaita.activities.MovieInfoActivity;
 import com.algaita.activities.PlayerService;
 import com.algaita.activities.RecyclerTouchListener;
@@ -142,6 +143,8 @@ public class DownloadFragment extends Fragment {
 //                        arrayList.get(position).getMp3Url();
                         Toast.makeText(getContext(), "Deleted Successfully!", Toast.LENGTH_LONG).show();
 
+                                        Intent intent = new Intent(getActivity(), BaseActivity.class);
+                                        startActivity(intent);
 
                     }
 
