@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.algaita.BuildConfig;
 import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
@@ -51,6 +52,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.github.javiersantos.appupdater.AppUpdater;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,7 +106,8 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-
+        AppUpdater appUpdater = new AppUpdater(this);
+        appUpdater.start();
         Sentry.init("https://8363b9dd7a5f4c71a6aac7e0b5e4d79b@sentry.io/1522542", new AndroidSentryClientFactory(this));
 
         mContext = BaseActivity.this;
@@ -314,6 +317,16 @@ public class BaseActivity extends AppCompatActivity {
 
                     case R.id.nav_help:
                         showDialogHelp();
+                        break;
+
+                    case R.id.nav_share:
+
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT,
+                                "Saukar Da Manhajar Algaita Dub Studio, don Masge Kallon Sabbin Fasssara Cikin Sauki: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID);
+                        sendIntent.setType("text/plain");
+                        startActivity(sendIntent);
                         break;
 
                     case R.id.nav_logout:

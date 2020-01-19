@@ -96,20 +96,30 @@ public class NotificationUtils {
 
             Notification notification;
 
+
             if (iconBitMap == null) {
                 //When Inbox Style is applied, user can expand the notification
-                NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+                NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 
-                inboxStyle.addLine(message);
+//                bigTextStyle.addLine(message);
                 notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
                         .setAutoCancel(true)
                         .setContentTitle(title)
+                        .setContentText(message)
                         .setContentIntent(resultPendingIntent)
-                        .setStyle(inboxStyle)
+                        .setStyle(new NotificationCompat.BigPictureStyle()
+                                .bigPicture(iconBitMap)
+                                .bigLargeIcon(null)
+                        )
                         .setSmallIcon(R.drawable.icon)
+                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                         .setContentText(message)
                         .build();
+
+
+
 
             } else {
                 //If Bitmap is created from URL, show big icon
@@ -120,11 +130,14 @@ public class NotificationUtils {
                 notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
                         .setAutoCancel(true)
                         .setContentTitle(title)
+                        .setContentText(message)
                         .setContentIntent(resultPendingIntent)
                         .setStyle(bigPictureStyle)
                         .setSmallIcon(R.drawable.icon)
                         .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                         .setContentText(message)
+                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .build();
             }
 

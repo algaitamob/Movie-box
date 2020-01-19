@@ -12,7 +12,6 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/ll_songlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -22,7 +21,6 @@
             android:layout_height="0dp" />
 
         <ImageView
-            android:id="@+id/imageView_songlist"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="@dimen/spacing_large"

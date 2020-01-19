@@ -70,6 +70,12 @@ dependencies {
     implementation 'org.slf4j:slf4j-nop:1.7.25'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
 
+//    Auto Update
+
+    implementation 'com.github.javiersantos:AppUpdater:2.7'
+
+
+
 
 }
 apply plugin: 'io.sentry.android.gradle'

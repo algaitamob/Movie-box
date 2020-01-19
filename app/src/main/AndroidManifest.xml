@@ -52,10 +52,33 @@
         <activity android:name=".activities.SeriesInfoActivity"/>
 
         <activity android:name=".activities.BaseActivity"/>
+
+        <!--Firebase Push-->
+        <service android:name=".services.MyFirebaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.MyFirebaseMessagingService"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+            </intent-filter>
+        </service>
+
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
 
         <meta-data android:name="io.sentry.auto-init" android:value="false" />
+
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/icon" />
+        <meta-data android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
 
 
 <!--        <meta-data android:name="io.sentry.dsn" android:value="https://1168f4bb840d4110925af378dd9a819b@sentry.io/1882889" />-->

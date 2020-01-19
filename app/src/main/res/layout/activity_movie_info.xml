@@ -89,7 +89,6 @@
                         android:layout_height="wrap_content"
                         android:textSize="18.2sp"
                         android:textColor="#263238"
-                        android:lineSpacingExtra="-13.3sp"
                         android:text="Barazana"
                         />
 

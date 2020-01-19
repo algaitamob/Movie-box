@@ -1,5 +1,6 @@
 package com.algaita.services;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -73,6 +74,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
                     R.drawable.icon);
 
+            String description = remoteMessage.getData().get("message");
             Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                     .setSmallIcon(R.drawable.icon)
@@ -80,6 +82,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setContentTitle(remoteMessage.getData().get("title"))
                     .setContentText(remoteMessage.getData().get("message"))
                     .setAutoCancel(true)
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOngoing(true)
+                    .setStyle(new NotificationCompat.BigPictureStyle()
+                            .bigPicture(largeIcon)
+                            .bigLargeIcon(null)
+                    )
                     .setSound(notificationSoundUri)
                     .setContentIntent(pendingIntent);
 
@@ -112,6 +121,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setContentTitle(remoteMessage.getData().get("title"))
                     .setContentText(remoteMessage.getData().get("message"))
                     .setAutoCancel(true)
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setStyle(new NotificationCompat.BigPictureStyle()
+                            .bigPicture(largeIcon)
+                            .bigLargeIcon(null)
+                    )
                     .setSound(notificationSoundUri)
                     .setContentIntent(pendingIntent);
 
@@ -140,9 +155,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                     .setSmallIcon(R.drawable.icon)
                     .setLargeIcon(largeIcon)
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setContentTitle(remoteMessage.getData().get("title"))
                     .setContentText(remoteMessage.getData().get("message"))
                     .setAutoCancel(true)
+                    .setStyle(new NotificationCompat.BigPictureStyle()
+                            .bigPicture(largeIcon)
+                            .bigLargeIcon(null)
+                    )
                     .setSound(notificationSoundUri)
                     .setContentIntent(pendingIntent);
 

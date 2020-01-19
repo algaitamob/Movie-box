@@ -15,7 +15,6 @@
             android:background="@drawable/background_circle">
 
             <ImageView
-                android:id="@+id/tvtitle"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="bottom|center_horizontal"
@@ -28,7 +27,6 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/fm2"
             android:layout_width="50dp"
             android:layout_height="100dp"
             android:layout_centerVertical="true"
@@ -38,7 +36,6 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/fm3"
             android:layout_width="120dp"
             android:layout_height="100dp"
             android:layout_alignParentBottom="true"
