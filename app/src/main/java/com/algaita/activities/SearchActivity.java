@@ -143,10 +143,11 @@ public class SearchActivity extends AppCompatActivity {
                 json = array.getJSONObject(i);
                 getVideosAdapterTheater.setTitle(json.getString("title"));
                 getVideosAdapterTheater.setDescription(json.getString("description"));
-                getVideosAdapterTheater.setTrailer_url(json.getString("trailer_url"));
-                getVideosAdapterTheater.setVideo_url(json.getString("video_url"));
+                getVideosAdapterTheater.setTrailer_url(Config.dir_video + json.getString("trailer_url"));
+                getVideosAdapterTheater.setVideo_url(Config.dir_video + json.getString("video_url"));
                 getVideosAdapterTheater.setPrice(json.getString("price"));
-                getVideosAdapterTheater.setPoster(json.getString("poster"));
+                getVideosAdapterTheater.setPoster(Config.dir_poster + json.getString("poster"));
+                getVideosAdapterTheater.setCover(Config.dir_poster + json.getString("cover"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));

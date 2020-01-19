@@ -150,8 +150,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 price = GetSeriesAdapter.get(position).getPrice();
                 video_url = GetSeriesAdapter.get(position).getVideo_url();
 
-//                CheckVideoStatus(id, title, price, video_url);
-                showDialogPay(id, title, price, video_url);
+                CheckVideoStatus(id, title, price, video_url);
+//                showDialogPay(id, title, price, video_url);
 
 
 
@@ -388,15 +388,17 @@ public class SeriesInfoActivity extends AppCompatActivity {
                             if (response.getInt("status") == 0) {
 
                                 if (response.getString("series_status").contains("YES")){
-                                    bbtn_buy.setVisibility(View.GONE);
-                                    bbtn_download.setVisibility(View.VISIBLE);
+//                                    bbtn_buy.setVisibility(View.GONE);
+//                                    bbtn_download.setVisibility(View.VISIBLE);
                                     String type = "YES";
 //                                    Toast.makeText(getApplicationContext(), video_url, Toast.LENGTH_LONG).show();
 
-                                    bbtn_download.setVisibility(View.GONE);
-                                    bbtn_buy.setVisibility(View.VISIBLE);
-//                                    showDialogPay(id, title, price, type, video_url);
+//                                    bbtn_download.setVisibility(View.GONE);
+//                                    bbtn_buy.setVisibility(View.VISIBLE);
+                                    showDialogPay(id, title, price, type, video_url);
                                 }else {
+                                    String type = "NO";
+                                    showDialogPay(id, title, price, type, video_url);
 
 
                                 }
@@ -414,6 +416,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                             viewDialog.hideDialog();
+                        String type = "NO";
+                        showDialogPay(id, title, price, type, video_url);
                     }
                 });
         MySingleton.getInstance(this).addToRequestQueue(jsArrayRequest);
@@ -518,7 +522,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 json = array.getJSONObject(i);
                 getSeriesAdapter.setTitle(json.getString("title"));
                 getSeriesAdapter.setPrice(json.getString("price"));
-                getSeriesAdapter.setVideo_url(json.getString("video_url"));
+                getSeriesAdapter.setVideo_url(Config.dir_video + json.getString("video_url"));
                 getSeriesAdapter.setRelease_date(json.getString("release_date"));
                 getSeriesAdapter.setId(json.getString("id"));
 
@@ -536,7 +540,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
 
-    private void showDialogPay(String id, String title, String price, String video_url) {
+    private void showDialogPay(String id, String title, String price, String type, String video_url) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
         dialog.setContentView(R.layout.dialog_series_check_payment);
@@ -553,15 +557,14 @@ public class SeriesInfoActivity extends AppCompatActivity {
         bbtn_buy = dialog.findViewById(R.id.btn_buy);
         bbtn_download = dialog.findViewById(R.id.btn_download);
 
-        CheckVideoStatus(id, title, price, video_url);
         name.setText(getIntent().getStringExtra("title") + " - " + title);
-//        if (type.contains("YES")){
-//            btn_download.setVisibility(View.VISIBLE);
-//            btn_buy.setVisibility(View.GONE);
-//        }else{
-//            btn_download.setVisibility(View.GONE);
-//            btn_buy.setVisibility(View.VISIBLE);
-//        }
+        if (type.contains("YES")){
+            bbtn_download.setVisibility(View.VISIBLE);
+            bbtn_buy.setVisibility(View.GONE);
+        }else{
+            bbtn_download.setVisibility(View.GONE);
+            bbtn_buy.setVisibility(View.VISIBLE);
+        }
 
         bbtn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -576,7 +579,6 @@ public class SeriesInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 new DownloadFileFromURL().execute(video_url);
-
             }
         });
 

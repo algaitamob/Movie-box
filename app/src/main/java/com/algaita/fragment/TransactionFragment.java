@@ -78,6 +78,7 @@ public class TransactionFragment extends Fragment {
         GetVideosAdapterTheater = new ArrayList<>();
 
         GetVideosTheater();
+        GetVideosTheater1();
         theaters_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getContext(), theaters_recycleview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -124,6 +125,53 @@ public class TransactionFragment extends Fragment {
     }
 
     private void GetCardWebCall(JSONArray array) {
+        for (int i = 0; i < array.length(); i++){
+            getVideosAdapterTheater = new Transactions();
+            JSONObject json = null;
+
+            try {
+                json = array.getJSONObject(i);
+                getVideosAdapterTheater.setTitle(json.getString("title"));
+                getVideosAdapterTheater.setAmount(json.getString("amount"));
+                getVideosAdapterTheater.setOndate(json.getString("ondate"));
+                getVideosAdapterTheater.setRef(json.getString("ref"));
+                getVideosAdapterTheater.setType(json.getString("payment_type"));
+                getVideosAdapterTheater.setStatus(json.getString("status"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            GetVideosAdapterTheater.add(getVideosAdapterTheater);
+        }
+
+        recyclerViewAdapterTheater = new TransactionAdapter(GetVideosAdapterTheater, getContext());
+        theaters_recycleview.setAdapter(recyclerViewAdapterTheater);
+        recyclerViewAdapterTheater.notifyDataSetChanged();
+
+    }
+
+
+    private void GetVideosTheater1() {
+//        viewDialog.showDialog();
+//        GetVideosAdapterTheater.clear();
+        jsonArrayRequest = new JsonArrayRequest(Config.url + "transactions_wallet.php?userid=" + sessionHandlerUser.getUserDetail().getUserid(), new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                viewDialog.hideDialog();
+                GetCardWebCall1(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+//                viewDialog.hideDialog();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void GetCardWebCall1(JSONArray array) {
         for (int i = 0; i < array.length(); i++){
             getVideosAdapterTheater = new Transactions();
             JSONObject json = null;

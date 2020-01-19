@@ -1,8 +1,8 @@
 package com.algaita;
 
 public class Config {
-    public static String base_url = "https://serversng.com/algaita/";
-    public static String url = "https://serversng.com/algaita/api/v1/";
+    public static String base_url = "http://151.236.219.109/";
+    public static String url = "http://151.236.219.109/api/v1/";
 //    public static String file_url = base_url + "https://serversng.com/algaita/api/v1/";
     public static  String user_login = url + "user_login.php";
     public static String user_register = url + "user_register.php";

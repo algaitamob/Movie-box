@@ -312,6 +312,10 @@ public class BaseActivity extends AppCompatActivity {
                         showDialogFeedback();
                         break;
 
+                    case R.id.nav_help:
+                        showDialogHelp();
+                        break;
+
                     case R.id.nav_logout:
                         sessionHandlerUser.logoutUser();
                         Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
@@ -459,6 +463,33 @@ public class BaseActivity extends AppCompatActivity {
             public void onClick(View v) {
                 dialog.dismiss();
                 SendFeedBack(text.getText().toString());
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+    }
+
+
+
+    private void showDialogHelp() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_help);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+
+
+        ((View) dialog.findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
 
