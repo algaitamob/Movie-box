@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -26,6 +27,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +47,19 @@ public class LoginActivity extends AppCompatActivity {
     String phone, password;
     TextView txtregister, txtforget;
     Button btn_login;
+
+
+
+//    FireBase
+
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key=" + "AAAAB1DrYQk:APA91bGyd4Wx_J8bXjN5ZUEi2u28lJnBSjaRhV9HQbhxscMz6IVU8MMBTrBRiJ6AUEXVhnLfXzHIKWN3X0pjBCwPtc5gCSDgnIR1fSCrXgmSp_niHk6xHsaJSfiJWjI7xQ3kpOFzkuAO";
+    final private String contentType = "application/json";
+    final String TAG = "NOTIFICATION TAG";
+
+    String NOTIFICATION_TITLE;
+    String NOTIFICATION_MESSAGE;
+    String TOPIC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +140,8 @@ public class LoginActivity extends AppCompatActivity {
                             //Check if user got logged in successfully
                             if (response.getInt(KEY_STATUS) == 0) {
                                 sessionHandlerUser.loginUser(response.getString("email"), response.getString("fullname"), response.getString("phone"), response.getString("userid"));
-                                    loadDashboard();
+                                subscribeToPushService();
+                                loadDashboard();
 
                             } else {
 
@@ -158,6 +175,59 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+
+    private void subscribeToPushService() {
+        FirebaseMessaging.getInstance().subscribeToTopic("login");
+        FirebaseMessaging.getInstance().subscribeToTopic("announcement");
+
+
+        Log.d("AndroidBash", "Subscribed");
+//        Toast.makeText(LoginActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        // Log and toast
+        Log.d("AndroidBash", token);
+
+        RegFirebase(token);
+//        Toast.makeText(LoginActivity.this, token, Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
+    public void RegFirebase(final String token){
+        class firebase extends AsyncTask<Bitmap,Void,String> {
+
+            RequestHandler rh = new RequestHandler();
+            Intent i = getIntent();
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+                data.put("token", token);
+                data.put("userid", String.valueOf(sessionHandlerUser.getUserDetail().getUserid()));
+                String result = rh.sendPostRequest(Config.url + "firebase_user.php",data);
+
+                return result;
+            }
+        }
+
+        firebase ui = new firebase();
+        ui.execute();
+    }
 
     private void showDialogPay() {
         final Dialog dialog = new Dialog(this);
