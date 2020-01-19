@@ -1,6 +1,8 @@
 package com.algaita.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
@@ -156,6 +158,27 @@ public class PaymetWebWallet extends AppCompatActivity {
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             // TODO Auto-generated method stub
+
+            try {
+                wvPayment.stopLoading();
+            } catch (Exception e) {
+            }
+
+            if (wvPayment.canGoBack()) {
+                wvPayment.goBack();
+            }
+
+            wvPayment.loadUrl("about:blank");
+            AlertDialog alertDialog = new AlertDialog.Builder(PaymetWebWallet.this).create();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Check your internet connection and try again.");
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Try Again", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                    startActivity(getIntent());
+                }
+            });
+            alertDialog.show();
             super.onReceivedError(view, errorCode, description, failingUrl);
         }
     }

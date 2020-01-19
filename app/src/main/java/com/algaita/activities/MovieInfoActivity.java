@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -76,6 +77,7 @@ public class MovieInfoActivity extends AppCompatActivity {
     Dialog downloadDialog;
     int WalletBalance;
 
+    ImageView img_play;
     // Progress Dialog
     private ProgressDialog pDialog;
 
@@ -113,6 +115,10 @@ public class MovieInfoActivity extends AppCompatActivity {
         poster_bg = findViewById(R.id.poster_bg);
 
 
+
+        img_play = findViewById(R.id.play);
+
+
         CheckBalance();
         final VideoView videoView =(VideoView)findViewById(R.id.vdVw);
         //Set MediaController  to enable play, pause, forward, etc options.
@@ -132,12 +138,22 @@ public class MovieInfoActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 poster_bg.setVisibility(View.GONE);
                 videoView.setVisibility(View.VISIBLE);
+                img_play.setVisibility(View.GONE);
 
                try {
                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
                    videoView.setVideoURI(uri);
                    videoView.requestFocus();
                    videoView.start();
+
+                   videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                       @Override
+                       public void onCompletion(MediaPlayer mp) {
+//                           Toast.makeText(getApplicationContext(), "Video completed", Toast.LENGTH_LONG).show();
+                        img_play.setVisibility(View.VISIBLE);
+
+                       }
+                   });
                }catch (Exception e){
 
                    e.printStackTrace();
@@ -201,7 +217,7 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
 
-//    ButtomSheetPayment
+//  ButtomSheetPayment
     private void showBottomSheetDialog() {
         if (mBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -457,7 +473,7 @@ public class MovieInfoActivity extends AppCompatActivity {
                 pDialog.setIndeterminate(false);
                 pDialog.setMax(100);
                 pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                pDialog.setCancelable(true);
+                pDialog.setCancelable(false);
                 pDialog.show();
                 return pDialog;
             default:

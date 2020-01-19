@@ -1,10 +1,16 @@
 package com.algaita.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,6 +19,7 @@ import android.widget.Toast;
 import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
+import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.Request;
@@ -22,6 +29,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText etphone, etpassword;
     String phone, password;
-    TextView txtregister;
+    TextView txtregister, txtforget;
     Button btn_login;
 
     @Override
@@ -57,6 +66,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        txtforget = findViewById(R.id.forget_password);
+        txtforget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogPay();
+            }
+        });
         btn_login = findViewById(R.id.btn_login);
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,22 +157,77 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Validates inputs and shows error if any
-     *
-     * @return
-     */
-    private boolean validateInputs() {
-        if (KEY_EMPTY.equals(phone)) {
-            etphone.setError("Phone Number cannot be empty");
-            etphone.requestFocus();
-            return false;
-        }
-        if (KEY_EMPTY.equals(password)) {
-            etpassword.setError("Password cannot be empty");
-            etpassword.requestFocus();
-            return false;
-        }
-        return true;
+
+
+    private void showDialogPay() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_forget_password);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        final EditText phone;
+        phone = dialog.findViewById(R.id.phone);
+
+
+
+        ((View) dialog.findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.findViewById(R.id.btn_forget).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ForgetPass(phone.getText().toString());
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
+
+
+
+
+    public void ForgetPass(final String phone){
+        class forgetpass extends AsyncTask<Bitmap,Void,String> {
+
+            RequestHandler rh = new RequestHandler();
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                viewDialog.hideDialog();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                viewDialog.hideDialog();
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+
+                data.put("phone", phone);
+                String result = rh.sendPostRequest(Config.url + "forget_password.php",data);
+
+                return result;
+            }
+        }
+
+        forgetpass ui = new forgetpass();
+        ui.execute();
+    }
+
 }

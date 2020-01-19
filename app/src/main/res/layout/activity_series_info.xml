@@ -25,13 +25,13 @@
                 android:src="@drawable/barazanabanner" />
 
             <VideoView
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
                 android:visibility="gone"
                 android:id="@+id/vdVw"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="185dp"
                 />
 
@@ -181,6 +181,8 @@
 
 
             <customfonts.MyTextView_PTSans_Bold
+                android:visibility="gone"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
@@ -192,12 +194,15 @@
 
 
             <View
+                android:visibility="gone"
+
                 android:layout_width="47.7dp"
                 android:layout_height="3dp"
                 android:layout_marginTop="4.3dp"
                 android:background="@drawable/gradient"/>
 
             <customfonts.MyTextView_PTSans_Regular
+                android:visibility="gone"
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

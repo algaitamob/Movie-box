@@ -1,6 +1,8 @@
 package com.algaita.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
@@ -84,7 +86,10 @@ public class PaymetWeb extends AppCompatActivity {
         @Override
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             super.onReceivedSslError(view, handler, error);
+
             viewDialog.hideDialog();
+
+
             // this will ignore the Ssl error and will go forward to your site
             handler.proceed();
         }
@@ -151,12 +156,51 @@ public class PaymetWeb extends AppCompatActivity {
 
             viewDialog.hideDialog();
 
+
+
         }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             // TODO Auto-generated method stub
+
+//            Intent intent = new Intent(PaymetWeb.this, NoInternet.class);
+//            startActivity(intent);
+
+            try {
+                wvPayment.stopLoading();
+            } catch (Exception e) {
+            }
+
+            if (wvPayment.canGoBack()) {
+                wvPayment.goBack();
+            }
+
+            wvPayment.loadUrl("about:blank");
+            AlertDialog alertDialog = new AlertDialog.Builder(PaymetWeb.this).create();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Check your internet connection and try again.");
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Try Again", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                    startActivity(getIntent());
+                }
+            });
+            alertDialog.show();
+
             super.onReceivedError(view, errorCode, description, failingUrl);
+        }
+    }
+
+
+    @Override
+    // This method is used to detect back button
+    public void onBackPressed() {
+        if(wvPayment.canGoBack()) {
+            wvPayment.goBack();
+        } else {
+            // Let the system handle the back button
+            super.onBackPressed();
         }
     }
 

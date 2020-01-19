@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.algaita.Config;
 import com.algaita.R;
@@ -116,6 +117,9 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "out");
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
+//                Toast.makeText(getActivity(), GetVideosAdapterTheater.get(position).getPoster(), Toast.LENGTH_LONG).show();
+
+
                 startActivity(intent);
             }
 
@@ -210,10 +214,10 @@ public class HomeFragment extends Fragment {
                 json = array.getJSONObject(i);
                 getSeriesAdapter.setTitle(json.getString("title"));
                 getSeriesAdapter.setDescription(json.getString("description"));
-                getSeriesAdapter.setTrailer_url(json.getString("trailer_url"));
-                getSeriesAdapter.setPoster(json.getString("poster"));
+                getSeriesAdapter.setTrailer_url(Config.dir_video + json.getString("trailer_url"));
+                getSeriesAdapter.setPoster(Config.dir_poster + json.getString("poster"));
                 getSeriesAdapter.setTotal_episode(json.getString("total_episode"));
-                getSeriesAdapter.setCover(json.getString("cover"));
+                getSeriesAdapter.setCover(Config.dir_poster +  json.getString("cover"));
                 getSeriesAdapter.setRelease_date(json.getString("release_date"));
                 getSeriesAdapter.setId(json.getString("id"));
 
@@ -259,11 +263,11 @@ public class HomeFragment extends Fragment {
                 json = array.getJSONObject(i);
                 getVideosAdapterTheater.setTitle(json.getString("title"));
                 getVideosAdapterTheater.setDescription(json.getString("description"));
-                getVideosAdapterTheater.setTrailer_url(json.getString("trailer_url"));
-                getVideosAdapterTheater.setVideo_url(json.getString("video_url"));
+                getVideosAdapterTheater.setTrailer_url(Config.dir_video +json.getString("trailer_url"));
+                getVideosAdapterTheater.setVideo_url(Config.dir_video  + json.getString("video_url"));
                 getVideosAdapterTheater.setPrice(json.getString("price"));
-                getVideosAdapterTheater.setPoster(json.getString("poster"));
-                getVideosAdapterTheater.setCover(json.getString("cover"));
+                getVideosAdapterTheater.setPoster(Config.dir_poster + json.getString("poster"));
+                getVideosAdapterTheater.setCover(Config.dir_poster + json.getString("cover"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));
@@ -309,11 +313,11 @@ public class HomeFragment extends Fragment {
                 json = array.getJSONObject(i);
                 getVideosAdapterComingsoon.setTitle(json.getString("title"));
                 getVideosAdapterComingsoon.setDescription(json.getString("description"));
-                getVideosAdapterComingsoon.setTrailer_url(json.getString("trailer_url"));
-                getVideosAdapterComingsoon.setVideo_url(json.getString("video_url"));
+                getVideosAdapterComingsoon.setTrailer_url(Config.dir_video +json.getString("trailer_url"));
+                getVideosAdapterComingsoon.setVideo_url(Config.dir_video + json.getString("video_url"));
                 getVideosAdapterComingsoon.setPrice(json.getString("price"));
-                getVideosAdapterComingsoon.setPoster(json.getString("poster"));
-                getVideosAdapterComingsoon.setCover(json.getString("cover"));
+                getVideosAdapterComingsoon.setPoster(Config.dir_poster + json.getString("poster"));
+                getVideosAdapterComingsoon.setCover(Config.dir_poster + json.getString("cover"));
                 getVideosAdapterComingsoon.setRelease_date(json.getString("release_date"));
                 getVideosAdapterComingsoon.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterComingsoon.setVideoid(json.getString("id"));

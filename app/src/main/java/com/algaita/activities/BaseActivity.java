@@ -1,10 +1,14 @@
 package com.algaita.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -18,6 +22,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,10 +33,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
+import com.algaita.RequestHandler;
+import com.algaita.ViewDialog;
 import com.algaita.fragment.DownloadFragment;
 import com.algaita.fragment.HomeFragment;
 import com.algaita.fragment.MyVideosFragment;
@@ -44,6 +54,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
@@ -60,6 +72,7 @@ public class BaseActivity extends AppCompatActivity {
     public ImageView menuLeftIV, ivFilter;
     Context mContext;
     TextView txtprofile;
+    ViewDialog viewDialog;
 
     public static final String TAG_DOWNLOADS = "downloads";
     public static final String TAG_HOME = "home";
@@ -100,6 +113,7 @@ public class BaseActivity extends AppCompatActivity {
 
         sessionHandlerUser = new SessionHandlerUser(this);
 
+        viewDialog = new ViewDialog(this);
         frame =  findViewById(R.id.frame);
         drawer =  findViewById(R.id.drawer_layout);
         navigationView =  findViewById(R.id.nav_view);
@@ -294,6 +308,10 @@ public class BaseActivity extends AppCompatActivity {
                         fragmentTransaction.replace(R.id.frame, new WalletFragment());
                         break;
 
+                    case R.id.nav_feedback:
+                        showDialogFeedback();
+                        break;
+
                     case R.id.nav_logout:
                         sessionHandlerUser.logoutUser();
                         Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
@@ -409,5 +427,86 @@ public class BaseActivity extends AppCompatActivity {
                 });
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
     }
+
+
+
+    private void showDialogFeedback() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_feedback);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        final EditText text;
+        text = dialog.findViewById(R.id.message);
+
+
+
+        ((View) dialog.findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                SendFeedBack(text.getText().toString());
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+    }
+
+    private void SendFeedBack(String toString) {
+        viewDialog.showDialog();
+        class chargee extends AsyncTask<Bitmap,Void,String> {
+
+            RequestHandler rh = new RequestHandler();
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                viewDialog.hideDialog();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                viewDialog.hideDialog();
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText(s);
+                Toast toast = new Toast(getApplicationContext());
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+
+                data.put("message", toString);
+                data.put("userid", String.valueOf(sessionHandlerUser.getUserDetail().getUserid()));
+                String result = rh.sendPostRequest(Config.url + "feedback.php",data);
+
+                return result;
+            }
+        }
+
+        chargee ui = new chargee();
+        ui.execute();
+    }
+
 
 }

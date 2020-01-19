@@ -48,7 +48,7 @@
             />
 
         <activity android:name=".activities.SearchActivity"/>
-
+        <activity android:name=".activities.NoInternet"/>
         <activity android:name=".activities.SeriesInfoActivity"/>
 
         <activity android:name=".activities.BaseActivity"/>

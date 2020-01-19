@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -74,6 +75,10 @@ public class SeriesInfoActivity extends AppCompatActivity {
     // Progress Dialog
     private ProgressDialog pDialog;
 
+    ImageView img_play;
+
+    Button bbtn_buy, bbtn_download;
+
     // Progress dialog type (0 - for Horizontal progress bar)
     public static final int progress_bar_type = 0;
     String fileN = null ;
@@ -122,6 +127,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
         poster = findViewById(R.id.poster);
         poster_bg = findViewById(R.id.poster_bg);
 
+        img_play = findViewById(R.id.play);
+
         checkPermissions();
         series_recycleview =  findViewById(R.id.movie_recycleview);
 
@@ -143,7 +150,9 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 price = GetSeriesAdapter.get(position).getPrice();
                 video_url = GetSeriesAdapter.get(position).getVideo_url();
 
-                CheckVideoStatus(id, title, price, video_url);
+//                CheckVideoStatus(id, title, price, video_url);
+                showDialogPay(id, title, price, video_url);
+
 
 
             }
@@ -175,12 +184,23 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 poster_bg.setVisibility(View.GONE);
                 videoView.setVisibility(View.VISIBLE);
+                img_play.setVisibility(View.GONE);
 
-               try {
+
+                try {
                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
                    videoView.setVideoURI(uri);
                    videoView.requestFocus();
                    videoView.start();
+
+                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+//                           Toast.makeText(getApplicationContext(), "Video completed", Toast.LENGTH_LONG).show();
+                            img_play.setVisibility(View.VISIBLE);
+
+                        }
+                    });
                }catch (Exception e){
 
                    e.printStackTrace();
@@ -368,19 +388,21 @@ public class SeriesInfoActivity extends AppCompatActivity {
                             if (response.getInt("status") == 0) {
 
                                 if (response.getString("series_status").contains("YES")){
-//                                    btn_buy.setVisibility(View.GONE);
-//                                    btn_download.setVisibility(View.VISIBLE);
+                                    bbtn_buy.setVisibility(View.GONE);
+                                    bbtn_download.setVisibility(View.VISIBLE);
                                     String type = "YES";
 //                                    Toast.makeText(getApplicationContext(), video_url, Toast.LENGTH_LONG).show();
 
-                                    showDialogPay(id, title, price, type, video_url);
+                                    bbtn_download.setVisibility(View.GONE);
+                                    bbtn_buy.setVisibility(View.VISIBLE);
+//                                    showDialogPay(id, title, price, type, video_url);
                                 }else {
-                                    String type = "NO";
-                                    showDialogPay(id, title, price, type, video_url);
+
 
                                 }
 
                             } else {
+
 
                             }
                         } catch (JSONException e) {
@@ -397,20 +419,6 @@ public class SeriesInfoActivity extends AppCompatActivity {
         MySingleton.getInstance(this).addToRequestQueue(jsArrayRequest);
     }
 
-
-    public class CheckForSDCard {
-
-
-        //Check If SD Card is present or not method
-        public boolean isSDCardPresent() {
-            if (Environment.getExternalStorageState().equals(
-
-                    Environment.MEDIA_MOUNTED)) {
-                return true;
-            }
-            return false;
-        }
-    }
 
 
 
@@ -482,9 +490,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
     private void GetSeries() {
-
                 viewDialog.showDialog();
-        Intent intent = getIntent();
         GetSeriesAdapter.clear();
         jsonArrayRequest = new JsonArrayRequest(Config.url + "series_video.php?seriesid=" + getIntent().getStringExtra("id"), new Response.Listener<JSONArray>() {
             @Override
@@ -530,7 +536,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
 
-    private void showDialogPay(String id, String title, String price, String type, String video_url) {
+    private void showDialogPay(String id, String title, String price, String video_url) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
         dialog.setContentView(R.layout.dialog_series_check_payment);
@@ -542,22 +548,22 @@ public class SeriesInfoActivity extends AppCompatActivity {
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        Button btn_buy, btn_download;
         TextView name;
         name = dialog.findViewById(R.id.name);
-        btn_buy = dialog.findViewById(R.id.btn_buy);
-        btn_download = dialog.findViewById(R.id.btn_download);
+        bbtn_buy = dialog.findViewById(R.id.btn_buy);
+        bbtn_download = dialog.findViewById(R.id.btn_download);
 
+        CheckVideoStatus(id, title, price, video_url);
         name.setText(getIntent().getStringExtra("title") + " - " + title);
-        if (type.contains("YES")){
-            btn_download.setVisibility(View.VISIBLE);
-            btn_buy.setVisibility(View.GONE);
-        }else{
-            btn_download.setVisibility(View.GONE);
-            btn_buy.setVisibility(View.VISIBLE);
-        }
+//        if (type.contains("YES")){
+//            btn_download.setVisibility(View.VISIBLE);
+//            btn_buy.setVisibility(View.GONE);
+//        }else{
+//            btn_download.setVisibility(View.GONE);
+//            btn_buy.setVisibility(View.VISIBLE);
+//        }
 
-        btn_buy.setOnClickListener(new View.OnClickListener() {
+        bbtn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -565,7 +571,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
             }
         });
 
-        btn_download.setOnClickListener(new View.OnClickListener() {
+        bbtn_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -603,7 +609,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 pDialog.setIndeterminate(false);
                 pDialog.setMax(100);
                 pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                pDialog.setCancelable(true);
+                pDialog.setCancelable(false);
                 pDialog.show();
                 return pDialog;
             default:

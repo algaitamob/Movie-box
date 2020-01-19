@@ -80,6 +80,16 @@
             android:background="@drawable/background_gradient2"/>
 
 
+        <TextView
+            android:id="@+id/forget_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/password"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="23dp"
+            android:text="Forget Password" />
 
         <Button
             android:id="@+id/btn_login"
@@ -91,7 +101,7 @@
             android:layout_marginRight="20dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:layout_below="@id/password"
+            android:layout_below="@id/forget_password"
             android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:background="@drawable/gradient_roundshape"/>

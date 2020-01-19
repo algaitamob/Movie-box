@@ -25,13 +25,13 @@
             android:src="@drawable/barazanabanner" />
 
         <VideoView
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
             android:visibility="gone"
             android:id="@+id/vdVw"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="185dp"
              />
 
@@ -235,16 +235,6 @@
             android:layout_marginTop="21.7dp"
             />
 
-        <customfonts.MyTextView_PTSans_Bold
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:textColor="#263238"
-            android:layout_marginTop="30.3dp"
-            android:lineSpacingExtra="-11sp"
-            android:text="Cast"
-            />
-
         <View
             android:layout_width="17.3dp"
             android:layout_height="3dp"
@@ -255,16 +245,6 @@
 
 
     </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/cast_recycleview"
-        android:clipToPadding="false"
-        android:paddingTop="16.7dp"
-        android:paddingLeft="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </android.support.v7.widget.RecyclerView>
 
 
     </LinearLayout>

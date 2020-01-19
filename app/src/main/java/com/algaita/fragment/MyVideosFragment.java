@@ -80,6 +80,7 @@ public class MyVideosFragment extends Fragment {
                 intent.putExtra("video_url", GetVideosAdapterTheater.get(position).getVideo_url());
                 intent.putExtra("price", GetVideosAdapterTheater.get(position).getPrice());
                 intent.putExtra("poster", GetVideosAdapterTheater.get(position).getPoster());
+                intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "out");
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
@@ -129,10 +130,11 @@ public class MyVideosFragment extends Fragment {
                 json = array.getJSONObject(i);
                 getVideosAdapterTheater.setTitle(json.getString("title"));
                 getVideosAdapterTheater.setDescription(json.getString("description"));
-                getVideosAdapterTheater.setTrailer_url(json.getString("trailer_url"));
-                getVideosAdapterTheater.setVideo_url(json.getString("video_url"));
+                getVideosAdapterTheater.setTrailer_url(Config.dir_video + json.getString("trailer_url"));
+                getVideosAdapterTheater.setVideo_url(Config.dir_video + json.getString("video_url"));
                 getVideosAdapterTheater.setPrice(json.getString("price"));
-                getVideosAdapterTheater.setPoster(json.getString("poster"));
+                getVideosAdapterTheater.setPoster(Config.dir_poster + json.getString("poster"));
+                getVideosAdapterTheater.setCover(Config.dir_poster + json.getString("cover"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));

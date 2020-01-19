@@ -146,6 +146,7 @@ public class DownloadFragment extends Fragment {
                                         Intent intent = new Intent(getActivity(), BaseActivity.class);
                                         startActivity(intent);
 
+
                     }
 
                     @Override
