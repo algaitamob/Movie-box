@@ -164,9 +164,17 @@ public class LoginActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         viewDialog.hideDialog();
                         //Display error message whenever an error occurs
-                        Toast.makeText(getApplicationContext(),
-                                error.getMessage(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(),
+//                                error.getMessage(), Toast.LENGTH_SHORT).show();
 
+
+                        View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                        TextView text = layout.findViewById(R.id.text);
+                        text.setText("Network Connection Error");
+                        Toast toast = new Toast(getApplicationContext());
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
                     }
                 });
         // Access the RequestQueue through your singleton class.

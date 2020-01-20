@@ -180,6 +180,7 @@
     <orderEntry type="library" name="Gradle: com.google.android.exoplayer:exoplayer-smoothstreaming:2.7.3@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.exoplayer:exoplayer-ui:2.7.3@aar" level="project" />
     <orderEntry type="library" name="Gradle: pl.droidsonroids.gif:android-gif-drawable:1.2.3@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.deano2390:MaterialShowcaseView:1.2.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.http.legacy-android-28" level="project" />
   </component>
 </module>

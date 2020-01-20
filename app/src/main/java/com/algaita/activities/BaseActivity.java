@@ -61,9 +61,12 @@ import java.util.HashMap;
 
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class BaseActivity extends AppCompatActivity {
     private String TAG = BaseActivity.class.getSimpleName();
+
+    private static final String SHOWCASE_ID = "Simple Showcase";
 
     private FrameLayout frame;
     private View contentView;
@@ -133,13 +136,14 @@ public class BaseActivity extends AppCompatActivity {
         tvWalletBalance = navHeader.findViewById(R.id.tvWalletBalance);
 
         CheckBalance();
+        showTutor(500);
+
         tvEnglish = navHeader.findViewById(R.id.tvEnglish);
         tvOther = navHeader.findViewById(R.id.tvOther);
         tvOther = navHeader.findViewById(R.id.tvOther);
         llProfileClick = navHeader.findViewById(R.id.llProfileClick);
 
 
-//        tvWalletBalance.setText(sessionHandlerUser.getUserDetail().getEmail());
         tvName.setText(sessionHandlerUser.getUserDetail().getFullname());
 
         char first = sessionHandlerUser.getUserDetail().getFullname().charAt(0);
@@ -552,5 +556,16 @@ public class BaseActivity extends AppCompatActivity {
         ui.execute();
     }
 
+
+    private void showTutor(int millis){
+        new MaterialShowcaseView.Builder(this)
+                .setTarget(et_search)
+                .setTitleText("Notice")
+                .setDismissText("AKAFTA!")
+                .setContentText("Search and Amazing Movie!")
+                .setDelay(millis)
+                .singleUse(SHOWCASE_ID)
+                .show();
+    }
 
 }

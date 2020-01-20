@@ -65,8 +65,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import modalclass.CastModalClass;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class MovieInfoActivity extends AppCompatActivity {
+
 
 
     String fileN = null ;
@@ -76,6 +78,10 @@ public class MovieInfoActivity extends AppCompatActivity {
     String urlString;
     Dialog downloadDialog;
     int WalletBalance;
+
+    private static final String SHOWCASE_ID = "Buy";
+
+    private LinearLayout card_airtime, card_credit, card_wallet;
 
     ImageView img_play;
     // Progress Dialog
@@ -168,7 +174,10 @@ public class MovieInfoActivity extends AppCompatActivity {
         btn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 showBottomSheetDialog();
+//
+
 
             }
         });
@@ -237,10 +246,12 @@ public class MovieInfoActivity extends AppCompatActivity {
         }
         final View view = getLayoutInflater().inflate(R.layout.sheet_select_payment_method, null);
 
-        LinearLayout card_airtime, card_credit, card_wallet;
+
         card_credit = view.findViewById(R.id.card_credit);
         card_airtime = view.findViewById(R.id.card_airtime);
         card_wallet = view.findViewById(R.id.card_wallet);
+
+        showTutor(500);
 
         card_airtime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -612,6 +623,18 @@ public class MovieInfoActivity extends AppCompatActivity {
 //            my_image.setImageDrawable(Drawable.createFromPath(imagePath));
         }
 
+    }
+
+//
+    private void showTutor(int millis){
+        new MaterialShowcaseView.Builder(this)
+                .setTarget(card_airtime)
+                .setTitleText("Sanarwa")
+                .setDismissText("AKAFTA!")
+                .setContentText("Payment with Recharge Card is for Nigerians only!")
+                .setDelay(millis)
+                .singleUse(SHOWCASE_ID)
+                .show();
     }
 
 }
