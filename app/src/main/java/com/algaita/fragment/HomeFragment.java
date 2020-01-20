@@ -3,6 +3,7 @@ package com.algaita.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,7 +43,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     private View view;
     private BaseActivity baseActivity;
 
@@ -67,6 +68,9 @@ public class HomeFragment extends Fragment {
     Series getSeriesAdapter;
     RecyclerView.Adapter recyclerViewAdapterSeries;
 
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
+
 
     //
 
@@ -79,6 +83,14 @@ public class HomeFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         sessionHandlerUser = new SessionHandlerUser(getActivity());
         viewDialog = new ViewDialog(getActivity());
+
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_container);
+
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
 
         //Recycleview
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
@@ -331,5 +343,12 @@ public class HomeFragment extends Fragment {
         recyclerViewAdapterComingSoon = new ComingVideosAdapter(GetVideosAdapterComingsoon, getContext());
         comingsoon_recycleview.setAdapter(recyclerViewAdapterComingSoon);
         recyclerViewAdapterComingSoon.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRefresh() {
+        GetSeries();
+        GetVideosTheater();
+        GetvideosComingSoon();
     }
 }

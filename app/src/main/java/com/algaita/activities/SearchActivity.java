@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -37,7 +38,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     TextView txt;
     TextView one,two,three,four,five,six,seven,eight,nine,zero;
     ImageView clear, add, back;
@@ -52,6 +53,8 @@ public class SearchActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     JsonArrayRequest jsonArrayRequest;
 
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
     //    Theater Recyler
     List<Videos> GetVideosAdapterTheater;
     Videos getVideosAdapterTheater;
@@ -64,6 +67,13 @@ public class SearchActivity extends AppCompatActivity {
         viewDialog = new ViewDialog(this);
         sessionHandlerUser = new SessionHandlerUser(getApplicationContext());
 
+        mSwipeRefreshLayout = findViewById(R.id.swipe_container);
+
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
         txt=findViewById(R.id.txt);
 
         txt.setText("Search Result");
@@ -165,7 +175,10 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-
+    @Override
+    public void onRefresh() {
+        GetVideosTheater();
+    }
 }
 
 

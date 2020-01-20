@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,7 +46,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WalletFragment extends Fragment {
+public class WalletFragment extends Fragment  implements SwipeRefreshLayout.OnRefreshListener{
     private View view;
     private BaseActivity baseActivity;
 
@@ -63,6 +64,8 @@ public class WalletFragment extends Fragment {
     ViewDialog viewDialog;
     LinearLayout card_add_wallet_balance;
 
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
     TextView txtbalance;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,9 +74,17 @@ public class WalletFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_wallet, container, false);
 
 
+
         sessionHandlerUser = new SessionHandlerUser(getActivity());
         viewDialog = new ViewDialog(getActivity());
 
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_container);
+
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
         txtbalance = view.findViewById(R.id.balance);
 
         card_add_wallet_balance = view.findViewById(R.id.card_add_money);
@@ -240,4 +251,9 @@ public class WalletFragment extends Fragment {
         MySingleton.getInstance(getContext()).addToRequestQueue(jsArrayRequest);
     }
 
+    @Override
+    public void onRefresh() {
+        CheckBalance();
+        GetVideosTheater();
+    }
 }

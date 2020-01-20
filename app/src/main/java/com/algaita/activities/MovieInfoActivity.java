@@ -92,7 +92,7 @@ public class MovieInfoActivity extends AppCompatActivity {
     RecyclerView cast_recycleview;
     Cast_RecycleviewAdapter cast_recycleviewAdapter;
     private ArrayList<CastModalClass> castArrayList;
-    TextView txttitle, txtrelease_date, txtprice, txtdescription, btn_trailer, btn_buy, btn_download;
+    TextView txttitle, txtrelease_date, txtprice, txtdescription, btn_trailer, btn_buy, btn_download, btn_watch;
     ImageView poster, poster_bg;
     SessionHandlerUser sessionHandlerUser;
     private BottomSheetBehavior mBehavior;
@@ -144,6 +144,9 @@ public class MovieInfoActivity extends AppCompatActivity {
                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
                    videoView.setVideoURI(uri);
                    videoView.requestFocus();
+
+
+
                    videoView.start();
 
                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -167,6 +170,16 @@ public class MovieInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 showBottomSheetDialog();
 
+            }
+        });
+
+        btn_watch = findViewById(R.id.watch);
+        btn_watch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MovieInfoActivity.this, PlayerService.class);
+                intent.putExtra("uri", getIntent().getStringExtra("video_url"));
+                startActivity(intent);
             }
         });
 
@@ -369,6 +382,8 @@ public class MovieInfoActivity extends AppCompatActivity {
                                 if (response.getString("video_status").contains("YES")){
                                     btn_buy.setVisibility(View.GONE);
                                     btn_download.setVisibility(View.VISIBLE);
+                                    btn_watch.setVisibility(View.VISIBLE);
+                                    btn_trailer.setVisibility(View.GONE);
                                 }else {
 
 
@@ -474,6 +489,12 @@ public class MovieInfoActivity extends AppCompatActivity {
                 pDialog.setMax(100);
                 pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 pDialog.setCancelable(false);
+                pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
                 pDialog.show();
                 return pDialog;
             default:

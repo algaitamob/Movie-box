@@ -612,6 +612,12 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 pDialog.setMax(100);
                 pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 pDialog.setCancelable(false);
+                pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
                 pDialog.show();
                 return pDialog;
             default:

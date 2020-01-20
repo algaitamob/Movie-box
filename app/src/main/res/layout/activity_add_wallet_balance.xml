@@ -55,6 +55,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="25sp"
+                        android:inputType="number"
                         android:background="@color/transparent"
                         android:paddingTop="14dp"
                         android:singleLine="true"
@@ -65,14 +66,27 @@
                         android:textStyle="normal"
                         android:textColor="@color/black"
                         />
+
+
+<!--                    <customfonts.MyTextView_PTSans_Regular-->
+<!--                        android:id="@+id/btn_add"-->
+<!--                        android:layout_width="67dp"-->
+<!--                        android:layout_height="26dp"-->
+<!--android:layout_marginBottom="20dp"-->
+<!--                        android:background="@drawable/gradient_roundshape"-->
+<!--                        android:text="Buy Now"-->
+<!--                        android:textColor="#ffffff"-->
+<!--                        android:textSize="11.7sp" />-->
                     <ImageView
                         android:id="@+id/btn_add"
-                        android:tint="@color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_wallet"
+                        android:layout_width="69dp"
+                        android:layout_height="34dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginRight="18dp"
-                        android:layout_gravity="center_vertical"/>
+
+                        android:background="@drawable/gradient_roundshape"
+                        android:src="@drawable/ic_wallet"
+                        android:tint="@color/black" />
                 </LinearLayout>
                 <View
                     android:layout_width="133.7dp"

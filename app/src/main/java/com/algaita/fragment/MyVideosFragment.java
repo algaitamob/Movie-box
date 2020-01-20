@@ -3,6 +3,7 @@ package com.algaita.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyVideosFragment extends Fragment {
+public class MyVideosFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private View view;
     private BaseActivity baseActivity;
 
@@ -50,6 +51,8 @@ public class MyVideosFragment extends Fragment {
     Videos getVideosAdapterTheater;
     RecyclerView.Adapter recyclerViewAdapterTheater;
 
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
     SessionHandlerUser sessionHandlerUser;
     ViewDialog viewDialog;
     @Override
@@ -62,6 +65,13 @@ public class MyVideosFragment extends Fragment {
         sessionHandlerUser = new SessionHandlerUser(getActivity());
         viewDialog = new ViewDialog(getActivity());
 
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_container);
+
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
 
         //Recycleview
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
@@ -151,4 +161,8 @@ public class MyVideosFragment extends Fragment {
 
     }
 
+    @Override
+    public void onRefresh() {
+        GetVideosTheater();
+    }
 }

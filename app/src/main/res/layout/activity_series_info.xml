@@ -87,7 +87,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:textSize="18.2sp"
+                            android:textSize="15.2sp"
                             android:textColor="#263238"
                             android:text="Barazana"
                             />

@@ -31,7 +31,7 @@
             android:layout_alignParentBottom="true"
             android:visibility="gone"
             android:id="@+id/vdVw"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="185dp"
              />
 
@@ -78,19 +78,19 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="17dp"
                     android:orientation="horizontal">
 
 
                     <customfonts.MyTextView_PTSans_Bold
                         android:id="@+id/title"
                         android:layout_width="0dp"
+                        android:layout_height="40dp"
+
+                        android:layout_marginTop="10dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="18.2sp"
-                        android:textColor="#263238"
                         android:text="Barazana"
-                        />
+                        android:textColor="#263238"
+                        android:textSize="15.2sp" />
 
                     <ImageView
                         android:layout_width="11.7dp"
@@ -158,10 +158,11 @@
                     <customfonts.MyTextView_PTSans_Regular
                         android:visibility="gone"
                         android:id="@+id/download"
-                        android:layout_width="110dp"
+                        android:layout_width="90dp"
                         android:layout_height="23dp"
                         android:textSize="11.7sp"
                         android:gravity="center"
+                        android:layout_marginRight="5dp"
                         android:textColor="#ffffff"
                         android:lineSpacingExtra="-7.7sp"
                         android:text="Download"
@@ -169,6 +170,19 @@
                         />
 
 
+
+                    <customfonts.MyTextView_PTSans_Regular
+                        android:visibility="gone"
+                        android:id="@+id/watch"
+                        android:layout_width="70dp"
+                        android:layout_height="23dp"
+                        android:textSize="11.7sp"
+                        android:gravity="center"
+                        android:textColor="#ffffff"
+                        android:lineSpacingExtra="-7.7sp"
+                        android:text="Watch"
+                        android:background="@drawable/gradient_roundshape"
+                        />
 
                     <customfonts.MyTextView_PTSans_Regular
                         android:id="@+id/trailer"

@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,7 +43,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionFragment extends Fragment {
+public class TransactionFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private View view;
     private BaseActivity baseActivity;
 
@@ -55,6 +56,8 @@ public class TransactionFragment extends Fragment {
     List<Transactions> GetVideosAdapterTheater;
     Transactions getVideosAdapterTheater;
     RecyclerView.Adapter recyclerViewAdapterTheater;
+
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     SessionHandlerUser sessionHandlerUser;
     ViewDialog viewDialog;
@@ -69,6 +72,13 @@ public class TransactionFragment extends Fragment {
         viewDialog = new ViewDialog(getActivity());
 
 
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_container);
+
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
         //Recycleview
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
 
@@ -234,4 +244,9 @@ public class TransactionFragment extends Fragment {
         dialog.getWindow().setAttributes(lp);
     }
 
+    @Override
+    public void onRefresh() {
+        GetVideosTheater1();
+        GetVideosTheater();
+    }
 }

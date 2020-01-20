@@ -101,7 +101,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="WALLET"
+                            android:text="PAY WITH WALLET"
                             android:textAlignment="center"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                             android:textColor="@color/grey_90" />
@@ -145,7 +145,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="CARD"
+                        android:text="CREDIT CARD"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:textColor="@color/grey_90" />
@@ -189,7 +189,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="AIRTIME"
+                        android:text="RECHARGE CARD"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:textColor="@color/grey_90" />
