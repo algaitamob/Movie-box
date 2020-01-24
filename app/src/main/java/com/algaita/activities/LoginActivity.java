@@ -1,10 +1,14 @@
 package com.algaita.activities;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,7 +41,7 @@ import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
-    ViewDialog viewDialog;
+    private ViewDialog viewDialog;
     SessionHandlerUser sessionHandlerUser;
     private static final String KEY_STATUS = "status";
     private static final String KEY_MESSAGE = "message";
@@ -69,6 +73,12 @@ public class LoginActivity extends AppCompatActivity {
         viewDialog = new ViewDialog(this);
 
         if (sessionHandlerUser.isLoggedIn()){
+//            loadDashboard();
+//            String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+//                    Settings.Secure.ANDROID_ID);
+//
+//            CheckSession(android_id);
+
             loadDashboard();
         }
         etphone = findViewById(R.id.phone);
@@ -143,6 +153,12 @@ public class LoginActivity extends AppCompatActivity {
                                 subscribeToPushService();
                                 loadDashboard();
 
+
+//                                String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+//                                        Settings.Secure.ANDROID_ID);
+
+//                                CheckSession(android_id);
+
                             } else {
 
                                 View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
@@ -198,7 +214,6 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("AndroidBash", token);
 
         RegFirebase(token);
-//        Toast.makeText(LoginActivity.this, token, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -275,6 +290,57 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+    private boolean CheckSession(String android_id) {
+        String url_ = Config.url+"check_session.php?userid="+ sessionHandlerUser.getUserDetail().getUserid() + "&device_id=" + android_id;
+        JSONObject request = new JSONObject();
+        JsonObjectRequest jsArrayRequest = new JsonObjectRequest
+                (Request.Method.POST, url_, request, new Response.Listener<JSONObject>() {
+                    @SuppressLint("ResourceAsColor")
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            if (response.getInt("status") == 0) {
+
+                            loadDashboard();
+
+                            } else {
+
+                                AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this).create();
+                                alertDialog.setTitle("Error");
+                                alertDialog.setMessage("It seems you account has been logged in another Device!");
+                                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Remove my Account", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+//                                        finish();
+//                                        startActivity(getIntent());
+                                    }
+                                });
+                                alertDialog.show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this).create();
+                        alertDialog.setTitle("Error");
+                        alertDialog.setMessage("It Seem your Device is not Registered!");
+                        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "GO IT!", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                            }
+                        });
+                        alertDialog.show();
+                    }
+                });
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
+        return true;
+    }
+
     public void ForgetPass(final String phone){
         class forgetpass extends AsyncTask<Bitmap,Void,String> {
 
@@ -282,13 +348,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                viewDialog.hideDialog();
+//                viewDialog.hideDialog();
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                viewDialog.hideDialog();
+//                viewDialog.hideDialog();
                 Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
 
             }

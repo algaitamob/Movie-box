@@ -89,6 +89,8 @@ public class MyVideosFragment extends Fragment implements SwipeRefreshLayout.OnR
                 intent.putExtra("trailer_url", GetVideosAdapterTheater.get(position).getTrailer_url());
                 intent.putExtra("video_url", GetVideosAdapterTheater.get(position).getVideo_url());
                 intent.putExtra("price", GetVideosAdapterTheater.get(position).getPrice());
+                intent.putExtra("downloads", GetVideosAdapterTheater.get(position).getDownloads());
+                intent.putExtra("watch", GetVideosAdapterTheater.get(position).getWatch());
                 intent.putExtra("poster", GetVideosAdapterTheater.get(position).getPoster());
                 intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
@@ -113,17 +115,20 @@ public class MyVideosFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private void GetVideosTheater() {
         viewDialog.showDialog();
+        mSwipeRefreshLayout.setRefreshing(true);
         GetVideosAdapterTheater.clear();
         jsonArrayRequest = new JsonArrayRequest(Config.url + "myvideos.php?userid=" + sessionHandlerUser.getUserDetail().getUserid(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
                 GetCardWebCall(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                mSwipeRefreshLayout.setRefreshing(false);
                 viewDialog.hideDialog();
             }
         });
@@ -143,6 +148,8 @@ public class MyVideosFragment extends Fragment implements SwipeRefreshLayout.OnR
                 getVideosAdapterTheater.setTrailer_url(Config.dir_video + json.getString("trailer_url"));
                 getVideosAdapterTheater.setVideo_url(Config.dir_video + json.getString("video_url"));
                 getVideosAdapterTheater.setPrice(json.getString("price"));
+                getVideosAdapterTheater.setWatch(json.getString("watch"));
+                getVideosAdapterTheater.setDownloads(json.getString("downloads"));
                 getVideosAdapterTheater.setPoster(Config.dir_poster + json.getString("poster"));
                 getVideosAdapterTheater.setCover(Config.dir_poster + json.getString("cover"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));

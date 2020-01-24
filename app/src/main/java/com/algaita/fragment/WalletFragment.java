@@ -137,11 +137,15 @@ public class WalletFragment extends Fragment  implements SwipeRefreshLayout.OnRe
 
     private void GetVideosTheater() {
         viewDialog.showDialog();
+        mSwipeRefreshLayout.setRefreshing(true);
+
         GetVideosAdapterTheater.clear();
         jsonArrayRequest = new JsonArrayRequest(Config.url + "wallet_transactions.php?userid=" + sessionHandlerUser.getUserDetail().getUserid(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
+
                 GetCardWebCall(response);
             }
         }, new Response.ErrorListener() {
@@ -149,6 +153,8 @@ public class WalletFragment extends Fragment  implements SwipeRefreshLayout.OnRe
             public void onErrorResponse(VolleyError error) {
 
                 viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
+
             }
         });
         requestQueue = Volley.newRequestQueue(getContext());

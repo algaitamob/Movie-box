@@ -40,7 +40,9 @@ import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
 import com.algaita.ViewDialog;
+import com.algaita.adapters.CastAdapter;
 import com.algaita.adapters.SeriesVideosAdapter;
+import com.algaita.models.Cast;
 import com.algaita.models.SeriesVideos;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.Request;
@@ -96,6 +98,14 @@ public class SeriesInfoActivity extends AppCompatActivity {
     List<SeriesVideos> GetSeriesAdapter;
     SeriesVideos getSeriesAdapter;
     RecyclerView.Adapter recyclerViewAdapterSeries;
+
+
+    RecyclerView cast_recycleview;
+
+    //    Series Recycler
+    List<Cast> GetCastAdapter;
+    Cast getCastAdapter;
+    RecyclerView.Adapter recyclerViewAdapterCast;
 
 
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
@@ -165,6 +175,31 @@ public class SeriesInfoActivity extends AppCompatActivity {
         }));
 
 
+        cast_recycleview =  findViewById(R.id.cast_recycleview);
+
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(SeriesInfoActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        cast_recycleview.setLayoutManager(layoutManager1);
+        cast_recycleview.setItemAnimator(new DefaultItemAnimator());
+
+        GetCastAdapter = new ArrayList<>();
+
+        GetCast();
+
+        cast_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), cast_recycleview, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+
+        }));
+
+
 
         CheckBalance();
         final VideoView videoView =(VideoView)findViewById(R.id.vdVw);
@@ -221,14 +256,12 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 .placeholder(R.drawable.imgloader)
                 .error(R.drawable.icon)
                 .into(poster_bg);
-//
-//
+
         txtrelease_date.setText(intent.getStringExtra("release_date"));
 
         txttitle.setText(intent.getStringExtra("title"));
         txtdescription.setText(intent.getStringExtra("description"));
         txtprice.setText(intent.getStringExtra("total_episode"));
-//        txttitle.setText(intent.getStringExtra("title"));
 
 
         bottom_sheet = findViewById(R.id.bottom_sheet);
@@ -338,40 +371,6 @@ public class SeriesInfoActivity extends AppCompatActivity {
     }
 
 
-    private void countDownStart() {
-        handler = new Handler();
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = getIntent();
-                handler.postDelayed(this, 1000);
-                try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            "yyyy-MM-dd");
-                    // Please here set your event date//YYYY-MM-DD
-                    Date futureDate = dateFormat.parse(intent.getStringExtra("release_date"));
-                    Date currentDate = new Date();
-                    if (!currentDate.after(futureDate)) {
-                        long diff = futureDate.getTime()
-                                - currentDate.getTime();
-                        long days = diff / (24 * 60 * 60 * 1000);
-                        diff -= days * (24 * 60 * 60 * 1000);
-                        long hours = diff / (60 * 60 * 1000);
-                        diff -= hours * (60 * 60 * 1000);
-                        long minutes = diff / (60 * 1000);
-                        diff -= minutes * (60 * 1000);
-                        long seconds = diff / 1000;
-                        txtrelease_date.setText(String.format("%02d", days) + "days  "+ String.format("%02d", hours) + "hr  " + String.format("%02d", minutes) + "min  " + String.format("%02d", seconds) + "sec");
-                    } else {
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        handler.postDelayed(runnable, 1 * 1000);
-    }
 
 
     private void CheckVideoStatus(String id, String title, String price, String video_url) {
@@ -493,6 +492,48 @@ public class SeriesInfoActivity extends AppCompatActivity {
     }
 
 
+    private void GetCast() {
+//        viewDialog.showDialog();
+        GetCastAdapter.clear();
+        jsonArrayRequest = new JsonArrayRequest(Config.url + "cast_video.php?videoid=" + getIntent().getStringExtra("id"), new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+//                viewDialog.hideDialog();
+                GetCardWebCall4(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+//                viewDialog.hideDialog();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void GetCardWebCall4(JSONArray array) {
+        for (int i = 0; i < array.length(); i++){
+            getCastAdapter = new Cast();
+            JSONObject json = null;
+
+            try {
+                json = array.getJSONObject(i);
+                getCastAdapter.setCast_name(json.getString("name"));
+                getCastAdapter.setImg(Config.dir_cast + json.getString("img"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            GetCastAdapter.add(getCastAdapter);
+        }
+
+        recyclerViewAdapterCast = new CastAdapter(GetCastAdapter, getApplicationContext());
+        cast_recycleview.setAdapter(recyclerViewAdapterCast);
+        recyclerViewAdapterCast.notifyDataSetChanged();
+    }
+
+
     private void GetSeries() {
                 viewDialog.showDialog();
         GetSeriesAdapter.clear();
@@ -595,10 +636,6 @@ public class SeriesInfoActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
     /**
      * Showing Dialog
      * */
@@ -650,16 +687,13 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 URL url = new URL(f_url[0]);
                 URLConnection conection = url.openConnection();
                 conection.connect();
-                // getting file length
                 int lenghtOfFile = conection.getContentLength();
 
-                // input stream to read file - with 8k buffer
                 InputStream input = new BufferedInputStream(url.openStream(), 8192);
 
 
                 String folder = "/data/data/" + getPackageName() + "/files/";
 
-                //Create androiddeft folder if it does not exist
                 File directory = new File(folder);
 
 
@@ -667,14 +701,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                     directory.mkdirs();
                 }
 
-//                outputFile = new File(apkStorage, intent.getStringExtra("title") + ".mp4");//Create Output file in Main File
-
-                // Output stream to write file
                 OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
-
-
-                // Output stream to write file
-//                OutputStream output = new FileOutputStream("/sdcard/downloadedfile.jpg");
 
                 byte data[] = new byte[1024];
 
@@ -682,18 +709,13 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
                 while ((count = input.read(data)) != -1) {
                     total += count;
-                    // publishing the progress....
-                    // After this onProgressUpdate will be called
                     publishProgress(""+(int)((total*100)/lenghtOfFile));
 
-                    // writing data to file
                     output.write(data, 0, count);
                 }
 
-                // flushing output
                 output.flush();
 
-                // closing streams
                 output.close();
                 input.close();
 
@@ -718,7 +740,6 @@ public class SeriesInfoActivity extends AppCompatActivity {
          * **/
         @Override
         protected void onPostExecute(String file_url) {
-            // dismiss the dialog after the file was downloaded
             dismissDialog(progress_bar_type);
 
             View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
@@ -728,11 +749,6 @@ public class SeriesInfoActivity extends AppCompatActivity {
             toast.setDuration(Toast.LENGTH_LONG);
             toast.setView(layout);
             toast.show();
-            // Displaying downloaded image into image view
-            // Reading image path from sdcard
-//            String imagePath = Environment.getExternalStorageDirectory().toString() + "/downloadedfile.jpg";
-            // setting downloaded into image view
-//            my_image.setImageDrawable(Drawable.createFromPath(imagePath));
         }
 
     }

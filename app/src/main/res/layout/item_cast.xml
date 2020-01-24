@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="Michael B.\nJordan"
-        android:textColor="#9d9d9d"
+        android:textColor="@color/white"
         android:maxLines="2"
         android:layout_marginTop="8.3dp"
         android:textSize="12.5sp" />

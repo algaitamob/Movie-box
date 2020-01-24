@@ -8,6 +8,7 @@ public class Config {
     public static String user_wallet = url + "user_wallet.php";
     public static String dir_poster = base_url + "files/posters/";
     public static String dir_video = base_url + "files/videos/";
+    public static String dir_cast = base_url + "files/casts/";
 
 
 }

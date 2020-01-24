@@ -19,9 +19,12 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -54,13 +57,23 @@ import com.algaita.MySingleton;
 import com.algaita.R;
 import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
+import com.algaita.adapters.CastAdapter;
+import com.algaita.adapters.SeriesVideosAdapter;
+import com.algaita.models.Cast;
+import com.algaita.models.SeriesVideos;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,6 +84,9 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
 
+    CoordinatorLayout layout_bg;
+
+
     String fileN = null ;
     public static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 123;
     boolean result;
@@ -78,6 +94,16 @@ public class MovieInfoActivity extends AppCompatActivity {
     String urlString;
     Dialog downloadDialog;
     int WalletBalance;
+
+
+    RecyclerView cast_recycleview;
+    RequestQueue requestQueue;
+    JsonArrayRequest jsonArrayRequest;
+
+    //    Series Recycler
+    List<Cast> GetCastAdapter;
+    Cast getCastAdapter;
+    RecyclerView.Adapter recyclerViewAdapterSeries;
 
     private static final String SHOWCASE_ID = "Buy";
 
@@ -94,11 +120,7 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     private Handler handler;
     private Runnable runnable;
-    ProgressDialog progressDialog;
-    RecyclerView cast_recycleview;
-    Cast_RecycleviewAdapter cast_recycleviewAdapter;
-    private ArrayList<CastModalClass> castArrayList;
-    TextView txttitle, txtrelease_date, txtprice, txtdescription, btn_trailer, btn_buy, btn_download, btn_watch;
+    TextView txttitle, txtrelease_date, txtprice, txtdescription, txtinfo, total_download, total_watch, btn_trailer, btn_buy, btn_download, btn_watch;
     ImageView poster, poster_bg;
     SessionHandlerUser sessionHandlerUser;
     private BottomSheetBehavior mBehavior;
@@ -106,27 +128,59 @@ public class MovieInfoActivity extends AppCompatActivity {
     private View bottom_sheet;
     ViewDialog viewDialog;
 
+    private ImageView play;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_info);
         sessionHandlerUser = new SessionHandlerUser(this);
         viewDialog = new ViewDialog(this);
+
+        layout_bg = findViewById(R.id.layout_bg);
         final Intent intent = getIntent();
         txttitle = findViewById(R.id.title);
         txtdescription = findViewById(R.id.description);
+        txtinfo = findViewById(R.id.info);
         txtprice = findViewById(R.id.price);
         txtrelease_date = findViewById(R.id.release_date);
         poster = findViewById(R.id.poster);
         poster_bg = findViewById(R.id.poster_bg);
+        total_download = findViewById(R.id.total_download);
+        total_watch = findViewById(R.id.total_watch);
 
 
-
+        play = findViewById(R.id.play);
         img_play = findViewById(R.id.play);
 
 
+        cast_recycleview =  findViewById(R.id.cast_recycleview);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MovieInfoActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        cast_recycleview.setLayoutManager(layoutManager);
+        cast_recycleview.setItemAnimator(new DefaultItemAnimator());
+
+        GetCastAdapter = new ArrayList<>();
+
+        GetCast();
+
+        cast_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), cast_recycleview, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+
+        }));
+
+
+
         CheckBalance();
-        final VideoView videoView =(VideoView)findViewById(R.id.vdVw);
+        final VideoView videoView = findViewById(R.id.vdVw);
         //Set MediaController  to enable play, pause, forward, etc options.
 
         // Permission StrictMode
@@ -135,8 +189,41 @@ public class MovieInfoActivity extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
         }
 
-//        Toast.makeText(getApplicationContext(), intent.getStringExtra("video_url"), Toast.LENGTH_LONG).show();
 
+
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = getIntent();
+                poster_bg.setVisibility(View.GONE);
+                videoView.setVisibility(View.VISIBLE);
+                img_play.setVisibility(View.GONE);
+
+                try {
+                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
+                    videoView.setVideoURI(uri);
+                    videoView.requestFocus();
+
+
+
+                    videoView.start();
+
+                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+//                           Toast.makeText(getApplicationContext(), "Video completed", Toast.LENGTH_LONG).show();
+                            img_play.setVisibility(View.VISIBLE);
+
+                        }
+                    });
+                }catch (Exception e){
+
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
         btn_trailer = findViewById(R.id.trailer);
         btn_trailer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,9 +273,12 @@ public class MovieInfoActivity extends AppCompatActivity {
         btn_watch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String type = "watch";
+                Update(type);
                 Intent intent = new Intent(MovieInfoActivity.this, PlayerService.class);
                 intent.putExtra("uri", getIntent().getStringExtra("video_url"));
                 startActivity(intent);
+
             }
         });
 
@@ -228,8 +318,10 @@ public class MovieInfoActivity extends AppCompatActivity {
 
         txttitle.setText(intent.getStringExtra("title"));
         txtdescription.setText(intent.getStringExtra("description"));
+        txtinfo.setText(intent.getStringExtra("info"));
+        total_watch.setText(intent.getStringExtra("watch"));
+        total_download.setText(intent.getStringExtra("downloads"));
         txtprice.setText("₦" + intent.getStringExtra("price"));
-//        txttitle.setText(intent.getStringExtra("title"));
 
 
         bottom_sheet = findViewById(R.id.bottom_sheet);
@@ -338,6 +430,49 @@ public class MovieInfoActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+
+    private void GetCast() {
+//        viewDialog.showDialog();
+        GetCastAdapter.clear();
+        jsonArrayRequest = new JsonArrayRequest(Config.url + "cast_video.php?videoid=" + getIntent().getStringExtra("id"), new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+//                viewDialog.hideDialog();
+                GetCardWebCall3(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+//                viewDialog.hideDialog();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void GetCardWebCall3(JSONArray array) {
+        for (int i = 0; i < array.length(); i++){
+            getCastAdapter = new Cast();
+            JSONObject json = null;
+
+            try {
+                json = array.getJSONObject(i);
+                getCastAdapter.setCast_name(json.getString("name"));
+                getCastAdapter.setImg(Config.dir_cast + json.getString("img"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            GetCastAdapter.add(getCastAdapter);
+        }
+
+        recyclerViewAdapterSeries = new CastAdapter(GetCastAdapter, getApplicationContext());
+        cast_recycleview.setAdapter(recyclerViewAdapterSeries);
+        recyclerViewAdapterSeries.notifyDataSetChanged();
     }
 
 
@@ -463,8 +598,6 @@ public class MovieInfoActivity extends AppCompatActivity {
 
                                 sessionHandlerUser.WalletBalance(response.getString("balance"));
 
-//                                WalletBalance = Integer.parseInt(response.getString("balance"));
-
                             } else {
 
                             }
@@ -538,16 +671,11 @@ public class MovieInfoActivity extends AppCompatActivity {
                 URL url = new URL(f_url[0]);
                 URLConnection conection = url.openConnection();
                 conection.connect();
-                // getting file length
                 int lenghtOfFile = conection.getContentLength();
-
-                // input stream to read file - with 8k buffer
                 InputStream input = new BufferedInputStream(url.openStream(), 8192);
-
 
                 String folder = "/data/data/" + getPackageName() + "/files/";
 
-                //Create androiddeft folder if it does not exist
                 File directory = new File(folder);
 
 
@@ -555,14 +683,7 @@ public class MovieInfoActivity extends AppCompatActivity {
                     directory.mkdirs();
                 }
 
-//                outputFile = new File(apkStorage, intent.getStringExtra("title") + ".mp4");//Create Output file in Main File
-
-                // Output stream to write file
                 OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
-
-
-                // Output stream to write file
-//                OutputStream output = new FileOutputStream("/sdcard/downloadedfile.jpg");
 
                 byte data[] = new byte[1024];
 
@@ -570,18 +691,10 @@ public class MovieInfoActivity extends AppCompatActivity {
 
                 while ((count = input.read(data)) != -1) {
                     total += count;
-                    // publishing the progress....
-                    // After this onProgressUpdate will be called
                     publishProgress(""+(int)((total*100)/lenghtOfFile));
-
-                    // writing data to file
                     output.write(data, 0, count);
                 }
-
-                // flushing output
                 output.flush();
-
-                // closing streams
                 output.close();
                 input.close();
 
@@ -596,7 +709,6 @@ public class MovieInfoActivity extends AppCompatActivity {
          * Updating progress bar
          * */
         protected void onProgressUpdate(String... progress) {
-            // setting progress percentage
             pDialog.setProgress(Integer.parseInt(progress[0]));
         }
 
@@ -606,8 +718,10 @@ public class MovieInfoActivity extends AppCompatActivity {
          * **/
         @Override
         protected void onPostExecute(String file_url) {
-            // dismiss the dialog after the file was downloaded
             dismissDialog(progress_bar_type);
+
+            String type = "downloads";
+            Update(type);
 
             View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
             TextView text = layout.findViewById(R.id.text);
@@ -616,16 +730,57 @@ public class MovieInfoActivity extends AppCompatActivity {
             toast.setDuration(Toast.LENGTH_LONG);
             toast.setView(layout);
             toast.show();
-            // Displaying downloaded image into image view
-            // Reading image path from sdcard
-//            String imagePath = Environment.getExternalStorageDirectory().toString() + "/downloadedfile.jpg";
-            // setting downloaded into image view
-//            my_image.setImageDrawable(Drawable.createFromPath(imagePath));
+
         }
 
     }
 
-//
+    private void Update(String type) {
+//        viewDialog.showDialog();
+        class chargee extends AsyncTask<Bitmap,Void,String> {
+
+            RequestHandler rh = new RequestHandler();
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+//                viewDialog.hideDialog();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+//                viewDialog.hideDialog();
+//                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+//                TextView text = layout.findViewById(R.id.text);
+//                text.setText(s);
+//                Toast toast = new Toast(getApplicationContext());
+//                toast.setDuration(Toast.LENGTH_LONG);
+//                toast.setView(layout);
+//                toast.show();
+
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+
+                data.put("type", type);
+                data.put("videoid", getIntent().getStringExtra("id"));
+                String result = rh.sendPostRequest(Config.url + "update_download_watch.php",data);
+
+                return result;
+            }
+        }
+
+        chargee ui = new chargee();
+        ui.execute();
+    }
+
+
+
+
+
     private void showTutor(int millis){
         new MaterialShowcaseView.Builder(this)
                 .setTarget(card_airtime)

@@ -1,6 +1,9 @@
 package com.algaita.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
+import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.Request;
@@ -22,6 +26,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 
 public class SignupActivity extends AppCompatActivity {
@@ -44,9 +50,9 @@ public class SignupActivity extends AppCompatActivity {
         sessionHandlerUser = new SessionHandlerUser(getApplicationContext());
         viewDialog = new ViewDialog(this);
 
-        if (sessionHandlerUser.isLoggedIn()){
-            loadDashboard();
-        }
+//        if (sessionHandlerUser.isLoggedIn()){
+//            loadDashboard();
+//        }
 
         etphone = findViewById(R.id.phone);
         etpassword = findViewById(R.id.password);
@@ -125,6 +131,13 @@ public class SignupActivity extends AppCompatActivity {
                             if (response.getInt(KEY_STATUS) == 0) {
                                 //Set the user sessio
 
+                                String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                                        Settings.Secure.ANDROID_ID);
+
+                                String userid = response.getString("userid");
+
+                                RegisterDevice(userid, android_id);
+
                                 View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
                                 TextView text = layout.findViewById(R.id.text);
                                 text.setText("Account Created Successfully");
@@ -163,10 +176,17 @@ public class SignupActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         viewDialog.hideDialog();
                         //Display error message whenever an error occurs
-                        Toast.makeText(getApplicationContext(),
-                                error.getMessage(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(),
+//                                error.getMessage(), Toast.LENGTH_SHORT).show();
 
 
+                        View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                        TextView text = layout.findViewById(R.id.text);
+                        text.setText("Network Connection Error");
+                        Toast toast = new Toast(getApplicationContext());
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
 
                     }
                 });
@@ -174,6 +194,42 @@ public class SignupActivity extends AppCompatActivity {
         // Access the RequestQueue through your singleton class.
         MySingleton.getInstance(this).addToRequestQueue(jsArrayRequest);
 
+    }
+
+
+
+    public void RegisterDevice(String userid, String android_id){
+        class regdevice extends AsyncTask<Bitmap,Void,String> {
+
+            RequestHandler rh = new RequestHandler();
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+//                viewDialog.hideDialog();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+//                viewDialog.hideDialog();
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+
+                data.put("userid", userid);
+                data.put("device_id", android_id);
+                String result = rh.sendPostRequest(Config.url + "device_register.php",data);
+
+                return result;
+            }
+        }
+
+        regdevice ui = new regdevice();
+        ui.execute();
     }
 
 

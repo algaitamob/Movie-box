@@ -116,11 +116,15 @@ public class TransactionFragment extends Fragment implements SwipeRefreshLayout.
 
     private void GetVideosTheater() {
         viewDialog.showDialog();
+        mSwipeRefreshLayout.setRefreshing(true);
+
         GetVideosAdapterTheater.clear();
         jsonArrayRequest = new JsonArrayRequest(Config.url + "transactions.php?userid=" + sessionHandlerUser.getUserDetail().getUserid(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
+
                 GetCardWebCall(response);
             }
         }, new Response.ErrorListener() {
@@ -128,6 +132,8 @@ public class TransactionFragment extends Fragment implements SwipeRefreshLayout.
             public void onErrorResponse(VolleyError error) {
 
                 viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
+
             }
         });
         requestQueue = Volley.newRequestQueue(getContext());

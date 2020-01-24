@@ -103,6 +103,8 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                 intent.putExtra("trailer_url", GetVideosAdapterTheater.get(position).getTrailer_url());
                 intent.putExtra("video_url", GetVideosAdapterTheater.get(position).getVideo_url());
                 intent.putExtra("price", GetVideosAdapterTheater.get(position).getPrice());
+                intent.putExtra("downloads", GetVideosAdapterTheater.get(position).getDownloads());
+                intent.putExtra("watch", GetVideosAdapterTheater.get(position).getWatch());
                 intent.putExtra("poster", GetVideosAdapterTheater.get(position).getPoster());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "out");
@@ -125,12 +127,15 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
 
     private void GetVideosTheater() {
         viewDialog.showDialog();
+        mSwipeRefreshLayout.setRefreshing(true);
+
         GetVideosAdapterTheater.clear();
         Intent intent = getIntent();
         jsonArrayRequest = new JsonArrayRequest(Config.url + "video_search.php?filter=" + intent.getStringExtra("filter"), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
                 GetCardWebCall(response);
             }
         }, new Response.ErrorListener() {
@@ -138,6 +143,8 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
             public void onErrorResponse(VolleyError error) {
 
                 viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
+
             }
         });
         requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -156,6 +163,8 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                 getVideosAdapterTheater.setTrailer_url(Config.dir_video + json.getString("trailer_url"));
                 getVideosAdapterTheater.setVideo_url(Config.dir_video + json.getString("video_url"));
                 getVideosAdapterTheater.setPrice(json.getString("price"));
+                getVideosAdapterTheater.setWatch(json.getString("watch"));
+                getVideosAdapterTheater.setDownloads(json.getString("downloads"));
                 getVideosAdapterTheater.setPoster(Config.dir_poster + json.getString("poster"));
                 getVideosAdapterTheater.setCover(Config.dir_poster + json.getString("cover"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));

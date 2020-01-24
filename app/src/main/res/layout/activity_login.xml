@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F6F6F6">
+        android:background="@color/black">
 
         <FrameLayout
             android:id="@+id/fm1"
@@ -78,6 +78,7 @@
 
 
         <TextView
+            android:textColor="@color/white"
             android:id="@+id/forget_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -104,6 +105,7 @@
             android:background="@drawable/gradient_roundshape"/>
 
         <TextView
+            android:textColor="@color/white"
             android:id="@+id/create_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

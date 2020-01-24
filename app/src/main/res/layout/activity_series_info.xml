@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/black"
     tools:context=".activities.MovieInfoActivity">
 
 
@@ -88,7 +89,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:textSize="15.2sp"
-                            android:textColor="#263238"
+                            android:textColor="@color/white"
                             android:text="Barazana"
                             />
 
@@ -105,7 +106,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="12.7sp"
-                            android:textColor="#9d9d9d"
+                            android:textColor="#F9A825"
                             android:layout_gravity="center"
                             android:layout_marginRight="14.3dp"
                             android:lineSpacingExtra="-8.7sp"
@@ -128,7 +129,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="12.7sp"
-                            android:textColor="#9d9d9d"
+                            android:textColor="@color/white"
                             android:lineSpacingExtra="-8.7sp"
                             android:text="Hindi, English"
                             />
@@ -142,24 +143,18 @@
                         android:orientation="horizontal">
 
 
-
-
-                        <customfonts.MyTextView_PTSans_Regular
-                            android:id="@+id/trailer"
-                            android:layout_width="98dp"
-                            android:layout_height="23dp"
-                            android:layout_marginLeft="10dp"
-                            android:background="@drawable/gradient_roundshape"
-                            android:gravity="center"
-                            android:lineSpacingExtra="-7.7sp"
-                            android:text="Watch Trailer"
-                            android:textColor="#ffffff"
-                            android:textSize="11.7sp" />
-
-
-
                     </LinearLayout>
 
+                    <customfonts.MyTextView_PTSans_Regular
+                        android:id="@+id/trailer"
+                        android:layout_width="98dp"
+                        android:layout_height="23dp"
+                        android:background="@drawable/gradient_roundshape"
+                        android:gravity="center"
+                        android:lineSpacingExtra="-7.7sp"
+                        android:text="Watch Trailer"
+                        android:textColor="#ffffff"
+                        android:textSize="11.7sp" />
 
 
                 </LinearLayout>
@@ -190,6 +185,35 @@
                 android:gravity="center_horizontal"
                 android:text="Description"
                 />
+            <View
+                android:visibility="gone"
+
+                android:layout_width="47.7dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="4.3dp"
+                android:background="@drawable/gradient"/>
+
+
+            <customfonts.MyTextView_PTSans_Bold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="#ffffff"
+                android:lineSpacingExtra="-11sp"
+                android:gravity="center_horizontal"
+                android:text="Cast"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/cast_recycleview"
+                android:clipToPadding="false"
+                android:paddingTop="16.7dp"
+                android:paddingLeft="20dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
 
 
             <View
@@ -217,7 +241,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:textColor="#263238"
+                android:textColor="@color/white"
                 android:layout_marginTop="30.3dp"
                 android:lineSpacingExtra="-11sp"
                 android:text="Movies"

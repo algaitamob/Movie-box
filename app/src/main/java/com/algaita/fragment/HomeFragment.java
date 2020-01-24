@@ -124,8 +124,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 intent.putExtra("trailer_url", GetVideosAdapterTheater.get(position).getTrailer_url());
                 intent.putExtra("video_url", GetVideosAdapterTheater.get(position).getVideo_url());
                 intent.putExtra("price", GetVideosAdapterTheater.get(position).getPrice());
+                intent.putExtra("downloads", GetVideosAdapterTheater.get(position).getDownloads());
+                intent.putExtra("watch", GetVideosAdapterTheater.get(position).getWatch());
                 intent.putExtra("poster", GetVideosAdapterTheater.get(position).getPoster());
                 intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
+                intent.putExtra("info", GetVideosAdapterTheater.get(position).getInfo());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "out");
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
@@ -151,8 +154,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 intent.putExtra("trailer_url", GetVideosAdapterComingsoon.get(position).getTrailer_url());
                 intent.putExtra("video_url", GetVideosAdapterComingsoon.get(position).getVideo_url());
                 intent.putExtra("price", GetVideosAdapterComingsoon.get(position).getPrice());
+                intent.putExtra("downloads", GetVideosAdapterComingsoon.get(position).getDownlaod());
+                intent.putExtra("watch", GetVideosAdapterComingsoon.get(position).getWatch());
                 intent.putExtra("poster", GetVideosAdapterComingsoon.get(position).getPoster());
                 intent.putExtra("cover", GetVideosAdapterComingsoon.get(position).getCover());
+                intent.putExtra("info", GetVideosAdapterComingsoon.get(position).getInfo());
                 intent.putExtra("release_date", GetVideosAdapterComingsoon.get(position).getRelease_date());
                 intent.putExtra("status", "coming");
                 intent.putExtra("id", GetVideosAdapterComingsoon.get(position).getVideoid());
@@ -198,8 +204,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void GetSeries() {
-
-        //        viewDialog.showDialog();
         GetSeriesAdapter.clear();
         jsonArrayRequest = new JsonArrayRequest(Config.url + "series.php", new Response.Listener<JSONArray>() {
             @Override
@@ -246,13 +250,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
 
+
     private void GetVideosTheater() {
+        mSwipeRefreshLayout.setRefreshing(true);
         viewDialog.showDialog();
         GetVideosAdapterTheater.clear();
         jsonArrayRequest = new JsonArrayRequest(Config.url + "videos.php", new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
                 GetCardWebCall(response);
             }
         }, new Response.ErrorListener() {
@@ -260,6 +267,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onErrorResponse(VolleyError error) {
 
                 viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
+
             }
         });
         requestQueue = Volley.newRequestQueue(getContext());
@@ -278,11 +287,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 getVideosAdapterTheater.setTrailer_url(Config.dir_video +json.getString("trailer_url"));
                 getVideosAdapterTheater.setVideo_url(Config.dir_video  + json.getString("video_url"));
                 getVideosAdapterTheater.setPrice(json.getString("price"));
+                getVideosAdapterTheater.setWatch(json.getString("watch"));
+                getVideosAdapterTheater.setDownloads(json.getString("downloads"));
                 getVideosAdapterTheater.setPoster(Config.dir_poster + json.getString("poster"));
                 getVideosAdapterTheater.setCover(Config.dir_poster + json.getString("cover"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));
+                getVideosAdapterTheater.setInfo(json.getString("info"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -328,11 +340,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 getVideosAdapterComingsoon.setTrailer_url(Config.dir_video +json.getString("trailer_url"));
                 getVideosAdapterComingsoon.setVideo_url(Config.dir_video + json.getString("video_url"));
                 getVideosAdapterComingsoon.setPrice(json.getString("price"));
+                getVideosAdapterComingsoon.setWatch(json.getString("watch"));
+                getVideosAdapterComingsoon.setDownlaod(json.getString("downloads"));
                 getVideosAdapterComingsoon.setPoster(Config.dir_poster + json.getString("poster"));
                 getVideosAdapterComingsoon.setCover(Config.dir_poster + json.getString("cover"));
                 getVideosAdapterComingsoon.setRelease_date(json.getString("release_date"));
                 getVideosAdapterComingsoon.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterComingsoon.setVideoid(json.getString("id"));
+                getVideosAdapterComingsoon.setInfo(json.getString("info"));
 
             } catch (JSONException e) {
                 e.printStackTrace();

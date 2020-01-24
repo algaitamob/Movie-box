@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/black"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
@@ -32,6 +33,7 @@
                 android:src="@drawable/menu" />
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/profile"
                 android:layout_width="18.7dp"
                 android:layout_height="21dp"
