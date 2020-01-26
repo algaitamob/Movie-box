@@ -49,6 +49,7 @@
         <activity android:name=".activities.SeriesInfoActivity"/>
 
         <activity android:name=".activities.BaseActivity"/>
+        <activity android:name=".activities.PlayerService2"/>
 
         <!--Firebase Push-->
         <service

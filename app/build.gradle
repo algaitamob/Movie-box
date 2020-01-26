@@ -57,13 +57,15 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
 //    implementation 'com.github.HamidrezaAmz:MagicalExoPlayer:1.0.14'
 
-
+//
     implementation 'com.google.android.exoplayer:exoplayer:r1.5.6'
     implementation 'com.google.android.exoplayer:exoplayer-core:2.7.3'
     implementation 'com.google.android.exoplayer:exoplayer-dash:2.7.3'
     implementation 'com.google.android.exoplayer:exoplayer-hls:2.7.3'
     implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.7.3'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.7.3'
+
+
 
 
     implementation 'io.sentry:sentry-android:1.7.27'
@@ -74,6 +76,7 @@ dependencies {
 
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'com.github.deano2390:MaterialShowcaseView:1.2.0'
+
 
 
 
@@ -93,3 +96,4 @@ sentry {
     // upload the mapping files with sentry-cli when you do a release.
     autoUpload true
 }
+

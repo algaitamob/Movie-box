@@ -4,16 +4,23 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
+import com.algaita.RequestHandler;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -22,6 +29,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -92,11 +101,19 @@ public class SplashActivity extends AppCompatActivity {
 
                                 AlertDialog alertDialog = new AlertDialog.Builder(SplashActivity.this).create();
                                 alertDialog.setTitle("Error");
-                                alertDialog.setMessage("It seems you account has been logged in another Device!");
+                                alertDialog.setMessage("It seems your account has been logged in another Device!");
                                 alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Remove my Account", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
 //                                        finish();
 //                                        startActivity(getIntent());
+
+                                        String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                                                Settings.Secure.ANDROID_ID);
+
+                                        String userid = String.valueOf(sessionHandlerUser.getUserDetail().getUserid());
+                                        UpdateDevice(userid, android_id);
+
+
                                     }
                                 });
                                 alertDialog.show();
@@ -112,10 +129,11 @@ public class SplashActivity extends AppCompatActivity {
 
                         AlertDialog alertDialog = new AlertDialog.Builder(SplashActivity.this).create();
                         alertDialog.setTitle("Error");
-                        alertDialog.setMessage("It Seem your Device is not Registered!");
+                        alertDialog.setMessage("Network Connectio Error!");
                         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "GO IT!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                alertDialog.dismiss();
+//                                alertDialog.dismiss();
+                                finish();
                             }
                         });
                         alertDialog.show();
@@ -123,6 +141,50 @@ public class SplashActivity extends AppCompatActivity {
                 });
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
         return true;
+    }
+
+    private void UpdateDevice(String userid, String android_id) {
+        class regdevice extends AsyncTask<Bitmap,Void,String> {
+
+            RequestHandler rh = new RequestHandler();
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+//                viewDialog.hideDialog();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+//                viewDialog.hideDialog();
+//                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText(s);
+                Toast toast = new Toast(getApplicationContext());
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+
+                data.put("userid", userid);
+                data.put("device_id", android_id);
+                String result = rh.sendPostRequest(Config.url + "device_update.php",data);
+
+                return result;
+            }
+        }
+
+        regdevice ui = new regdevice();
+        ui.execute();
     }
 }
 
