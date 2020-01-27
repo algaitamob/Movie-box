@@ -292,7 +292,16 @@ public class MovieInfoActivity extends AppCompatActivity {
             }
         });
 
-        CheckVideoStatus();
+
+        if(getIntent().getStringExtra("price").startsWith("")){
+            btn_buy.setVisibility(View.GONE);
+            btn_download.setVisibility(View.VISIBLE);
+            btn_watch.setVisibility(View.VISIBLE);
+            btn_trailer.setVisibility(View.GONE);
+        }else{
+            CheckVideoStatus();
+
+        }
 
         Glide.with(this)
                 .load(intent.getStringExtra("poster"))

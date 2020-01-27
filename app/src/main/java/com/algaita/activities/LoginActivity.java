@@ -363,7 +363,14 @@ public class LoginActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
 //                viewDialog.hideDialog();
-                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText(s);
+                Toast toast = new Toast(getApplicationContext());
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
 
             }
 

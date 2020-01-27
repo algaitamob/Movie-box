@@ -23,6 +23,9 @@ import com.algaita.vo.NotificationVO;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 import java.util.Random;
 
@@ -37,6 +40,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String DATA = "data";
     private static final String ACTION_DESTINATION = "action_destination";
     private final String ADMIN_CHANNEL_ID ="admin_channel";
+    Bitmap bitmap;
+
 
 
     @Override
@@ -56,9 +61,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             handleNotification(remoteMessage.getNotification());
         }// Check if message contains a notification payload.
 
+        String imageUri = remoteMessage.getData().get("image");
 
 
-        if (remoteMessage.getData().get("title").contains("video")){
             final Intent intent = new Intent(this, BaseActivity.class);
             NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
             int notificationID = new Random().nextInt(3000);
@@ -71,14 +76,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
                     PendingIntent.FLAG_ONE_SHOT);
 
-            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.icon);
+            bitmap = getBitmapfromUrl(imageUri);
+
+//
+//            largeIcon = BitmapFactory.decodeResource(getResources(),
+//                    R.drawable.icon);
 
             String description = remoteMessage.getData().get("message");
             Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                     .setSmallIcon(R.drawable.icon)
-                    .setLargeIcon(largeIcon)
+                    .setLargeIcon(bitmap)
                     .setContentTitle(remoteMessage.getData().get("title"))
                     .setContentText(remoteMessage.getData().get("message"))
                     .setAutoCancel(true)
@@ -86,7 +94,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setOngoing(true)
                     .setStyle(new NotificationCompat.BigPictureStyle()
-                            .bigPicture(largeIcon)
+                            .bigPicture(bitmap)
                             .bigLargeIcon(null)
                     )
                     .setSound(notificationSoundUri)
@@ -97,82 +105,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationBuilder.setColor(getResources().getColor(R.color.colorPrimaryDark));
             }
             notificationManager.notify(notificationID, notificationBuilder.build());
-        }else if(remoteMessage.getData().get("title").contains("Announcement")){
-            final Intent intent = new Intent(this, BaseActivity.class);
-            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-            int notificationID = new Random().nextInt(3000);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                setupChannels(notificationManager);
-            }
-
-            intent.putExtra("fromNotification",true);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
-
-            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.icon);
-
-            Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.icon)
-                    .setLargeIcon(largeIcon)
-                    .setContentTitle(remoteMessage.getData().get("title"))
-                    .setContentText(remoteMessage.getData().get("message"))
-                    .setAutoCancel(true)
-                    .setDefaults(NotificationCompat.DEFAULT_ALL)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setStyle(new NotificationCompat.BigPictureStyle()
-                            .bigPicture(largeIcon)
-                            .bigLargeIcon(null)
-                    )
-                    .setSound(notificationSoundUri)
-                    .setContentIntent(pendingIntent);
-
-            //Set notification color to match your app color template
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                notificationBuilder.setColor(getResources().getColor(R.color.colorPrimaryDark));
-            }
-            notificationManager.notify(notificationID, notificationBuilder.build());
-        }else{
-            final Intent intent = new Intent(this, BaseActivity.class);
-            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-            int notificationID = new Random().nextInt(3000);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                setupChannels(notificationManager);
-            }
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
-
-            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.icon);
-
-            Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.icon)
-                    .setLargeIcon(largeIcon)
-                    .setDefaults(NotificationCompat.DEFAULT_ALL)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setContentTitle(remoteMessage.getData().get("title"))
-                    .setContentText(remoteMessage.getData().get("message"))
-                    .setAutoCancel(true)
-                    .setStyle(new NotificationCompat.BigPictureStyle()
-                            .bigPicture(largeIcon)
-                            .bigLargeIcon(null)
-                    )
-                    .setSound(notificationSoundUri)
-                    .setContentIntent(pendingIntent);
-
-            //Set notification color to match your app color template
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                notificationBuilder.setColor(getResources().getColor(R.color.colorPrimaryDark));
-            }
-            notificationManager.notify(notificationID, notificationBuilder.build());
-        }
 
     }
 
@@ -215,7 +148,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void setupChannels(NotificationManager notificationManager){
         CharSequence adminChannelName = "New notification";
         String adminChannelDescription = "Device to devie notification";
-
         NotificationChannel adminChannel;
         adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_HIGH);
         adminChannel.setDescription(adminChannelDescription);
@@ -224,6 +156,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         adminChannel.enableVibration(true);
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(adminChannel);
+        }
+    }
+
+
+
+
+    /*
+     *To get a Bitmap image from the URL received
+     * */
+    public Bitmap getBitmapfromUrl(String imageUrl) {
+        try {
+            URL url = new URL(imageUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(input);
+            return bitmap;
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+
         }
     }
 }

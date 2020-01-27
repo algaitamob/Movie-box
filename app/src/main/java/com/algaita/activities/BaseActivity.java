@@ -560,9 +560,9 @@ public class BaseActivity extends AppCompatActivity {
     private void showTutor(int millis){
         new MaterialShowcaseView.Builder(this)
                 .setTarget(et_search)
-                .setTitleText("Notice")
+                .setTitleText("Algaita Dub Studio")
                 .setDismissText("AKAFTA!")
-                .setContentText("Search and Amazing Movie!")
+                .setContentText("Search an Amazing Movie!")
                 .setDelay(millis)
                 .singleUse(SHOWCASE_ID)
                 .show();

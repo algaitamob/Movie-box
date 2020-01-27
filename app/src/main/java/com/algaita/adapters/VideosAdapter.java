@@ -61,7 +61,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.MyViewHold
         Videos videos = videosList.get(position);
         holder.title.setText(videos.getTitle());
         holder.release_date.setText(videos.getRelease_date());
-        holder.price.setText("₦" + videos.getPrice());
+
+        if(videos.getPrice().startsWith("0")){
+            holder.price.setText("FREE");
+        }else{
+            holder.price.setText("₦" + videos.getPrice());
+        }
         Glide.with(context)
                 .load(videos.getPoster())
 //                .centerCrop(150, 150)

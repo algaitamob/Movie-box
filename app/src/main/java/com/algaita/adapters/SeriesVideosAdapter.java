@@ -57,7 +57,13 @@ public class SeriesVideosAdapter extends RecyclerView.Adapter<SeriesVideosAdapte
         final SeriesVideos series = seriesList.get(position);
         holder.title.setText(series.getTitle());
 
-        holder.price.setText("₦" + series.getPrice());
+//        holder.price.setText("₦" + series.getPrice());
+
+        if(series.getPrice().startsWith("0")){
+            holder.price.setText("FREE");
+        }else{
+            holder.price.setText("₦" + series.getPrice());
+        }
 //        Glide.with(context)
 //                .load(series.getPoster())
 ////                .centerCrop(150, 150)

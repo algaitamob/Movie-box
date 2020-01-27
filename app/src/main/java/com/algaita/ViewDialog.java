@@ -41,8 +41,8 @@ public class ViewDialog {
         //...now load that gif which we put inside the drawble folder here with the help of Glide
 
         Glide.with(activity)
-                .load(R.drawable.icon)
-                .placeholder(R.drawable.icon)
+                .load(R.drawable.algaitaloader)
+                .placeholder(R.drawable.algaitaloader)
                 .centerCrop()
                 .crossFade()
                 .into(imageViewTarget);

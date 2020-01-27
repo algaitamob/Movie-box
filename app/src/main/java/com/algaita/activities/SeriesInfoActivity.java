@@ -599,13 +599,24 @@ public class SeriesInfoActivity extends AppCompatActivity {
         bbtn_download = dialog.findViewById(R.id.btn_download);
 
         name.setText(getIntent().getStringExtra("title") + " - " + title);
-        if (type.contains("YES")){
-            bbtn_download.setVisibility(View.VISIBLE);
-            bbtn_buy.setVisibility(View.GONE);
+
+        if (price.startsWith("0")){
+                bbtn_download.setVisibility(View.VISIBLE);
+                bbtn_buy.setVisibility(View.GONE);
         }else{
-            bbtn_download.setVisibility(View.GONE);
-            bbtn_buy.setVisibility(View.VISIBLE);
+
+            if (type.contains("YES")){
+                bbtn_download.setVisibility(View.VISIBLE);
+                bbtn_buy.setVisibility(View.GONE);
+            }else{
+                bbtn_download.setVisibility(View.GONE);
+                bbtn_buy.setVisibility(View.VISIBLE);
+            }
+
+
+
         }
+
 
         bbtn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
