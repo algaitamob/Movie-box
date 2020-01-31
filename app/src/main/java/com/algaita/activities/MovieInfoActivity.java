@@ -24,14 +24,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -155,8 +158,10 @@ public class MovieInfoActivity extends AppCompatActivity {
 
         cast_recycleview =  findViewById(R.id.cast_recycleview);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MovieInfoActivity.this, LinearLayoutManager.HORIZONTAL, false);
-        cast_recycleview.setLayoutManager(layoutManager);
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MovieInfoActivity.this, LinearLayoutManager.HORIZONTAL, false);
+//        cast_recycleview.setLayoutManager(layoutManager);
+        cast_recycleview.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+
         cast_recycleview.setItemAnimator(new DefaultItemAnimator());
 
         GetCastAdapter = new ArrayList<>();
@@ -205,6 +210,11 @@ public class MovieInfoActivity extends AppCompatActivity {
                     videoView.requestFocus();
 
 
+                    DisplayMetrics metrics = new DisplayMetrics();
+                    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
+
+
 
                     videoView.start();
 
@@ -238,6 +248,10 @@ public class MovieInfoActivity extends AppCompatActivity {
                    videoView.setVideoURI(uri);
                    videoView.requestFocus();
 
+
+                   DisplayMetrics metrics = new DisplayMetrics();
+                   getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                   videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
 
 
                    videoView.start();
@@ -293,7 +307,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         });
 
 
-        if(getIntent().getStringExtra("price").startsWith("")){
+        if(getIntent().getStringExtra("price").startsWith("0")){
             btn_buy.setVisibility(View.GONE);
             btn_download.setVisibility(View.VISIBLE);
             btn_watch.setVisibility(View.VISIBLE);
@@ -793,14 +807,30 @@ public class MovieInfoActivity extends AppCompatActivity {
     private void showTutor(int millis){
         new MaterialShowcaseView.Builder(this)
                 .setTarget(card_airtime)
-                .setTitleText("Sanarwa")
-                .setDismissText("AKAFTA!")
+                .setTitleText("Attention")
+                .setDismissText("GOT IT!")
                 .setContentText("Payment with Recharge Card is for Nigerians only!")
                 .setDelay(millis)
                 .singleUse(SHOWCASE_ID)
                 .show();
     }
 
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+////        finish();
+//
+////        CheckVideoStatus();
+//    }
+
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
+    }
 }
 
 

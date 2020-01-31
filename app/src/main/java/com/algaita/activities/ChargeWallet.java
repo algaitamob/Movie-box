@@ -62,9 +62,9 @@ public class ChargeWallet extends AppCompatActivity {
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
-
-                Intent intent = new Intent(ChargeWallet.this, BaseActivity.class);
-                startActivity(intent);
+//
+//                Intent intent = new Intent(ChargeWallet.this, BaseActivity.class);
+//                startActivity(intent);
                 finish();
             }
 

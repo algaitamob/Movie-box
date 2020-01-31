@@ -102,12 +102,29 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
                                 android:background="@drawable/gradient_roundshape"/>
-                            <View
+
+
+                               <View
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
                                 android:layout_weight="1" />
 
                         </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btn_watch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="WATCH"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:background="@drawable/gradient_roundshape"/>
+
 
                     </LinearLayout>
 

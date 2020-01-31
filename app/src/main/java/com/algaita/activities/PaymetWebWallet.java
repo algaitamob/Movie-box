@@ -119,8 +119,8 @@ public class PaymetWebWallet extends AppCompatActivity {
                 toast.setView(layout);
                 toast.show();
                 super.onPageFinished(view, PAYMENT_SUCCESS);
-                Intent intent = new Intent(PaymetWebWallet.this, BaseActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(PaymetWebWallet.this, BaseActivity.class);
+//                startActivity(intent);
                 finish();
                 wvPayment.clearCache(true);
 
@@ -138,8 +138,8 @@ public class PaymetWebWallet extends AppCompatActivity {
 //                ProjectUtils.showToast(mContext, "Payment fail.");
                 //view.loadUrl("https://www.youtube.com");
                 super.onPageFinished(view, PAYMENT_FAIL);
-                Intent intent = new Intent(PaymetWebWallet.this, BaseActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(PaymetWebWallet.this, BaseActivity.class);
+//                startActivity(intent);
                 finish();
 
                 wvPayment.clearCache(true);

@@ -262,4 +262,8 @@ public class WalletFragment extends Fragment  implements SwipeRefreshLayout.OnRe
         CheckBalance();
         GetVideosTheater();
     }
+
+
+
+
 }

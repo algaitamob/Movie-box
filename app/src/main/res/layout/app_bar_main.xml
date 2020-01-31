@@ -33,12 +33,11 @@
                 android:src="@drawable/menu" />
 
             <ImageView
-                android:visibility="gone"
-                android:id="@+id/profile"
+                android:id="@+id/movie"
                 android:layout_width="18.7dp"
                 android:layout_height="21dp"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/ic_person_white_24dp" />
+                android:src="@drawable/ic_movie" />
 
 
         </RelativeLayout>

@@ -125,7 +125,7 @@ public class BaseActivity extends AppCompatActivity {
         navigationView =  findViewById(R.id.nav_view);
         contentView = findViewById(R.id.content);
         menuLeftIV =  findViewById(R.id.menuLeftIV);
-        ivFilter =  findViewById(R.id.profile);
+        ivFilter =  findViewById(R.id.movie);
         et_search =  findViewById(R.id.et_search);
         btn_search =  findViewById(R.id.btn_search);
 
@@ -144,12 +144,21 @@ public class BaseActivity extends AppCompatActivity {
         llProfileClick = navHeader.findViewById(R.id.llProfileClick);
 
 
+
         tvName.setText(sessionHandlerUser.getUserDetail().getFullname());
 
         char first = sessionHandlerUser.getUserDetail().getFullname().charAt(0);
         txtprofile.setText(""+first);
 
 
+
+        ivFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(BaseActivity.this, VideosActivity.class);
+                startActivity(intent);
+            }
+        });
         if (savedInstanceState == null) {
             if (type != null) {
                     navItemIndex = 0;
@@ -386,6 +395,16 @@ public class BaseActivity extends AppCompatActivity {
         clickDone();
     }
 
+//
+//    @Override
+//    public void onRestart()
+//    {
+//        super.onRestart();
+//        finish();
+//        overridePendingTransition(0, 0);
+//        startActivity(getIntent());
+//        overridePendingTransition(0, 0);
+//    }
 
     public void clickDone() {
         new AlertDialog.Builder(this)

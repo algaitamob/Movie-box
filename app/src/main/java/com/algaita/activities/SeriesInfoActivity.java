@@ -22,8 +22,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -79,7 +82,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
     ImageView img_play;
 
-    Button bbtn_buy, bbtn_download;
+    Button bbtn_buy, bbtn_download, bbtn_watch;
 
     // Progress dialog type (0 - for Horizontal progress bar)
     public static final int progress_bar_type = 0;
@@ -123,6 +126,9 @@ public class SeriesInfoActivity extends AppCompatActivity {
     private View bottom_sheet;
     ViewDialog viewDialog;
 
+    private ImageView play;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,13 +142,16 @@ public class SeriesInfoActivity extends AppCompatActivity {
         txtrelease_date = findViewById(R.id.release_date);
         poster = findViewById(R.id.poster);
         poster_bg = findViewById(R.id.poster_bg);
+        play = findViewById(R.id.play);
 
-        img_play = findViewById(R.id.play);
+
+//        img_play = findViewById(R.id.play);
 
         checkPermissions();
         series_recycleview =  findViewById(R.id.movie_recycleview);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(SeriesInfoActivity.this);
+
         series_recycleview.setLayoutManager(layoutManager);
         series_recycleview.setItemAnimator(new DefaultItemAnimator());
 
@@ -177,8 +186,11 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
         cast_recycleview =  findViewById(R.id.cast_recycleview);
 
-        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(SeriesInfoActivity.this, LinearLayoutManager.HORIZONTAL, false);
-        cast_recycleview.setLayoutManager(layoutManager1);
+
+        cast_recycleview.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+
+//        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(SeriesInfoActivity.this, LinearLayoutManager.HORIZONTAL, false);
+//        cast_recycleview.setLayoutManager(layoutManager1);
         cast_recycleview.setItemAnimator(new DefaultItemAnimator());
 
         GetCastAdapter = new ArrayList<>();
@@ -212,6 +224,45 @@ public class SeriesInfoActivity extends AppCompatActivity {
         }
 
 
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = getIntent();
+                poster_bg.setVisibility(View.GONE);
+                videoView.setVisibility(View.VISIBLE);
+                play.setVisibility(View.GONE);
+
+                try {
+                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
+                    videoView.setVideoURI(uri);
+                    videoView.requestFocus();
+
+
+                    DisplayMetrics metrics = new DisplayMetrics();
+                    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
+
+
+
+                    videoView.start();
+
+                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+//                           Toast.makeText(getApplicationContext(), "Video completed", Toast.LENGTH_LONG).show();
+                            img_play.setVisibility(View.VISIBLE);
+
+                        }
+                    });
+                }catch (Exception e){
+
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
         btn_trailer = findViewById(R.id.trailer);
         btn_trailer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,14 +270,20 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 poster_bg.setVisibility(View.GONE);
                 videoView.setVisibility(View.VISIBLE);
-                img_play.setVisibility(View.GONE);
+                play.setVisibility(View.GONE);
 
 
                 try {
                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
                    videoView.setVideoURI(uri);
                    videoView.requestFocus();
-                   videoView.start();
+
+                    DisplayMetrics metrics = new DisplayMetrics();
+                    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
+
+
+                    videoView.start();
 
                     videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
@@ -597,6 +654,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
         name = dialog.findViewById(R.id.name);
         bbtn_buy = dialog.findViewById(R.id.btn_buy);
         bbtn_download = dialog.findViewById(R.id.btn_download);
+        bbtn_watch = dialog.findViewById(R.id.btn_watch);
 
         name.setText(getIntent().getStringExtra("title") + " - " + title);
 
@@ -607,9 +665,11 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
             if (type.contains("YES")){
                 bbtn_download.setVisibility(View.VISIBLE);
+                bbtn_watch.setVisibility(View.VISIBLE);
                 bbtn_buy.setVisibility(View.GONE);
             }else{
                 bbtn_download.setVisibility(View.GONE);
+                bbtn_watch.setVisibility(View.GONE);
                 bbtn_buy.setVisibility(View.VISIBLE);
             }
 
@@ -631,6 +691,16 @@ public class SeriesInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 new DownloadFileFromURL().execute(video_url);
+            }
+        });
+
+
+        bbtn_watch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SeriesInfoActivity.this, PlayerService.class);
+                intent.putExtra("uri", video_url);
+                startActivity(intent);
             }
         });
 
@@ -765,6 +835,13 @@ public class SeriesInfoActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
+    }
 
 
 

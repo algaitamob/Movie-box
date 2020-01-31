@@ -26,6 +26,12 @@
             android:scaleType="fitXY"
             android:src="@drawable/barazanabanner" />
 
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="175dp">
+
+
         <VideoView
             android:layout_alignParentRight="true"
             android:layout_alignParentLeft="true"
@@ -34,9 +40,10 @@
             android:visibility="gone"
             android:id="@+id/vdVw"
             android:layout_width="wrap_content"
-            android:layout_height="175dp"
+            android:layout_height="fill_parent"
              />
 
+        </RelativeLayout>
         <ImageView
             android:id="@+id/play"
             android:layout_width="50dp"
@@ -327,7 +334,7 @@
             android:clipToPadding="false"
             android:paddingTop="16.7dp"
             android:paddingLeft="20dp"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
