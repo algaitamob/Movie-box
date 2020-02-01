@@ -38,7 +38,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_middle"
                         android:gravity="center_vertical"
-                        android:text="Help Center"
+                        android:text="Algaita Movie Box"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorPrimary"
                         android:textStyle="bold" />
@@ -74,9 +74,10 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
-
-
-
+                            <ImageView
+                                android:layout_width="120dp"
+                                android:layout_height="78dp"
+                                android:src="@drawable/icon" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -114,6 +115,36 @@
                         app:cardBackgroundColor="@color/grey_5"
                         app:cardCornerRadius="6dp"
                         app:cardElevation="0dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="Powered by:"
+                        android:textSize="12sp"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="Indexial Technologies LTD"
+                        android:textSize="12sp"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="www.indexial.tech"
+                        android:textSize="10sp"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black"
+                        android:textStyle="italic" />
+
 
                 </LinearLayout>
 

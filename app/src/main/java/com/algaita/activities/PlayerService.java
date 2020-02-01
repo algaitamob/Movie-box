@@ -13,17 +13,20 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.algaita.R;
+import com.algaita.ViewDialog;
 import com.algaita.player.CustomVideoPlayer;
 
 public class PlayerService extends AppCompatActivity {
     CustomVideoPlayer customVideoPlayer;
     ProgressBar progressBar = null;
+    ViewDialog viewDialog;
 
 
     @Override
     public  void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_player);
+        viewDialog = new ViewDialog(this);
         Intent intent = getIntent();
         progressBar =  findViewById(R.id.progressbar);
 
@@ -39,7 +42,8 @@ public class PlayerService extends AppCompatActivity {
         videoView.setVideoURI(uri);
         videoView.requestFocus();
 
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
+        viewDialog.showDialog();
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -50,7 +54,8 @@ public class PlayerService extends AppCompatActivity {
                     public void onVideoSizeChanged(MediaPlayer mp, int arg1,
                                                    int arg2) {
                         // TODO Auto-generated method stub
-                        progressBar.setVisibility(View.GONE);
+//                        progressBar.setVisibility(View.GONE);
+                        viewDialog.hideDialog();
                         mp.start();
                     }
                 });

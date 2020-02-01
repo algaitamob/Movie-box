@@ -67,6 +67,7 @@ public class BaseActivity extends AppCompatActivity {
     private String TAG = BaseActivity.class.getSimpleName();
 
     private static final String SHOWCASE_ID = "Simple Showcase";
+    private static final String SHOWCASE_ID3 = "VideoList";
 
     private FrameLayout frame;
     private View contentView;
@@ -137,6 +138,7 @@ public class BaseActivity extends AppCompatActivity {
 
         CheckBalance();
         showTutor(500);
+        showTutor1(500);
 
         tvEnglish = navHeader.findViewById(R.id.tvEnglish);
         tvOther = navHeader.findViewById(R.id.tvOther);
@@ -580,8 +582,20 @@ public class BaseActivity extends AppCompatActivity {
         new MaterialShowcaseView.Builder(this)
                 .setTarget(et_search)
                 .setTitleText("Algaita Dub Studio")
-                .setDismissText("AKAFTA!")
+                .setDismissText("GOT IT!")
                 .setContentText("Search an Amazing Movie!")
+                .setDelay(millis)
+                .singleUse(SHOWCASE_ID)
+                .show();
+    }
+
+
+    private void showTutor1(int millis){
+        new MaterialShowcaseView.Builder(this)
+                .setTarget(ivFilter)
+                .setTitleText("Attention")
+                .setDismissText("GOT IT!")
+                .setContentText("Show Movies List!")
                 .setDelay(millis)
                 .singleUse(SHOWCASE_ID)
                 .show();

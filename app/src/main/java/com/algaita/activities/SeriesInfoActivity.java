@@ -34,6 +34,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,6 +80,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
     // Progress Dialog
     private ProgressDialog pDialog;
+    ProgressBar progressBar = null;
+
 
     ImageView img_play;
 
@@ -143,6 +146,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
         poster = findViewById(R.id.poster);
         poster_bg = findViewById(R.id.poster_bg);
         play = findViewById(R.id.play);
+
+        progressBar =  findViewById(R.id.progressbar);
 
 
 //        img_play = findViewById(R.id.play);
@@ -243,6 +248,23 @@ public class SeriesInfoActivity extends AppCompatActivity {
                     videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
 
 
+                    progressBar.setVisibility(View.VISIBLE);
+                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            // TODO Auto-generated method stub
+                            mp.start();
+                            mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                                @Override
+                                public void onVideoSizeChanged(MediaPlayer mp, int arg1,
+                                                               int arg2) {
+                                    // TODO Auto-generated method stub
+                                    progressBar.setVisibility(View.GONE);
+                                    mp.start();
+                                }
+                            });
+                        }
+                    });
 
                     videoView.start();
 
@@ -283,6 +305,23 @@ public class SeriesInfoActivity extends AppCompatActivity {
                     videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
 
 
+                    progressBar.setVisibility(View.VISIBLE);
+                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            // TODO Auto-generated method stub
+                            mp.start();
+                            mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                                @Override
+                                public void onVideoSizeChanged(MediaPlayer mp, int arg1,
+                                                               int arg2) {
+                                    // TODO Auto-generated method stub
+                                    progressBar.setVisibility(View.GONE);
+                                    mp.start();
+                                }
+                            });
+                        }
+                    });
                     videoView.start();
 
                     videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

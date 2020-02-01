@@ -113,14 +113,14 @@ public class PaymetWebWallet extends AppCompatActivity {
             if (url.equals(PAYMENT_SUCCESS)) {
                 View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
                 TextView text = layout.findViewById(R.id.text);
-                text.setText("Payment was successful.");
+                text.setText("Payment was successfully");
                 Toast toast = new Toast(getApplicationContext());
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
                 super.onPageFinished(view, PAYMENT_SUCCESS);
-//                Intent intent = new Intent(PaymetWebWallet.this, BaseActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(PaymetWebWallet.this, BaseActivity.class);
+                startActivity(intent);
                 finish();
                 wvPayment.clearCache(true);
 
@@ -138,8 +138,8 @@ public class PaymetWebWallet extends AppCompatActivity {
 //                ProjectUtils.showToast(mContext, "Payment fail.");
                 //view.loadUrl("https://www.youtube.com");
                 super.onPageFinished(view, PAYMENT_FAIL);
-//                Intent intent = new Intent(PaymetWebWallet.this, BaseActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(PaymetWebWallet.this, BaseActivity.class);
+                startActivity(intent);
                 finish();
 
                 wvPayment.clearCache(true);

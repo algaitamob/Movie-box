@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,6 +90,8 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     CoordinatorLayout layout_bg;
 
+    ProgressBar progressBar = null;
+
 
     String fileN = null ;
     public static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 123;
@@ -138,6 +141,9 @@ public class MovieInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_info);
         sessionHandlerUser = new SessionHandlerUser(this);
         viewDialog = new ViewDialog(this);
+
+        progressBar =  findViewById(R.id.progressbar);
+
 
         layout_bg = findViewById(R.id.layout_bg);
         final Intent intent = getIntent();
@@ -216,6 +222,23 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
 
+                    progressBar.setVisibility(View.VISIBLE);
+                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            // TODO Auto-generated method stub
+                            mp.start();
+                            mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                                @Override
+                                public void onVideoSizeChanged(MediaPlayer mp, int arg1,
+                                                               int arg2) {
+                                    // TODO Auto-generated method stub
+                        progressBar.setVisibility(View.GONE);
+                                    mp.start();
+                                }
+                            });
+                        }
+                    });
                     videoView.start();
 
                     videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -254,6 +277,23 @@ public class MovieInfoActivity extends AppCompatActivity {
                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
 
 
+                   progressBar.setVisibility(View.VISIBLE);
+                   videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                       @Override
+                       public void onPrepared(MediaPlayer mp) {
+                           // TODO Auto-generated method stub
+                           mp.start();
+                           mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                               @Override
+                               public void onVideoSizeChanged(MediaPlayer mp, int arg1,
+                                                              int arg2) {
+                                   // TODO Auto-generated method stub
+                                   progressBar.setVisibility(View.GONE);
+                                   mp.start();
+                               }
+                           });
+                       }
+                   });
                    videoView.start();
 
                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

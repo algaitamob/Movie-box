@@ -129,7 +129,7 @@ public class SplashActivity extends AppCompatActivity {
 
                         AlertDialog alertDialog = new AlertDialog.Builder(SplashActivity.this).create();
                         alertDialog.setTitle("Error");
-                        alertDialog.setMessage("Network Connectio Error!");
+                        alertDialog.setMessage("Network Connection Error!");
                         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "GO IT!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 //                                alertDialog.dismiss();

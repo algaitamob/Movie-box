@@ -116,7 +116,7 @@ public class PaymetWeb extends AppCompatActivity {
             if (url.equals(PAYMENT_SUCCESS)) {
                 View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
                 TextView text = layout.findViewById(R.id.text);
-                text.setText("Payment was successful.");
+                text.setText("Payment was successfully");
                 Toast toast = new Toast(getApplicationContext());
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
