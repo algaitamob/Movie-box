@@ -436,7 +436,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         card_wallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mBottomSheetDialog.hide();
+                mBottomSheetDialog.hide();
                 Intent i = getIntent();
                     int bal = Integer.parseInt(sessionHandlerUser.getUserDetail().getBalance());
                     int price = Integer.parseInt(i.getStringExtra("price"));
@@ -871,6 +871,9 @@ public class MovieInfoActivity extends AppCompatActivity {
         finish();
         startActivity(getIntent());
     }
+
+
+
 }
 
 

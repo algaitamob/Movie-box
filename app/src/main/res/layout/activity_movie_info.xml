@@ -200,7 +200,7 @@
                         android:textSize="12.7sp"
                         android:textColor="@color/white"
                         android:lineSpacingExtra="-8.7sp"
-                        android:text="Hindi, English"
+                        android:text="-"
                         />
 
                 </LinearLayout>
