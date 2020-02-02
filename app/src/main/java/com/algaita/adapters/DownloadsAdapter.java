@@ -69,7 +69,7 @@ public class DownloadsAdapter extends RecyclerView.Adapter<DownloadsAdapter.MyVi
 //                .override(500,500)
 //                .placeholder(R.drawable.imgloader)
 ////                .centerInside()
-//                .error(R.drawable.icon)
+//                .error(R.drawable.oldicon)
 //                .into(holder.poster);
 
 //

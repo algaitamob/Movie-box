@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.support.design.widget.BottomSheetBehavior;
@@ -67,12 +66,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class SeriesInfoActivity extends AppCompatActivity {
@@ -344,13 +340,13 @@ public class SeriesInfoActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(intent.getStringExtra("poster"))
                 .placeholder(R.drawable.imgloader)
-                .error(R.drawable.icon)
+                .error(R.drawable.oldicon)
                 .into(poster);
 
         Glide.with(this)
                 .load(intent.getStringExtra("cover"))
                 .placeholder(R.drawable.imgloader)
-                .error(R.drawable.icon)
+                .error(R.drawable.oldicon)
                 .into(poster_bg);
 
         txtrelease_date.setText(intent.getStringExtra("release_date"));

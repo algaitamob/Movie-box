@@ -18,15 +18,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -410,7 +407,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void clickDone() {
         new AlertDialog.Builder(this)
-                .setIcon(R.drawable.icon)
+                .setIcon(R.drawable.oldicon)
                 .setTitle(getResources().getString(R.string.app_name))
                 .setMessage(getResources().getString(R.string.closeMsg))
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {

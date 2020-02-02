@@ -1,6 +1,5 @@
 package com.algaita.services;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -80,12 +79,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 //
 //            largeIcon = BitmapFactory.decodeResource(getResources(),
-//                    R.drawable.icon);
+//                    R.drawable.oldicon);
 
             String description = remoteMessage.getData().get("message");
             Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.icon)
+                    .setSmallIcon(R.drawable.oldicon)
                     .setLargeIcon(bitmap)
                     .setContentTitle(remoteMessage.getData().get("title"))
                     .setContentText(remoteMessage.getData().get("message"))

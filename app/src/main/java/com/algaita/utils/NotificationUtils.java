@@ -61,7 +61,7 @@ public class NotificationUtils {
             if (iconUrl != null) {
                 iconBitMap = getBitmapFromURL(iconUrl);
             }
-            final int icon = R.drawable.icon;
+            final int icon = R.drawable.oldicon;
 
             PendingIntent resultPendingIntent;
 
@@ -111,7 +111,7 @@ public class NotificationUtils {
                                 .bigPicture(iconBitMap)
                                 .bigLargeIcon(null)
                         )
-                        .setSmallIcon(R.drawable.icon)
+                        .setSmallIcon(R.drawable.oldicon)
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
@@ -122,7 +122,7 @@ public class NotificationUtils {
 
 
             } else {
-                //If Bitmap is created from URL, show big icon
+                //If Bitmap is created from URL, show big oldicon
                 NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
                 bigPictureStyle.setBigContentTitle(title);
                 bigPictureStyle.setSummaryText(Html.fromHtml(message).toString());
@@ -133,7 +133,7 @@ public class NotificationUtils {
                         .setContentText(message)
                         .setContentIntent(resultPendingIntent)
                         .setStyle(bigPictureStyle)
-                        .setSmallIcon(R.drawable.icon)
+                        .setSmallIcon(R.drawable.oldicon)
                         .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                         .setContentText(message)
                         .setDefaults(NotificationCompat.DEFAULT_ALL)

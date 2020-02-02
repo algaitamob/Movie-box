@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.algaita.R;
-import com.algaita.models.ComingVideos;
 import com.algaita.models.Series;
 import com.bumptech.glide.Glide;
 
@@ -66,7 +65,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.MyViewHold
                 .override(500,500)
                 .placeholder(R.drawable.imgloader)
 //                .centerInside()
-                .error(R.drawable.icon)
+                .error(R.drawable.oldicon)
                 .into(holder.poster);
 
 //        Picasso.with(context).load(videos.getPoster()).placeholder(R.drawable.progress_animation).into(holder.poster);

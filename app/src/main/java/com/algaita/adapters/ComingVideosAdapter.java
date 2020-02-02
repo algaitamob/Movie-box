@@ -1,8 +1,6 @@
 package com.algaita.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,12 +11,8 @@ import android.widget.TextView;
 
 import com.algaita.R;
 import com.algaita.models.ComingVideos;
-import com.algaita.models.Videos;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class ComingVideosAdapter extends RecyclerView.Adapter<ComingVideosAdapter.MyViewHolder> {
@@ -71,7 +65,7 @@ public class ComingVideosAdapter extends RecyclerView.Adapter<ComingVideosAdapte
                 .override(500,500)
                 .placeholder(R.drawable.imgloader)
 //                .centerInside()
-                .error(R.drawable.icon)
+                .error(R.drawable.oldicon)
                 .into(holder.poster);
 
 //        Picasso.with(context).load(videos.getPoster()).placeholder(R.drawable.progress_animation).into(holder.poster);

@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.algaita.R;
 import com.algaita.models.Cast;
-import com.algaita.models.Transactions;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -64,7 +63,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.MyViewHolder> 
                 .override(500,500)
                 .placeholder(R.drawable.imgloader)
 //                .centerInside()
-                .error(R.drawable.icon)
+                .error(R.drawable.oldicon)
                 .into(holder.img);
 
 //

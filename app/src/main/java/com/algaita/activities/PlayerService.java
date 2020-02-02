@@ -6,9 +6,11 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -42,8 +44,13 @@ public class PlayerService extends AppCompatActivity {
         videoView.setVideoURI(uri);
         videoView.requestFocus();
 
-//        progressBar.setVisibility(View.VISIBLE);
-        viewDialog.showDialog();
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
+
+
+        progressBar.setVisibility(View.VISIBLE);
+//        viewDialog.showDialog();
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -54,8 +61,8 @@ public class PlayerService extends AppCompatActivity {
                     public void onVideoSizeChanged(MediaPlayer mp, int arg1,
                                                    int arg2) {
                         // TODO Auto-generated method stub
-//                        progressBar.setVisibility(View.GONE);
-                        viewDialog.hideDialog();
+                        progressBar.setVisibility(View.GONE);
+//                        viewDialog.hideDialog();
                         mp.start();
                     }
                 });

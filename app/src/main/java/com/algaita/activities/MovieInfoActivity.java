@@ -8,13 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.support.design.widget.BottomSheetBehavior;
@@ -25,7 +23,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -45,7 +42,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -54,17 +50,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import adapter.Cast_RecycleviewAdapter;
-
 import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
 import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
 import com.algaita.adapters.CastAdapter;
-import com.algaita.adapters.SeriesVideosAdapter;
 import com.algaita.models.Cast;
-import com.algaita.models.SeriesVideos;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -74,14 +66,11 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import modalclass.CastModalClass;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class MovieInfoActivity extends AppCompatActivity {
@@ -360,13 +349,13 @@ public class MovieInfoActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(intent.getStringExtra("poster"))
                 .placeholder(R.drawable.imgloader)
-                .error(R.drawable.icon)
+                .error(R.drawable.oldicon)
                 .into(poster);
 
         Glide.with(this)
                 .load(intent.getStringExtra("cover"))
                 .placeholder(R.drawable.imgloader)
-                .error(R.drawable.icon)
+                .error(R.drawable.oldicon)
                 .into(poster_bg);
 //
 

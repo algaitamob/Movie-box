@@ -72,7 +72,7 @@ public class SeriesVideosAdapter extends RecyclerView.Adapter<SeriesVideosAdapte
 //                .override(500,500)
 //                .placeholder(R.drawable.imgloader)
 ////                .centerInside()
-//                .error(R.drawable.icon)
+//                .error(R.drawable.oldicon)
 //                .into(holder.poster);
 
 //        Picasso.with(context).load(videos.getPoster()).placeholder(R.drawable.progress_animation).into(holder.poster);

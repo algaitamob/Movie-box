@@ -6,18 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.algaita.R;
 import com.algaita.models.Videos;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.MyViewHolder> {
@@ -75,7 +70,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.MyViewHold
                 .override(500,500)
                 .placeholder(R.drawable.imgloader)
 //                .centerInside()
-                .error(R.drawable.icon)
+                .error(R.drawable.oldicon)
                 .into(holder.poster);
 
 //
