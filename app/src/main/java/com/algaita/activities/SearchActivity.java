@@ -4,8 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -13,8 +11,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,16 +36,11 @@ import java.util.List;
 
 public class SearchActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     TextView txt;
-    TextView one,two,three,four,five,six,seven,eight,nine,zero;
-    ImageView clear, add, back;
-    EditText edtxt;
-    String nos,number="";
-
+    ImageView back;
     SessionHandlerUser sessionHandlerUser;
 
     ViewDialog viewDialog;
     RecyclerView theaters_recycleview;
-    RecyclerView comingsoon_recycleview;
     RequestQueue requestQueue;
     JsonArrayRequest jsonArrayRequest;
 
@@ -66,9 +57,7 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
         setContentView(R.layout.activity_search);
         viewDialog = new ViewDialog(this);
         sessionHandlerUser = new SessionHandlerUser(getApplicationContext());
-
         mSwipeRefreshLayout = findViewById(R.id.swipe_container);
-
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
@@ -84,8 +73,6 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                 onBackPressed();
             }
         });
-
-
 
         //Recycleview
         theaters_recycleview =  findViewById(R.id.theaters_recycleview);
@@ -119,11 +106,7 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
 
         }));
 
-
-
-
     }
-
 
     private void GetVideosTheater() {
         viewDialog.showDialog();

@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="87dp"
+        android:layout_height="107dp"
         android:orientation="horizontal"
         android:padding="@dimen/spacing_large">
 
@@ -18,7 +18,7 @@
             android:layout_height="60dp"
             android:layout_centerInParent="true"
 
-            app:srcCompat="@drawable/oldicon" />
+            app:srcCompat="@drawable/applogo" />
 
 
         <View

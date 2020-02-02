@@ -106,18 +106,16 @@
                     android:layout_height="31dp"
 
                     android:layout_marginTop="10dp"
-                    android:layout_weight="1"
                     android:text="Barazana"
                     android:textColor="@color/white"
                     android:textSize="15.2sp" />
 
             </LinearLayout>
                 <LinearLayout
+                    android:layout_marginTop="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
-
 
                     <ImageView
                         android:layout_width="11.7dp"

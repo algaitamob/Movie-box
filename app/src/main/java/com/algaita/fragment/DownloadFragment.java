@@ -2,24 +2,15 @@ package com.algaita.fragment;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,26 +21,12 @@ import android.widget.Toast;
 
 
 import com.algaita.R;
-import com.algaita.RecyclerClickListener;
 import com.algaita.ViewDialog;
 import com.algaita.activities.BaseActivity;
-import com.algaita.activities.MovieInfoActivity;
 import com.algaita.activities.PlayerService;
 import com.algaita.activities.RecyclerTouchListener;
-import com.algaita.activities.ShowTimeActivity;
 import com.algaita.adapters.AdapterVIdeoList;
-import com.algaita.adapters.DownloadsAdapter;
-import com.algaita.adapters.NewVideosAdapter;
-import com.algaita.adapters.TransactionAdapter;
-import com.algaita.adapters.VideoDownloadAdapter;
-import com.algaita.adapters.VideosAdapter;
-import com.algaita.models.Downloads;
 import com.algaita.models.ItemVideos;
-import com.algaita.models.Transactions;
-import com.algaita.player.CustomVideoPlayer;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FilenameFilter;

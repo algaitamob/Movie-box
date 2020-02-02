@@ -74,45 +74,22 @@ import org.json.JSONObject;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class MovieInfoActivity extends AppCompatActivity {
-
-
-
     CoordinatorLayout layout_bg;
-
     ProgressBar progressBar = null;
-
-
-    String fileN = null ;
-    public static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 123;
-    boolean result;
     private final static int REQUEST_ID_MULTIPLE_PERMISSIONS = 0x2;
-    String urlString;
-    Dialog downloadDialog;
-    int WalletBalance;
-
-
     RecyclerView cast_recycleview;
     RequestQueue requestQueue;
     JsonArrayRequest jsonArrayRequest;
-
     //    Series Recycler
     List<Cast> GetCastAdapter;
     Cast getCastAdapter;
     RecyclerView.Adapter recyclerViewAdapterSeries;
-
     private static final String SHOWCASE_ID = "Buy";
-
     private LinearLayout card_airtime, card_credit, card_wallet;
-
     ImageView img_play;
-    // Progress Dialog
     private ProgressDialog pDialog;
-
-    // Progress dialog type (0 - for Horizontal progress bar)
     public static final int progress_bar_type = 0;
-
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
-
     private Handler handler;
     private Runnable runnable;
     TextView txttitle, txtrelease_date, txtprice, txtdescription, txtinfo, total_download, total_watch, btn_trailer, btn_buy, btn_download, btn_watch;
@@ -122,7 +99,6 @@ public class MovieInfoActivity extends AppCompatActivity {
     private BottomSheetDialog mBottomSheetDialog;
     private View bottom_sheet;
     ViewDialog viewDialog;
-
     private ImageView play;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,10 +106,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_info);
         sessionHandlerUser = new SessionHandlerUser(this);
         viewDialog = new ViewDialog(this);
-
         progressBar =  findViewById(R.id.progressbar);
-
-
         layout_bg = findViewById(R.id.layout_bg);
         final Intent intent = getIntent();
         txttitle = findViewById(R.id.title);
@@ -145,24 +118,14 @@ public class MovieInfoActivity extends AppCompatActivity {
         poster_bg = findViewById(R.id.poster_bg);
         total_download = findViewById(R.id.total_download);
         total_watch = findViewById(R.id.total_watch);
-
-
         play = findViewById(R.id.play);
         img_play = findViewById(R.id.play);
 
-
         cast_recycleview =  findViewById(R.id.cast_recycleview);
-
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MovieInfoActivity.this, LinearLayoutManager.HORIZONTAL, false);
-//        cast_recycleview.setLayoutManager(layoutManager);
         cast_recycleview.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-
         cast_recycleview.setItemAnimator(new DefaultItemAnimator());
-
         GetCastAdapter = new ArrayList<>();
-
         GetCast();
-
         cast_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), cast_recycleview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -176,21 +139,13 @@ public class MovieInfoActivity extends AppCompatActivity {
             }
 
         }));
-
-
-
         CheckBalance();
         final VideoView videoView = findViewById(R.id.vdVw);
-        //Set MediaController  to enable play, pause, forward, etc options.
-
         // Permission StrictMode
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-
-
-
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -203,14 +158,9 @@ public class MovieInfoActivity extends AppCompatActivity {
                     Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
                     videoView.setVideoURI(uri);
                     videoView.requestFocus();
-
-
                     DisplayMetrics metrics = new DisplayMetrics();
                     getWindowManager().getDefaultDisplay().getMetrics(metrics);
                     videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
-
-
-
                     progressBar.setVisibility(View.VISIBLE);
                     videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override
@@ -233,7 +183,6 @@ public class MovieInfoActivity extends AppCompatActivity {
                     videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mp) {
-//                           Toast.makeText(getApplicationContext(), "Video completed", Toast.LENGTH_LONG).show();
                             img_play.setVisibility(View.VISIBLE);
 
                         }
@@ -242,7 +191,6 @@ public class MovieInfoActivity extends AppCompatActivity {
 
                     e.printStackTrace();
                 }
-
 
             }
         });
@@ -254,18 +202,13 @@ public class MovieInfoActivity extends AppCompatActivity {
                 poster_bg.setVisibility(View.GONE);
                 videoView.setVisibility(View.VISIBLE);
                 img_play.setVisibility(View.GONE);
-
                try {
                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
                    videoView.setVideoURI(uri);
                    videoView.requestFocus();
-
-
                    DisplayMetrics metrics = new DisplayMetrics();
                    getWindowManager().getDefaultDisplay().getMetrics(metrics);
                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
-
-
                    progressBar.setVisibility(View.VISIBLE);
                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                        @Override
@@ -284,11 +227,9 @@ public class MovieInfoActivity extends AppCompatActivity {
                        }
                    });
                    videoView.start();
-
                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                        @Override
                        public void onCompletion(MediaPlayer mp) {
-//                           Toast.makeText(getApplicationContext(), "Video completed", Toast.LENGTH_LONG).show();
                         img_play.setVisibility(View.VISIBLE);
 
                        }
@@ -304,11 +245,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         btn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 showBottomSheetDialog();
-//
-
-
             }
         });
 
@@ -330,8 +267,6 @@ public class MovieInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkPermissions();
-
-
             }
         });
 
@@ -357,7 +292,6 @@ public class MovieInfoActivity extends AppCompatActivity {
                 .placeholder(R.drawable.imgloader)
                 .error(R.drawable.oldicon)
                 .into(poster_bg);
-//
 
         String status = intent.getStringExtra("status");
         if (status.contains("coming")){
@@ -367,7 +301,6 @@ public class MovieInfoActivity extends AppCompatActivity {
         }else{
             txtrelease_date.setText(intent.getStringExtra("release_date"));
         }
-
         txttitle.setText(intent.getStringExtra("title"));
         txtdescription.setText(intent.getStringExtra("description"));
         txtinfo.setText(intent.getStringExtra("info"));
@@ -375,13 +308,10 @@ public class MovieInfoActivity extends AppCompatActivity {
         total_download.setText(intent.getStringExtra("downloads"));
         txtprice.setText("₦" + intent.getStringExtra("price"));
 
-
         bottom_sheet = findViewById(R.id.bottom_sheet);
         mBehavior = BottomSheetBehavior.from(bottom_sheet);
 
     }
-
-
 
 //  ButtomSheetPayment
     private void showBottomSheetDialog() {
@@ -389,14 +319,10 @@ public class MovieInfoActivity extends AppCompatActivity {
             mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
         final View view = getLayoutInflater().inflate(R.layout.sheet_select_payment_method, null);
-
-
         card_credit = view.findViewById(R.id.card_credit);
         card_airtime = view.findViewById(R.id.card_airtime);
         card_wallet = view.findViewById(R.id.card_wallet);
-
         showTutor(500);
-
         card_airtime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -417,7 +343,6 @@ public class MovieInfoActivity extends AppCompatActivity {
                 intent.putExtra("type", "paystack");
                 intent.putExtra("amount", i.getStringExtra("price"));
                 intent.putExtra("videoid", i.getStringExtra("id"));
-
                 startActivity(intent);
             }
         });
@@ -440,10 +365,6 @@ public class MovieInfoActivity extends AppCompatActivity {
 
                     } else {
                         String type = "Wallet";
-//                        String amount = i.getStringExtra("price");
-//                        String videoid = i.getStringExtra("videoid");
-
-//                        ChargeWallet(amount, videoid);
                         Intent ii = getIntent();
                         Intent intent = new Intent(MovieInfoActivity.this, ChargeWallet.class);
                         intent.putExtra("amount", ii.getStringExtra("price"));
@@ -469,8 +390,6 @@ public class MovieInfoActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBottomSheetDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-
-
         // set background transparent
         ((View) view.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
 
@@ -487,19 +406,15 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
     private void GetCast() {
-//        viewDialog.showDialog();
         GetCastAdapter.clear();
         jsonArrayRequest = new JsonArrayRequest(Config.url + "cast_video.php?videoid=" + getIntent().getStringExtra("id"), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-//                viewDialog.hideDialog();
                 GetCardWebCall3(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
-//                viewDialog.hideDialog();
             }
         });
         requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -603,9 +518,6 @@ public class MovieInfoActivity extends AppCompatActivity {
                 });
         MySingleton.getInstance(this).addToRequestQueue(jsArrayRequest);
     }
-
-
-
     private void checkPermissions() {
         int permissionLocation = ContextCompat.checkSelfPermission(MovieInfoActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -644,7 +556,6 @@ public class MovieInfoActivity extends AppCompatActivity {
                     @SuppressLint("ResourceAsColor")
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
                             if (response.getInt("status") == 0) {
 
@@ -666,12 +577,6 @@ public class MovieInfoActivity extends AppCompatActivity {
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
         return true;
     }
-
-
-
-
-
-
     /**
      * Showing Dialog
      * */
@@ -771,11 +676,10 @@ public class MovieInfoActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String file_url) {
             dismissDialog(progress_bar_type);
-
             String type = "downloads";
             Update(type);
 
-            View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+            View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
             TextView text = layout.findViewById(R.id.text);
             text.setText(getIntent().getStringExtra("title") + "  - Downloaded Successfully!");
             Toast toast = new Toast(getApplicationContext());
@@ -785,10 +689,11 @@ public class MovieInfoActivity extends AppCompatActivity {
 
         }
 
+
+
     }
 
     private void Update(String type) {
-//        viewDialog.showDialog();
         class chargee extends AsyncTask<Bitmap,Void,String> {
 
             RequestHandler rh = new RequestHandler();
@@ -796,27 +701,16 @@ public class MovieInfoActivity extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-//                viewDialog.hideDialog();
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-//                viewDialog.hideDialog();
-//                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
-//                TextView text = layout.findViewById(R.id.text);
-//                text.setText(s);
-//                Toast toast = new Toast(getApplicationContext());
-//                toast.setDuration(Toast.LENGTH_LONG);
-//                toast.setView(layout);
-//                toast.show();
-
             }
 
             @Override
             protected String doInBackground(Bitmap... params) {
                 HashMap<String,String> data = new HashMap<>();
-
                 data.put("type", type);
                 data.put("videoid", getIntent().getStringExtra("id"));
                 String result = rh.sendPostRequest(Config.url + "update_download_watch.php",data);
@@ -843,15 +737,6 @@ public class MovieInfoActivity extends AppCompatActivity {
                 .singleUse(SHOWCASE_ID)
                 .show();
     }
-
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-////        finish();
-//
-////        CheckVideoStatus();
-//    }
 
     @Override
     public void onRestart()

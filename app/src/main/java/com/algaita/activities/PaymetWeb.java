@@ -32,10 +32,7 @@ public class PaymetWeb extends AppCompatActivity {
     private ImageView IVback;
     private String PAYMENT_FAIL;
     private String PAYMENT_SUCCESS;
-
     ViewDialog viewDialog;
-
-
     String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +41,6 @@ public class PaymetWeb extends AppCompatActivity {
         mContext = PaymetWeb.this;
         sessionHandlerUser = new SessionHandlerUser(getApplicationContext());
         viewDialog = new ViewDialog(this);
-
         Intent intent = getIntent();
 
         String payment = intent.getStringExtra("type");
@@ -65,7 +61,6 @@ public class PaymetWeb extends AppCompatActivity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         wvPayment.loadUrl(url);
-
         wvPayment.setWebViewClient(new SSLTolerentWebViewClient());
         init();
     }
@@ -86,10 +81,7 @@ public class PaymetWeb extends AppCompatActivity {
         @Override
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             super.onReceivedSslError(view, handler, error);
-
             viewDialog.hideDialog();
-
-
             // this will ignore the Ssl error and will go forward to your site
             handler.proceed();
         }
@@ -114,41 +106,33 @@ public class PaymetWeb extends AppCompatActivity {
             ProjectUtils.pauseProgressDialog();
             //Page load finished
             if (url.equals(PAYMENT_SUCCESS)) {
-                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom,  findViewById(R.id.custom_toast_layout_id));
                 TextView text = layout.findViewById(R.id.text);
-                text.setText("Payment was successfully");
+                text.setText("Payment successful");
                 Toast toast = new Toast(getApplicationContext());
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
                 super.onPageFinished(view, PAYMENT_SUCCESS);
-//                Intent intent = new Intent(PaymetWeb.this, BaseActivity.class);
-//                startActivity(intent);
+
                 finish();
                 wvPayment.clearCache(true);
-
                 wvPayment.clearHistory();
-
                 wvPayment.destroy();
             } else if (url.equals(PAYMENT_FAIL)) {
-                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
                 TextView text = layout.findViewById(R.id.text);
                 text.setText("Payment fail");
                 Toast toast = new Toast(getApplicationContext());
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
-//                ProjectUtils.showToast(mContext, "Payment fail.");
-                //view.loadUrl("https://www.youtube.com");
                 super.onPageFinished(view, PAYMENT_FAIL);
-//                Intent intent = new Intent(PaymetWeb.this, BaseActivity.class);
-//                startActivity(intent);
+
                 finish();
 
                 wvPayment.clearCache(true);
-
                 wvPayment.clearHistory();
-
                 wvPayment.destroy();
             } else {
                 super.onPageFinished(view, url);
@@ -163,10 +147,6 @@ public class PaymetWeb extends AppCompatActivity {
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             // TODO Auto-generated method stub
-
-//            Intent intent = new Intent(PaymetWeb.this, NoInternet.class);
-//            startActivity(intent);
-
             try {
                 wvPayment.stopLoading();
             } catch (Exception e) {

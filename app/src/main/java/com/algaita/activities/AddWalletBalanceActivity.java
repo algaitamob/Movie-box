@@ -42,11 +42,8 @@ import java.util.List;
 
 public class AddWalletBalanceActivity extends AppCompatActivity {
     TextView txt;
-    TextView one,two,three,four,five,six,seven,eight,nine,zero;
-    ImageView clear, add, back;
+    ImageView back;
     EditText edtxt;
-    String nos,number="";
-
     SessionHandlerUser sessionHandlerUser;
     private BottomSheetBehavior mBehavior;
     private BottomSheetDialog mBottomSheetDialog;
@@ -60,14 +57,8 @@ public class AddWalletBalanceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_wallet_balance);
         viewDialog = new ViewDialog(this);
         sessionHandlerUser = new SessionHandlerUser(getApplicationContext());
-
-
         edtxt=findViewById(R.id.edtxt);
-
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         txt=findViewById(R.id.txt);
-
         txt.setText("Wallet");
         back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +76,6 @@ public class AddWalletBalanceActivity extends AppCompatActivity {
                 if(amount.isEmpty()){
 
                 }else{
-//
                     showBottomSheetDialog();
                 }
 
@@ -94,11 +84,7 @@ public class AddWalletBalanceActivity extends AppCompatActivity {
 
         bottom_sheet = findViewById(R.id.bottom_sheet);
         mBehavior = BottomSheetBehavior.from(bottom_sheet);
-
     }
-
-
-
 
 //    Bottom Sheet Pay
     private void showBottomSheetDialog() {
@@ -129,7 +115,6 @@ public class AddWalletBalanceActivity extends AppCompatActivity {
                 Intent intent = new Intent(AddWalletBalanceActivity.this, PaymetWebWallet.class);
                 intent.putExtra("type", "airtime");
                 intent.putExtra("amount", edtxt.getText().toString());
-//                intent.putExtra("videoid", i.getStringExtra("id"));
                 startActivity(intent);
             }
         });
@@ -141,8 +126,6 @@ public class AddWalletBalanceActivity extends AppCompatActivity {
                 Intent intent = new Intent(AddWalletBalanceActivity.this, PaymetWebWallet.class);
                 intent.putExtra("type", "paystack");
                 intent.putExtra("amount", edtxt.getText().toString());
-//                intent.putExtra("videoid", i.getStringExtra("id"));
-
                 startActivity(intent);
             }
         });

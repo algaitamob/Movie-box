@@ -34,8 +34,6 @@ public class PaymetWebWallet extends AppCompatActivity {
     private String PAYMENT_SUCCESS;
 
     ViewDialog viewDialog;
-
-
     String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +42,7 @@ public class PaymetWebWallet extends AppCompatActivity {
         mContext = PaymetWebWallet.this;
         sessionHandlerUser = new SessionHandlerUser(getApplicationContext());
         viewDialog = new ViewDialog(this);
-
         Intent intent = getIntent();
-
         String payment = intent.getStringExtra("type");
         if (payment.contains("paystack")){
             PAYMENT_FAIL = Config.url + "credit/fail.php";
@@ -57,15 +53,11 @@ public class PaymetWebWallet extends AppCompatActivity {
             PAYMENT_SUCCESS = Config.url + "airtime/success.php";
             url = Config.url + "airtime/add_to_wallet.php?userid="+sessionHandlerUser.getUserDetail().getUserid() + "&amount=" + intent.getStringExtra("amount");
         }
-
         wvPayment = findViewById(R.id.wvPayment);
-
-
         WebSettings settings = wvPayment.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         wvPayment.loadUrl(url);
-
         wvPayment.setWebViewClient(new SSLTolerentWebViewClient());
         init();
     }
@@ -113,7 +105,7 @@ public class PaymetWebWallet extends AppCompatActivity {
             if (url.equals(PAYMENT_SUCCESS)) {
                 View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
                 TextView text = layout.findViewById(R.id.text);
-                text.setText("Payment was successfully");
+                text.setText("Payment successful");
                 Toast toast = new Toast(getApplicationContext());
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
@@ -123,9 +115,7 @@ public class PaymetWebWallet extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 wvPayment.clearCache(true);
-
                 wvPayment.clearHistory();
-
                 wvPayment.destroy();
             } else if (url.equals(PAYMENT_FAIL)) {
                 View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
@@ -135,17 +125,12 @@ public class PaymetWebWallet extends AppCompatActivity {
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
-//                ProjectUtils.showToast(mContext, "Payment fail.");
-                //view.loadUrl("https://www.youtube.com");
                 super.onPageFinished(view, PAYMENT_FAIL);
                 Intent intent = new Intent(PaymetWebWallet.this, BaseActivity.class);
                 startActivity(intent);
                 finish();
-
                 wvPayment.clearCache(true);
-
                 wvPayment.clearHistory();
-
                 wvPayment.destroy();
             } else {
                 super.onPageFinished(view, url);

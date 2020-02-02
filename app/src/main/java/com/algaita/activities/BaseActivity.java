@@ -53,19 +53,15 @@ import com.github.javiersantos.appupdater.AppUpdater;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashMap;
-
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class BaseActivity extends AppCompatActivity {
     private String TAG = BaseActivity.class.getSimpleName();
-
     private static final String SHOWCASE_ID = "Simple Showcase";
     private static final String SHOWCASE_ID3 = "VideoList";
-
     private FrameLayout frame;
     private View contentView;
     public NavigationView navigationView;
@@ -76,47 +72,35 @@ public class BaseActivity extends AppCompatActivity {
     Context mContext;
     TextView txtprofile;
     ViewDialog viewDialog;
-
     public static final String TAG_DOWNLOADS = "downloads";
     public static final String TAG_HOME = "home";
     public static final String TAG_MYVIDEOS = "my videos";
     public static final String TAG_TRANSACTION = "transactions";
     public static final String TAG_SETTING = "setting";
     public static final String TAG_WALLET = "wallet";
-
     public static String CURRENT_TAG = TAG_HOME;
     public static int navItemIndex = 0;
     private Handler mHandler;
     private static final float END_SCALE = 0.8f;
     InputMethodManager inputManager;
-//    Home home = null;
     private boolean shouldLoadHomeFragOnBackPress = true;
     String type = "";
-
     EditText et_search;
     ImageView btn_search;
-
-    private TextView tvName, tvWalletBalance, tvOther, tvEnglish;
-
+    private TextView tvName, tvWalletBalance;
     SessionHandlerUser sessionHandlerUser;
     private LinearLayout llProfileClick;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-
         AppUpdater appUpdater = new AppUpdater(this);
         appUpdater.start();
         Sentry.init("https://8363b9dd7a5f4c71a6aac7e0b5e4d79b@sentry.io/1522542", new AndroidSentryClientFactory(this));
-
         mContext = BaseActivity.this;
         mHandler = new Handler();
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
         sessionHandlerUser = new SessionHandlerUser(this);
-
         viewDialog = new ViewDialog(this);
         frame =  findViewById(R.id.frame);
         drawer =  findViewById(R.id.drawer_layout);
@@ -126,30 +110,18 @@ public class BaseActivity extends AppCompatActivity {
         ivFilter =  findViewById(R.id.movie);
         et_search =  findViewById(R.id.et_search);
         btn_search =  findViewById(R.id.btn_search);
-
-
         navHeader = navigationView.getHeaderView(0);
         tvName = navHeader.findViewById(R.id.tvName);
         txtprofile = navHeader.findViewById(R.id.img_profile);
         tvWalletBalance = navHeader.findViewById(R.id.tvWalletBalance);
-
         CheckBalance();
         showTutor(500);
         showTutor1(500);
-
-        tvEnglish = navHeader.findViewById(R.id.tvEnglish);
-        tvOther = navHeader.findViewById(R.id.tvOther);
-        tvOther = navHeader.findViewById(R.id.tvOther);
         llProfileClick = navHeader.findViewById(R.id.llProfileClick);
 
-
-
         tvName.setText(sessionHandlerUser.getUserDetail().getFullname());
-
         char first = sessionHandlerUser.getUserDetail().getFullname().charAt(0);
         txtprofile.setText(""+first);
-
-
 
         ivFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,10 +141,7 @@ public class BaseActivity extends AppCompatActivity {
                 CURRENT_TAG = TAG_HOME;
                 loadHomeFragment(new HomeFragment(), CURRENT_TAG);
             }
-
-
         }
-
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -186,7 +155,6 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         });
-
         menuLeftIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,7 +164,6 @@ public class BaseActivity extends AppCompatActivity {
         });
 
         setUpNavigationView();
-
         drawer.setScrimColor(Color.TRANSPARENT);
         drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
                                      @Override
@@ -226,7 +193,6 @@ public class BaseActivity extends AppCompatActivity {
 
 
     private void loadHomeFragment(final Fragment fragment, final String TAG) {
-
         Runnable mPendingRunnable = new Runnable() {
             @Override
             public void run() {
@@ -243,15 +209,9 @@ public class BaseActivity extends AppCompatActivity {
         if (mPendingRunnable != null) {
             mHandler.post(mPendingRunnable);
         }
-
-
         drawer.closeDrawers();
-
         invalidateOptionsMenu();
     }
-
-
-
 
     public void drawerOpen() {
 
@@ -268,8 +228,6 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void setUpNavigationView() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -279,7 +237,6 @@ public class BaseActivity extends AppCompatActivity {
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
                         android.R.anim.fade_out);
-
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
                         ivFilter.setVisibility(View.VISIBLE);
@@ -336,7 +293,7 @@ public class BaseActivity extends AppCompatActivity {
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
                         sendIntent.putExtra(Intent.EXTRA_TEXT,
-                                "Saukar Da Manhajar Algaita Dub Studio, don Masge Kallon Sabbin Fasssara Cikin Sauki: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID);
+                                "Saukar Da Manhajar Algaita Movie Box, don Masge Kallon Sabbin Fasssara Cikin Sauki: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID);
                         sendIntent.setType("text/plain");
                         startActivity(sendIntent);
                         break;
@@ -389,21 +346,8 @@ public class BaseActivity extends AppCompatActivity {
                 return;
             }
         }
-
-        //super.onBackPressed();
         clickDone();
     }
-
-//
-//    @Override
-//    public void onRestart()
-//    {
-//        super.onRestart();
-//        finish();
-//        overridePendingTransition(0, 0);
-//        startActivity(getIntent());
-//        overridePendingTransition(0, 0);
-//    }
 
     public void clickDone() {
         new AlertDialog.Builder(this)
@@ -431,10 +375,6 @@ public class BaseActivity extends AppCompatActivity {
                 })
                 .show();
     }
-
-
-
-
 
     private void CheckBalance() {
         String url_ = Config.user_wallet+"?userid="+ sessionHandlerUser.getUserDetail().getUserid();
@@ -467,8 +407,6 @@ public class BaseActivity extends AppCompatActivity {
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
     }
 
-
-
     private void showDialogFeedback() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
@@ -483,8 +421,6 @@ public class BaseActivity extends AppCompatActivity {
 
         final EditText text;
         text = dialog.findViewById(R.id.message);
-
-
 
         ((View) dialog.findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -513,13 +449,10 @@ public class BaseActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.dialog_help);
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-
 
         ((View) dialog.findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -561,7 +494,6 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Bitmap... params) {
                 HashMap<String,String> data = new HashMap<>();
-
                 data.put("message", toString);
                 data.put("userid", String.valueOf(sessionHandlerUser.getUserDetail().getUserid()));
                 String result = rh.sendPostRequest(Config.url + "feedback.php",data);
@@ -573,12 +505,10 @@ public class BaseActivity extends AppCompatActivity {
         chargee ui = new chargee();
         ui.execute();
     }
-
-
     private void showTutor(int millis){
         new MaterialShowcaseView.Builder(this)
                 .setTarget(et_search)
-                .setTitleText("Algaita Dub Studio")
+                .setTitleText("Algaita Movie Box")
                 .setDismissText("GOT IT!")
                 .setContentText("Search an Amazing Movie!")
                 .setDelay(millis)
@@ -586,11 +516,10 @@ public class BaseActivity extends AppCompatActivity {
                 .show();
     }
 
-
     private void showTutor1(int millis){
         new MaterialShowcaseView.Builder(this)
                 .setTarget(ivFilter)
-                .setTitleText("Attention")
+                .setTitleText("Algaita Movie Box")
                 .setDismissText("GOT IT!")
                 .setContentText("Show Movies List!")
                 .setDelay(millis)

@@ -46,16 +46,11 @@ public class LoginActivity extends AppCompatActivity {
     private static final String KEY_STATUS = "status";
     private static final String KEY_MESSAGE = "message";
     private static final String KEY_EMPTY = "";
-
     EditText etphone, etpassword;
     String phone, password;
     TextView txtregister, txtforget;
     Button btn_login;
-
-
-
 //    FireBase
-
     final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
     final private String serverKey = "key=" + "AAAAB1DrYQk:APA91bGyd4Wx_J8bXjN5ZUEi2u28lJnBSjaRhV9HQbhxscMz6IVU8MMBTrBRiJ6AUEXVhnLfXzHIKWN3X0pjBCwPtc5gCSDgnIR1fSCrXgmSp_niHk6xHsaJSfiJWjI7xQ3kpOFzkuAO";
     final private String contentType = "application/json";
@@ -73,12 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         viewDialog = new ViewDialog(this);
 
         if (sessionHandlerUser.isLoggedIn()){
-//            loadDashboard();
-//            String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
-//                    Settings.Secure.ANDROID_ID);
-//
-//            CheckSession(android_id);
-
             loadDashboard();
         }
         etphone = findViewById(R.id.phone);
@@ -118,9 +107,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-
-
     }
 
 
@@ -151,16 +137,10 @@ public class LoginActivity extends AppCompatActivity {
                             if (response.getInt(KEY_STATUS) == 0) {
                                 sessionHandlerUser.loginUser(response.getString("email"), response.getString("fullname"), response.getString("phone"), response.getString("userid"));
                                 subscribeToPushService();
-//                                loadDashboard();
-
-
                                 String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                                         Settings.Secure.ANDROID_ID);
-
                                 CheckSession(android_id);
-
                             } else {
-
                                 View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
                                 TextView text = layout.findViewById(R.id.text);
                                 text.setText(response.getString(KEY_MESSAGE));
@@ -168,7 +148,6 @@ public class LoginActivity extends AppCompatActivity {
                                 toast.setDuration(Toast.LENGTH_LONG);
                                 toast.setView(layout);
                                 toast.show();
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -180,13 +159,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         viewDialog.hideDialog();
                         //Display error message whenever an error occurs
-//                        Toast.makeText(getApplicationContext(),
-//                                error.getMessage(), Toast.LENGTH_SHORT).show();
-
-
                         View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
                         TextView text = layout.findViewById(R.id.text);
-                        text.setText("Network Connection Error");
+                        text.setText("Network Connection Error!");
                         Toast toast = new Toast(getApplicationContext());
                         toast.setDuration(Toast.LENGTH_LONG);
                         toast.setView(layout);
@@ -196,29 +171,12 @@ public class LoginActivity extends AppCompatActivity {
         // Access the RequestQueue through your singleton class.
         MySingleton.getInstance(this).addToRequestQueue(jsArrayRequest);
     }
-
-
-
-
     private void subscribeToPushService() {
         FirebaseMessaging.getInstance().subscribeToTopic("login");
         FirebaseMessaging.getInstance().subscribeToTopic("announcement");
-
-
-        Log.d("AndroidBash", "Subscribed");
-//        Toast.makeText(LoginActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
-
         String token = FirebaseInstanceId.getInstance().getToken();
-
-        // Log and toast
-        Log.d("AndroidBash", token);
-
         RegFirebase(token);
     }
-
-
-
-
     public void RegFirebase(final String token){
         class firebase extends AsyncTask<Bitmap,Void,String> {
 
@@ -233,7 +191,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-
 
             }
 
@@ -258,7 +215,6 @@ public class LoginActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.dialog_forget_password);
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -286,10 +242,6 @@ public class LoginActivity extends AppCompatActivity {
         dialog.show();
         dialog.getWindow().setAttributes(lp);
     }
-
-
-
-
     private boolean CheckSession(String android_id) {
         String url_ = Config.url+"check_session.php?userid="+ sessionHandlerUser.getUserDetail().getUserid() + "&device_id=" + android_id;
         JSONObject request = new JSONObject();
@@ -298,7 +250,6 @@ public class LoginActivity extends AppCompatActivity {
                     @SuppressLint("ResourceAsColor")
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
                             if (response.getInt("status") == 0) {
 
@@ -333,7 +284,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
                         AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this).create();
                         alertDialog.setTitle("Error");
                         alertDialog.setMessage("Network Connection Error");
@@ -351,20 +301,16 @@ public class LoginActivity extends AppCompatActivity {
 
     public void ForgetPass(final String phone){
         class forgetpass extends AsyncTask<Bitmap,Void,String> {
-
             RequestHandler rh = new RequestHandler();
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-//                viewDialog.hideDialog();
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-//                viewDialog.hideDialog();
-//                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
-                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
                 TextView text = layout.findViewById(R.id.text);
                 text.setText(s);
                 Toast toast = new Toast(getApplicationContext());
@@ -373,14 +319,11 @@ public class LoginActivity extends AppCompatActivity {
                 toast.show();
 
             }
-
             @Override
             protected String doInBackground(Bitmap... params) {
                 HashMap<String,String> data = new HashMap<>();
-
                 data.put("phone", phone);
                 String result = rh.sendPostRequest(Config.url + "forget_password.php",data);
-
                 return result;
             }
         }
@@ -389,8 +332,6 @@ public class LoginActivity extends AppCompatActivity {
         ui.execute();
     }
 
-
-
     private void UpdateDevice(String userid, String android_id) {
         class regdevice extends AsyncTask<Bitmap,Void,String> {
 
@@ -398,15 +339,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-//                viewDialog.hideDialog();
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-//                viewDialog.hideDialog();
-//                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
-                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
                 TextView text = layout.findViewById(R.id.text);
                 text.setText(s);
                 Toast toast = new Toast(getApplicationContext());
@@ -422,11 +360,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Bitmap... params) {
                 HashMap<String,String> data = new HashMap<>();
-
                 data.put("userid", userid);
                 data.put("device_id", android_id);
                 String result = rh.sendPostRequest(Config.url + "device_update.php",data);
-
                 return result;
             }
         }

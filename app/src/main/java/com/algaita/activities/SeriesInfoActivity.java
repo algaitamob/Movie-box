@@ -77,21 +77,14 @@ public class SeriesInfoActivity extends AppCompatActivity {
     // Progress Dialog
     private ProgressDialog pDialog;
     ProgressBar progressBar = null;
-
-
     ImageView img_play;
-
     Button bbtn_buy, bbtn_download, bbtn_watch;
 
     // Progress dialog type (0 - for Horizontal progress bar)
     public static final int progress_bar_type = 0;
     String fileN = null ;
-    public static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 123;
     boolean result;
     private final static int REQUEST_ID_MULTIPLE_PERMISSIONS = 0x2;
-    String urlString;
-    Dialog downloadDialog;
-    int WalletBalance;
     RecyclerView series_recycleview;
     RequestQueue requestQueue;
     JsonArrayRequest jsonArrayRequest;

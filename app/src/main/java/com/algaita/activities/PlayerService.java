@@ -31,12 +31,8 @@ public class PlayerService extends AppCompatActivity {
         viewDialog = new ViewDialog(this);
         Intent intent = getIntent();
         progressBar =  findViewById(R.id.progressbar);
-
-
         VideoView videoView = findViewById(R.id.vdVw);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-
         MediaController mediaController= new MediaController(this);
         mediaController.setAnchorView(videoView);
         Uri uri = Uri.parse(intent.getStringExtra("uri"));
@@ -50,7 +46,6 @@ public class PlayerService extends AppCompatActivity {
 
 
         progressBar.setVisibility(View.VISIBLE);
-//        viewDialog.showDialog();
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -62,7 +57,6 @@ public class PlayerService extends AppCompatActivity {
                                                    int arg2) {
                         // TODO Auto-generated method stub
                         progressBar.setVisibility(View.GONE);
-//                        viewDialog.hideDialog();
                         mp.start();
                     }
                 });
