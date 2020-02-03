@@ -104,8 +104,6 @@ public class SplashActivity extends AppCompatActivity {
                                 alertDialog.setMessage("It seems your account has been logged in another Device!");
                                 alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Remove my Account", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-//                                        finish();
-//                                        startActivity(getIntent());
 
                                         String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                                                 Settings.Secure.ANDROID_ID);
@@ -156,9 +154,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-//                viewDialog.hideDialog();
-//                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
-                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
                 TextView text = layout.findViewById(R.id.text);
                 text.setText(s);
                 Toast toast = new Toast(getApplicationContext());

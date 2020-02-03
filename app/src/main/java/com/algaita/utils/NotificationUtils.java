@@ -18,6 +18,7 @@ import android.text.Html;
 
 import com.algaita.R;
 import com.algaita.activities.BaseActivity;
+import com.algaita.activities.SplashActivity;
 import com.algaita.vo.NotificationVO;
 
 import java.io.IOException;
@@ -40,8 +41,8 @@ public class NotificationUtils {
     public NotificationUtils(Context mContext) {
         this.mContext = mContext;
         //Populate activity map
-        activityMap.put("MainActivity", BaseActivity.class);
-        activityMap.put("SecondActivity", BaseActivity.class);
+            activityMap.put("MainActivity", SplashActivity.class);
+        activityMap.put("SecondActivity", SplashActivity.class);
     }
 
     /**

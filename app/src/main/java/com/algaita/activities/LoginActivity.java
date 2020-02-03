@@ -220,8 +220,8 @@ public class LoginActivity extends AppCompatActivity {
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        final EditText phone;
-        phone = dialog.findViewById(R.id.phone);
+        final EditText mphone;
+        mphone = dialog.findViewById(R.id.phone);
 
 
 
@@ -235,7 +235,8 @@ public class LoginActivity extends AppCompatActivity {
         dialog.findViewById(R.id.btn_forget).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ForgetPass(phone.getText().toString());
+
+                ForgetPass(mphone.getText().toString());
             }
         });
 

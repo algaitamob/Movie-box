@@ -96,7 +96,6 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
     RecyclerView cast_recycleview;
-
     //    Series Recycler
     List<Cast> GetCastAdapter;
     Cast getCastAdapter;
@@ -135,24 +134,16 @@ public class SeriesInfoActivity extends AppCompatActivity {
         poster = findViewById(R.id.poster);
         poster_bg = findViewById(R.id.poster_bg);
         play = findViewById(R.id.play);
-
         progressBar =  findViewById(R.id.progressbar);
-
-
-//        img_play = findViewById(R.id.play);
 
         checkPermissions();
         series_recycleview =  findViewById(R.id.movie_recycleview);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(SeriesInfoActivity.this);
-
         series_recycleview.setLayoutManager(layoutManager);
         series_recycleview.setItemAnimator(new DefaultItemAnimator());
-
         GetSeriesAdapter = new ArrayList<>();
-
         GetSeries();
-
         series_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), series_recycleview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -162,12 +153,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 title = GetSeriesAdapter.get(position).getTitle();
                 price = GetSeriesAdapter.get(position).getPrice();
                 video_url = GetSeriesAdapter.get(position).getVideo_url();
-
                 CheckVideoStatus(id, title, price, video_url);
-//                showDialogPay(id, title, price, video_url);
-
-
-
             }
 
             @Override
@@ -182,13 +168,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
         cast_recycleview.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-
-//        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(SeriesInfoActivity.this, LinearLayoutManager.HORIZONTAL, false);
-//        cast_recycleview.setLayoutManager(layoutManager1);
         cast_recycleview.setItemAnimator(new DefaultItemAnimator());
-
         GetCastAdapter = new ArrayList<>();
-
         GetCast();
 
         cast_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), cast_recycleview, new RecyclerTouchListener.ClickListener() {

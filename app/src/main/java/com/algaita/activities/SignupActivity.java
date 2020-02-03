@@ -211,8 +211,6 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-//                viewDialog.hideDialog();
-//                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
 
             }
 

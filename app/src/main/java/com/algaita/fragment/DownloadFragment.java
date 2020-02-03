@@ -62,10 +62,6 @@ public class DownloadFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-//                Intent intent = new Intent(getActivity(), PlayerService.class);
-//                intent.putExtra("name", arrayList.get(position).getMp3Name());
-//                intent.putExtra("uri", arrayList.get(position).getMp3Url());
-//                startActivity(intent);
             }
 
             @Override
@@ -98,26 +94,13 @@ public class DownloadFragment extends Fragment {
         protected void onPostExecute(String s) {
             if (getActivity() != null) {
                 viewDialog.hideDialog();
-//                adapterSongList = new AdapterVIdeoList(getActivity(), arrayList, new RecyclerClickListener() {
-//                    @Override
-//                    public void onClick(int position) {
-//
-//                    }
-//                }, "offline");
 
                 adapterSongList = new AdapterVIdeoList(getActivity(), arrayList, new AdapterVIdeoList.DetailsAdapterListener() {
                     @Override
                     public void classOnClick(View v, int position) {
-//                        String id = GetFoodAdaper1.get(position).getId();
-//                        AddToCart(id);
-
-//                        File dir = new File(arrayList.get(position).getMp3Url());
-//                        File file = new File(arrayList.get(position).getMp3Url());
-//                        boolean deleted = file.delete();
 
                         new File(arrayList.get(position).getMp3Url()).delete();
 
-//                        arrayList.get(position).getMp3Url();
                         Toast.makeText(getContext(), "Deleted Successfully!", Toast.LENGTH_LONG).show();
 
                                         Intent intent = new Intent(getActivity(), BaseActivity.class);

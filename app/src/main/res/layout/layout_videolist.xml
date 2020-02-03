@@ -17,12 +17,15 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:layout_centerInParent="true"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="@dimen/spacing_large"
             android:layout_marginBottom="@dimen/spacing_large"
             android:scaleType="centerCrop"
-            android:src="@drawable/oldicon" />
+            android:src="@drawable/applogo" />
 
 
         <RelativeLayout
@@ -46,8 +49,8 @@
                     <TextView
                         android:id="@+id/textView_songname"
                         android:layout_width="176dp"
-                        android:layout_height="43dp"
-                        android:layout_alignParentTop="true"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:text="Locking Up Your Symptoms"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_90"

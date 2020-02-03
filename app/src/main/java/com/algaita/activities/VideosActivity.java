@@ -33,16 +33,12 @@ import java.util.List;
 
 public class VideosActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     TextView txt;
-    TextView one,two,three,four,five,six,seven,eight,nine,zero;
-    ImageView clear, add, back;
-    EditText edtxt;
-    String nos,number="";
+    ImageView back;
 
     SessionHandlerUser sessionHandlerUser;
 
     ViewDialog viewDialog;
     RecyclerView theaters_recycleview;
-    RecyclerView comingsoon_recycleview;
     RequestQueue requestQueue;
     JsonArrayRequest jsonArrayRequest;
 
