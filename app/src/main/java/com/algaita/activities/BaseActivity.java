@@ -50,6 +50,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.javiersantos.appupdater.AppUpdater;
+import com.wooplr.spotlight.SpotlightView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,7 +90,7 @@ public class BaseActivity extends AppCompatActivity {
     ImageView btn_search;
     private TextView tvName, tvWalletBalance;
     SessionHandlerUser sessionHandlerUser;
-    private LinearLayout llProfileClick;
+    private LinearLayout llProfileClick, shape;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,14 +110,17 @@ public class BaseActivity extends AppCompatActivity {
         menuLeftIV =  findViewById(R.id.menuLeftIV);
         ivFilter =  findViewById(R.id.movie);
         et_search =  findViewById(R.id.et_search);
+        shape =  findViewById(R.id.shape);
         btn_search =  findViewById(R.id.btn_search);
         navHeader = navigationView.getHeaderView(0);
         tvName = navHeader.findViewById(R.id.tvName);
         txtprofile = navHeader.findViewById(R.id.img_profile);
         tvWalletBalance = navHeader.findViewById(R.id.tvWalletBalance);
         CheckBalance();
-        showTutor(500);
-        showTutor1(500);
+
+
+//        showT();
+        showT5();
         llProfileClick = navHeader.findViewById(R.id.llProfileClick);
 
         tvName.setText(sessionHandlerUser.getUserDetail().getFullname());
@@ -505,26 +509,56 @@ public class BaseActivity extends AppCompatActivity {
         chargee ui = new chargee();
         ui.execute();
     }
-    private void showTutor(int millis){
-        new MaterialShowcaseView.Builder(this)
-                .setTarget(et_search)
-                .setTitleText("Algaita Movie Box")
-                .setDismissText("GOT IT!")
-                .setContentText("Search an Amazing Movie!")
-                .setDelay(millis)
-                .singleUse(SHOWCASE_ID)
+
+//
+    private void showT5(){
+        new SpotlightView.Builder(this)
+                .introAnimationDuration(400)
+                .enableRevealAnimation(true)
+                .performClick(true)
+                .fadeinTextDuration(400)
+                .headingTvColor(Color.parseColor("#eb273f"))
+                .headingTvSize(32)
+                .headingTvText("Search")
+                .subHeadingTvColor(Color.parseColor("#ffffff"))
+                .subHeadingTvSize(16)
+                .subHeadingTvText("Search an Amazing Movie!\n")
+                .maskColor(Color.parseColor("#dc000000"))
+                .target(shape)
+                .lineAnimDuration(400)
+                .lineAndArcColor(R.color.colorPrimary)
+                .dismissOnTouch(true)
+                .dismissOnBackPress(true)
+                .enableDismissAfterShown(true)
+                .usageId("1") //UNIQUE ID
                 .show();
     }
 
-    private void showTutor1(int millis){
-        new MaterialShowcaseView.Builder(this)
-                .setTarget(ivFilter)
-                .setTitleText("Algaita Movie Box")
-                .setDismissText("GOT IT!")
-                .setContentText("Show Movies List!")
-                .setDelay(millis)
-                .singleUse(SHOWCASE_ID)
+
+
+    private void showT(){
+        new SpotlightView.Builder(this)
+                .introAnimationDuration(400)
+                .enableRevealAnimation(true)
+                .performClick(true)
+                .fadeinTextDuration(400)
+                .headingTvColor(Color.parseColor("#eb273f"))
+                .headingTvSize(32)
+                .headingTvText("Movies")
+                .subHeadingTvColor(Color.parseColor("#ffffff"))
+                .subHeadingTvSize(16)
+                .subHeadingTvText("Show Movies List!\n")
+                .maskColor(Color.parseColor("#dc000000"))
+                .target(ivFilter)
+                .lineAnimDuration(400)
+                .lineAndArcColor(R.color.colorPrimary)
+                .dismissOnTouch(true)
+                .dismissOnBackPress(true)
+                .enableDismissAfterShown(true)
+                .usageId("2") //UNIQUE ID
                 .show();
     }
+
+
 
 }

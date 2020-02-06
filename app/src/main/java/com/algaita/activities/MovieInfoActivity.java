@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -66,6 +67,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.wooplr.spotlight.SpotlightView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -284,13 +286,13 @@ public class MovieInfoActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(intent.getStringExtra("poster"))
                 .placeholder(R.drawable.imgloader)
-                .error(R.drawable.oldicon)
+                .error(R.drawable.applogo)
                 .into(poster);
 
         Glide.with(this)
                 .load(intent.getStringExtra("cover"))
                 .placeholder(R.drawable.imgloader)
-                .error(R.drawable.oldicon)
+                .error(R.drawable.applogo)
                 .into(poster_bg);
 
         String status = intent.getStringExtra("status");
@@ -322,7 +324,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         card_credit = view.findViewById(R.id.card_credit);
         card_airtime = view.findViewById(R.id.card_airtime);
         card_wallet = view.findViewById(R.id.card_wallet);
-        showTutor(500);
+        showT();
         card_airtime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -727,16 +729,30 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
 
-    private void showTutor(int millis){
-        new MaterialShowcaseView.Builder(this)
-                .setTarget(card_airtime)
-                .setTitleText("Attention")
-                .setDismissText("GOT IT!")
-                .setContentText("Payment with Recharge Card is for Nigerians only!")
-                .setDelay(millis)
-                .singleUse(SHOWCASE_ID)
+
+    private void showT(){
+        new SpotlightView.Builder(this)
+                .introAnimationDuration(400)
+                .enableRevealAnimation(true)
+                .performClick(true)
+                .fadeinTextDuration(400)
+                .headingTvColor(Color.parseColor("#eb273f"))
+                .headingTvSize(32)
+                .headingTvText("PAYMENT")
+                .subHeadingTvColor(Color.parseColor("#ffffff"))
+                .subHeadingTvSize(16)
+                .subHeadingTvText("Payment with Recharge Card is for Nigerians only!\n")
+                .maskColor(Color.parseColor("#dc000000"))
+                .target(card_airtime)
+                .lineAnimDuration(400)
+                .lineAndArcColor(R.color.colorPrimary)
+                .dismissOnTouch(true)
+                .dismissOnBackPress(true)
+                .enableDismissAfterShown(true)
+                .usageId("3") //UNIQUE ID
                 .show();
     }
+
 
     @Override
     public void onRestart()

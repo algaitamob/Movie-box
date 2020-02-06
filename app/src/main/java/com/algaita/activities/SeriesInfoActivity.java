@@ -314,13 +314,13 @@ public class SeriesInfoActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(intent.getStringExtra("poster"))
                 .placeholder(R.drawable.imgloader)
-                .error(R.drawable.oldicon)
+                .error(R.drawable.applogo)
                 .into(poster);
 
         Glide.with(this)
                 .load(intent.getStringExtra("cover"))
                 .placeholder(R.drawable.imgloader)
-                .error(R.drawable.oldicon)
+                .error(R.drawable.applogo)
                 .into(poster_bg);
 
         txtrelease_date.setText(intent.getStringExtra("release_date"));

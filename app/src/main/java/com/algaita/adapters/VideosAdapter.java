@@ -70,7 +70,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.MyViewHold
                 .override(500,500)
                 .placeholder(R.drawable.imgloader)
 //                .centerInside()
-                .error(R.drawable.oldicon)
+                .error(R.drawable.applogo)
                 .into(holder.poster);
 
 //

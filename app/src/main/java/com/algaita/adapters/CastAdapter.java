@@ -63,7 +63,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.MyViewHolder> 
                 .override(500,500)
                 .placeholder(R.drawable.imgloader)
 //                .centerInside()
-                .error(R.drawable.oldicon)
+                .error(R.drawable.applogo)
                 .into(holder.img);
 
 //

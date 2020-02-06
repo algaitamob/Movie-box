@@ -65,7 +65,7 @@ public class ComingVideosAdapter extends RecyclerView.Adapter<ComingVideosAdapte
                 .override(500,500)
                 .placeholder(R.drawable.imgloader)
 //                .centerInside()
-                .error(R.drawable.oldicon)
+                .error(R.drawable.applogo)
                 .into(holder.poster);
 
 //        Picasso.with(context).load(videos.getPoster()).placeholder(R.drawable.progress_animation).into(holder.poster);

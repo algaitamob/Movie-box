@@ -226,14 +226,13 @@
                 />
 
             <customfonts.MyTextView_PTSans_Bold
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textColor="@color/white"
                 android:layout_marginTop="30.3dp"
                 android:lineSpacingExtra="-11sp"
-                android:text="Movies"
-                />
+                android:text="Episodes"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
 
             <View
                 android:layout_width="17.3dp"

@@ -91,7 +91,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setAutoCancel(true)
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setOngoing(true)
                     .setStyle(new NotificationCompat.BigPictureStyle()
                             .bigPicture(bitmap)
                             .bigLargeIcon(null)
@@ -146,7 +145,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupChannels(NotificationManager notificationManager){
         CharSequence adminChannelName = "New notification";
-        String adminChannelDescription = "Device to devie notification";
+        String adminChannelDescription = "Device to device notification";
         NotificationChannel adminChannel;
         adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_HIGH);
         adminChannel.setDescription(adminChannelDescription);
