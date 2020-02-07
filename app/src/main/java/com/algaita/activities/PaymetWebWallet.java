@@ -169,4 +169,19 @@ public class PaymetWebWallet extends AppCompatActivity {
     }
 
 
+
+    @Override
+    // This method is used to detect back button
+    public void onBackPressed() {
+        if(wvPayment.canGoBack()) {
+            wvPayment.goBack();
+        } else {
+            // Let the system handle the back button
+            super.onBackPressed();
+//            setResult(RESULT_OK);
+
+        }
+    }
+
+
 }

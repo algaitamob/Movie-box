@@ -333,7 +333,9 @@ public class MovieInfoActivity extends AppCompatActivity {
                 intent.putExtra("type", "airtime");
                 intent.putExtra("amount", i.getStringExtra("price"));
                 intent.putExtra("videoid", i.getStringExtra("id"));
-                startActivity(intent);
+//                startActivity(intent);
+                startActivityForResult(intent,0);
+
             }
         });
 
@@ -352,7 +354,6 @@ public class MovieInfoActivity extends AppCompatActivity {
         card_wallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mBottomSheetDialog.hide();
                 Intent i = getIntent();
                     int bal = Integer.parseInt(sessionHandlerUser.getUserDetail().getBalance());
                     int price = Integer.parseInt(i.getStringExtra("price"));
@@ -366,12 +367,14 @@ public class MovieInfoActivity extends AppCompatActivity {
                         toast.show();
 
                     } else {
+                        mBottomSheetDialog.hide();
                         String type = "Wallet";
                         Intent ii = getIntent();
                         Intent intent = new Intent(MovieInfoActivity.this, ChargeWallet.class);
                         intent.putExtra("amount", ii.getStringExtra("price"));
                         intent.putExtra("videoid", ii.getStringExtra("id"));
-                        startActivity(intent);
+//                        startActivity(intent);
+                        startActivityForResult(intent,0);
 
 
                     }
@@ -753,14 +756,33 @@ public class MovieInfoActivity extends AppCompatActivity {
                 .show();
     }
 
+//
+//    @Override
+//    public void onRestart()
+//    {
+//        super.onRestart();
+//        finish();
+//        startActivity(getIntent());
+//    }
+//
+//
+
+
+
+
+
 
     @Override
-    public void onRestart()
-    {
-        super.onRestart();
-        finish();
-        startActivity(getIntent());
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0 && resultCode == RESULT_OK){
+            // refresh
+            finish();
+            startActivity(getIntent());
+        }
     }
+
 
 
 

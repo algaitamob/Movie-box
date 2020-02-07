@@ -1,83 +1,170 @@
 package com.algaita.activities;
-
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
+import android.app.Activity;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnBufferingUpdateListener;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnPreparedListener;
+import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
+import android.os.Handler;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.MediaController;
+import android.widget.MediaController.MediaPlayerControl;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-import android.widget.VideoView;
 
-import com.algaita.PreventScreenshot;
 import com.algaita.R;
 import com.algaita.ViewDialog;
-import com.algaita.player.CustomVideoPlayer;
 
-public class PlayerService extends AppCompatActivity {
-    CustomVideoPlayer customVideoPlayer;
-    ProgressBar progressBar = null;
-    ViewDialog viewDialog;
+public class PlayerService extends Activity implements  OnBufferingUpdateListener, OnCompletionListener, OnPreparedListener,
+        OnVideoSizeChangedListener, SurfaceHolder.Callback, MediaPlayerControl{
+    String url;
+    MediaPlayer mMediaPlayer ;
+    SurfaceView mSurfaceView ;
+    SurfaceHolder holder ;
+//    private ConstantAnchorMediaController controller = null;
+    ProgressBar progressBar1 ;
+    MediaController mcontroller ;
+    Handler handler ;
 
-
+    PlayerDialog playerDialog;
     @Override
-    public  void onCreate(Bundle saveInstanceState){
-        super.onCreate(saveInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
 
+        url = getIntent().getStringExtra("uri");
+        progressBar1 = findViewById(R.id.progressbar);
+        SurfaceView v =  findViewById(R.id.surface_view);
+        handler = new Handler();
+        holder = v.getHolder();
+        holder.addCallback(this);
+        v.setSecure(true);
 
-        viewDialog = new ViewDialog(this);
-        Intent intent = getIntent();
-        progressBar =  findViewById(R.id.progressbar);
+        progressBar1.setVisibility(View.VISIBLE);
+        playVideo();
 
-        VideoView videoView = findViewById(R.id.vdVw);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        MediaController mediaController= new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        Uri uri = Uri.parse(intent.getStringExtra("uri"));
-        videoView.setMediaController(mediaController);
-        videoView.setVideoURI(uri);
-        videoView.setSecure(true);
-        videoView.requestFocus();
+    }
+    private void playVideo() {
+        try {
 
+            mcontroller = new MediaController(this);
+            mMediaPlayer = MediaPlayer.create(this, Uri.parse(url));
+            mMediaPlayer.setOnBufferingUpdateListener(this);
+            mMediaPlayer.setOnCompletionListener(this);
+            mMediaPlayer.setOnPreparedListener(this);
+            mMediaPlayer.setScreenOnWhilePlaying(true);
+            mMediaPlayer.setOnVideoSizeChangedListener(this);
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mcontroller.show();
+        return false;
+    }
+    @Override
+    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void surfaceCreated(SurfaceHolder arg0) {
+        mMediaPlayer.setDisplay(holder);
+        try {
+            mMediaPlayer.start();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void surfaceDestroyed(SurfaceHolder arg0) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+        // TODO Auto-generated method stub
+    }
 
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        // TODO Auto-generated method stub
+        progressBar1.setVisibility(View.GONE);
+        mcontroller.setMediaPlayer(this);
+        mcontroller.setAnchorView(findViewById(R.id.surface_view));
+        mcontroller.setEnabled(true);
 
-        progressBar.setVisibility(View.VISIBLE);
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                // TODO Auto-generated method stub
-                mp.start();
-                mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                    @Override
-                    public void onVideoSizeChanged(MediaPlayer mp, int arg1,
-                                                   int arg2) {
-                        // TODO Auto-generated method stub
-                        progressBar.setVisibility(View.GONE);
-                        mp.start();
-                    }
-                });
+        handler.post(new Runnable() {
+            public void run() {
+                mcontroller.show();
             }
         });
-        videoView.start();
+    }
 
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        // TODO Auto-generated method stub
+    }
+    public void start() {
+        mMediaPlayer.start();
+    }
 
+    public void pause() {
+        mMediaPlayer.pause();
+    }
+
+    public int getDuration() {
+        return mMediaPlayer.getDuration();
+    }
+
+    public int getCurrentPosition() {
+        return mMediaPlayer.getCurrentPosition();
+    }
+
+    public void seekTo(int i) {
+        mMediaPlayer.seekTo(i);
+    }
+
+    public boolean isPlaying() {
+        return mMediaPlayer.isPlaying();
+    }
+
+    public int getBufferPercentage() {
+        return 0;
+    }
+
+    public boolean canPause() {
+        return true;
+    }
+
+    public boolean canSeekBackward() {
+        return true;
+    }
+
+    public boolean canSeekForward() {
+        return true;
+    }
+
+    @Override
+    public int getAudioSessionId() {
+        return 0;
     }
 
 
-
-
-
+    @Override
+    public void onBackPressed() {
+        mMediaPlayer.stop();
+        super.onBackPressed();
+    }
 }

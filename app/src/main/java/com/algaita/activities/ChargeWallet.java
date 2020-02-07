@@ -54,7 +54,7 @@ public class ChargeWallet extends AppCompatActivity {
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
-                finish();
+                onBackPressed();
             }
 
             @Override
@@ -71,5 +71,19 @@ public class ChargeWallet extends AppCompatActivity {
         chargee ui = new chargee();
         ui.execute();
     }
+
+
+    @Override
+    // This method is used to detect back button
+    public void onBackPressed() {
+
+        setResult(RESULT_OK);
+            // Let the system handle the back button
+            super.onBackPressed();
+
+
+
+    }
+
 
 }

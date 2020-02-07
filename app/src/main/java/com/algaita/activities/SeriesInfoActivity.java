@@ -357,7 +357,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 intent.putExtra("type", "airtime");
                 intent.putExtra("amount", price);
                 intent.putExtra("videoid", id);
-                startActivity(intent);
+                startActivityForResult(intent,0);
             }
         });
 
@@ -370,7 +370,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 intent.putExtra("amount", price);
                 intent.putExtra("videoid", id);
 
-                startActivity(intent);
+                startActivityForResult(intent,0);
             }
         });
 
@@ -400,7 +400,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                         Intent intent = new Intent(SeriesInfoActivity.this, ChargeWallet.class);
                         intent.putExtra("amount", price);
                         intent.putExtra("videoid", id);
-                        startActivity(intent);
+                        startActivityForResult(intent,0);
 
 
                     }
@@ -844,12 +844,26 @@ public class SeriesInfoActivity extends AppCompatActivity {
     }
 
 
+//    @Override
+//    public void onRestart()
+//    {
+//        super.onRestart();
+//        finish();
+//        startActivity(getIntent());
+//    }
+//
+
+
+
     @Override
-    public void onRestart()
-    {
-        super.onRestart();
-        finish();
-        startActivity(getIntent());
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0 && resultCode == RESULT_OK){
+            // refresh
+            finish();
+            startActivity(getIntent());
+        }
     }
 
 

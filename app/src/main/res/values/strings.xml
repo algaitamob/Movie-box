@@ -7,4 +7,9 @@
     <string name="cancel">Cancel</string>
     <string name="closeMsg">Are your sure you want to close Algaita Movie Box?</string>
 
+
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="description">Media Controls</string>
+
 </resources>

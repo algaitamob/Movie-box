@@ -115,7 +115,7 @@ public class PaymetWeb extends AppCompatActivity {
                 toast.show();
                 super.onPageFinished(view, PAYMENT_SUCCESS);
 
-                finish();
+                onBackPressed();
                 wvPayment.clearCache(true);
                 wvPayment.clearHistory();
                 wvPayment.destroy();
@@ -129,8 +129,7 @@ public class PaymetWeb extends AppCompatActivity {
                 toast.show();
                 super.onPageFinished(view, PAYMENT_FAIL);
 
-                finish();
-
+                onBackPressed();
                 wvPayment.clearCache(true);
                 wvPayment.clearHistory();
                 wvPayment.destroy();
@@ -180,9 +179,12 @@ public class PaymetWeb extends AppCompatActivity {
             wvPayment.goBack();
         } else {
             // Let the system handle the back button
+            setResult(RESULT_OK);
             super.onBackPressed();
+
         }
     }
+
 
 
 }

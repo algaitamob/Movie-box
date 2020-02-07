@@ -82,4 +82,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.MyViewHold
     }
 
 
+
+
+
 }
