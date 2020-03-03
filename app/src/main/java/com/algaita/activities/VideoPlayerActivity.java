@@ -138,4 +138,11 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
         player.stop();
         super.onBackPressed();
     }
+
+
+    @Override
+    protected void onPause() {
+        player.stop();
+        super.onPause();
+    }
 }

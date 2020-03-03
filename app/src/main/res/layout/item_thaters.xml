@@ -27,7 +27,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="12sp"
         android:layout_marginTop="16dp"
         android:textColor="#ffffff"
         android:text="dshhdhdhdh"

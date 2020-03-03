@@ -3,26 +3,29 @@ package com.algaita.activities;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -41,6 +44,7 @@ import com.algaita.ViewDialog;
 import com.algaita.fragment.DownloadFragment;
 import com.algaita.fragment.HomeFragment;
 import com.algaita.fragment.MyVideosFragment;
+import com.algaita.fragment.NotificationFragment;
 import com.algaita.fragment.SettingsFragment;
 import com.algaita.fragment.TransactionFragment;
 import com.algaita.fragment.WalletFragment;
@@ -57,7 +61,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import jp.misyobun.lib.versionupdater.MSBVersionUpdater;
+
 
 public class BaseActivity extends AppCompatActivity {
     private String TAG = BaseActivity.class.getSimpleName();
@@ -69,7 +74,7 @@ public class BaseActivity extends AppCompatActivity {
     public RelativeLayout header;
     public DrawerLayout drawer;
     public View navHeader;
-    public ImageView menuLeftIV, ivFilter;
+    public ImageView menuLeftIV, ivFilter, notify;
     Context mContext;
     TextView txtprofile;
     ViewDialog viewDialog;
@@ -91,12 +96,16 @@ public class BaseActivity extends AppCompatActivity {
     private TextView tvName, tvWalletBalance;
     SessionHandlerUser sessionHandlerUser;
     private LinearLayout llProfileClick, shape;
+    private FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setAnimation();
         setContentView(R.layout.activity_base);
         AppUpdater appUpdater = new AppUpdater(this);
         appUpdater.start();
+
+        fab = findViewById(R.id.fab);
         Sentry.init("https://8363b9dd7a5f4c71a6aac7e0b5e4d79b@sentry.io/1522542", new AndroidSentryClientFactory(this));
         mContext = BaseActivity.this;
         mHandler = new Handler();
@@ -109,6 +118,7 @@ public class BaseActivity extends AppCompatActivity {
         contentView = findViewById(R.id.content);
         menuLeftIV =  findViewById(R.id.menuLeftIV);
         ivFilter =  findViewById(R.id.movie);
+        notify =  findViewById(R.id.notify);
         et_search =  findViewById(R.id.et_search);
         shape =  findViewById(R.id.shape);
         btn_search =  findViewById(R.id.btn_search);
@@ -119,9 +129,16 @@ public class BaseActivity extends AppCompatActivity {
         CheckBalance();
 
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(BaseActivity.this, LiveChat.class);
+                startActivity(intent);
+            }
+        });
 //        showT();
         showT5();
-        llProfileClick = navHeader.findViewById(R.id.llProfileClick);
+//        llProfileClick = navHeader.findViewById(R.id.llProfileClick);
 
         tvName.setText(sessionHandlerUser.getUserDetail().getFullname());
         char first = sessionHandlerUser.getUserDetail().getFullname().charAt(0);
@@ -130,10 +147,18 @@ public class BaseActivity extends AppCompatActivity {
         ivFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(BaseActivity.this, VideosActivity.class);
+                Intent intent = new Intent(BaseActivity.this, PlayYoutubeActivity.class);
                 startActivity(intent);
             }
         });
+
+//        notify.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(BaseActivity.this, PlayYoutubeActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         if (savedInstanceState == null) {
             if (type != null) {
                     navItemIndex = 0;
@@ -243,20 +268,17 @@ public class BaseActivity extends AppCompatActivity {
                         android.R.anim.fade_out);
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
-                        ivFilter.setVisibility(View.VISIBLE);
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_HOME;
                         fragmentTransaction.replace(R.id.frame, new HomeFragment());
                         break;
                     case R.id.nav_downloads:
-                        ivFilter.setVisibility(View.GONE);
                         navItemIndex = 1;
                         CURRENT_TAG = TAG_DOWNLOADS;
                         fragmentTransaction.replace(R.id.frame, new DownloadFragment());
                         break;
 
                     case R.id.nav_myvideos:
-                        ivFilter.setVisibility(View.GONE);
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_MYVIDEOS;
                         fragmentTransaction.replace(R.id.frame, new MyVideosFragment());
@@ -264,24 +286,27 @@ public class BaseActivity extends AppCompatActivity {
 
 
                     case R.id.nav_transactions:
-                        ivFilter.setVisibility(View.GONE);
                         navItemIndex = 3;
                         CURRENT_TAG = TAG_TRANSACTION;
                         fragmentTransaction.replace(R.id.frame, new TransactionFragment());
                         break;
 
                     case R.id.nav_setting:
-                        ivFilter.setVisibility(View.GONE);
                         navItemIndex = 4;
                         CURRENT_TAG = TAG_SETTING;
                         fragmentTransaction.replace(R.id.frame, new SettingsFragment());
                         break;
 
                     case R.id.nav_wallet:
-                        ivFilter.setVisibility(View.GONE);
                         navItemIndex = 5;
                         CURRENT_TAG = TAG_WALLET;
                         fragmentTransaction.replace(R.id.frame, new WalletFragment());
+                        break;
+
+                    case R.id.nav_notification:
+                        navItemIndex = 5;
+                        CURRENT_TAG = TAG_WALLET;
+                        fragmentTransaction.replace(R.id.frame, new NotificationFragment());
                         break;
 
                     case R.id.nav_feedback:
@@ -310,7 +335,6 @@ public class BaseActivity extends AppCompatActivity {
                         break;
 
                     default:
-                        ivFilter.setVisibility(View.VISIBLE);
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_HOME;
                         fragmentTransaction.replace(R.id.frame, new HomeFragment());
@@ -350,35 +374,36 @@ public class BaseActivity extends AppCompatActivity {
                 return;
             }
         }
-        clickDone();
+//        clickDone();
+        finish();
     }
-
-    public void clickDone() {
-        new AlertDialog.Builder(this)
-                .setIcon(R.drawable.oldicon)
-                .setTitle(getResources().getString(R.string.app_name))
-                .setMessage(getResources().getString(R.string.closeMsg))
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Intent i = new Intent();
-                        i.setAction(Intent.ACTION_MAIN);
-                        i.addCategory(Intent.CATEGORY_HOME);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-
-                        finish();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .show();
-    }
+//
+//    public void clickDone() {
+//        new AlertDialog.Builder(this)
+//                .setIcon(R.drawable.oldicon)
+//                .setTitle(getResources().getString(R.string.app_name))
+//                .setMessage(getResources().getString(R.string.closeMsg))
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                        Intent i = new Intent();
+//                        i.setAction(Intent.ACTION_MAIN);
+//                        i.addCategory(Intent.CATEGORY_HOME);
+//                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        startActivity(i);
+//
+//                        finish();
+//                    }
+//                })
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                })
+//                .show();
+//    }
 
     private void CheckBalance() {
         String url_ = Config.user_wallet+"?userid="+ sessionHandlerUser.getUserDetail().getUserid();
@@ -559,6 +584,19 @@ public class BaseActivity extends AppCompatActivity {
                 .show();
     }
 
+
+
+    public void setAnimation() {
+        if (Build.VERSION.SDK_INT > 20) {
+            Slide slide = new Slide();
+            slide.setSlideEdge(Gravity.LEFT);
+            slide.setDuration(400);
+            slide.setInterpolator(new DecelerateInterpolator());
+            getWindow().setExitTransition(slide);
+            getWindow().setEnterTransition(slide);
+        }
+
+    }
 
 
 }

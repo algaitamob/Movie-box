@@ -41,6 +41,8 @@ public class VideosActivity extends AppCompatActivity implements SwipeRefreshLay
     RecyclerView theaters_recycleview;
     RequestQueue requestQueue;
     JsonArrayRequest jsonArrayRequest;
+    EditText et_search;
+    ImageView btn_search;
 
     SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -55,6 +57,17 @@ public class VideosActivity extends AppCompatActivity implements SwipeRefreshLay
         setContentView(R.layout.activity_search);
         viewDialog = new ViewDialog(this);
         sessionHandlerUser = new SessionHandlerUser(getApplicationContext());
+
+
+        et_search = findViewById(R.id.et_search);
+        btn_search = findViewById(R.id.btn_search);
+
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Search(et_search.getText().toString());
+            }
+        });
 
         mSwipeRefreshLayout = findViewById(R.id.swipe_container);
 
@@ -113,6 +126,68 @@ public class VideosActivity extends AppCompatActivity implements SwipeRefreshLay
 
     }
 
+    private void Search(String toString) {
+        viewDialog.showDialog();
+        mSwipeRefreshLayout.setRefreshing(true);
+
+        GetVideosAdapterTheater.clear();
+        Intent intent = getIntent();
+        jsonArrayRequest = new JsonArrayRequest(Config.url + "videos_search.php?filter=" + toString, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
+                GetCard2WebCall(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                viewDialog.hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void GetCard2WebCall(JSONArray array) {
+        for (int i = 0; i < array.length(); i++){
+            getVideosAdapterTheater = new Videos();
+            JSONObject json = null;
+
+            try {
+                json = array.getJSONObject(i);
+                getVideosAdapterTheater.setTitle(json.getString("title"));
+                getVideosAdapterTheater.setDescription(json.getString("description"));
+                getVideosAdapterTheater.setTrailer_url(Config.dir_video + json.getString("trailer_url"));
+                getVideosAdapterTheater.setVideo_url(Config.dir_video + json.getString("video_url"));
+                getVideosAdapterTheater.setPrice(json.getString("price"));
+                getVideosAdapterTheater.setWatch(json.getString("watch"));
+                getVideosAdapterTheater.setDownloads(json.getString("downloads"));
+                getVideosAdapterTheater.setPoster(Config.dir_poster + json.getString("poster"));
+                getVideosAdapterTheater.setCover(Config.dir_poster + json.getString("cover"));
+                getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
+                getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
+                getVideosAdapterTheater.setVideoid(json.getString("id"));
+                getVideosAdapterTheater.setInfo(json.getString("info"));
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            GetVideosAdapterTheater.add(getVideosAdapterTheater);
+        }
+
+        recyclerViewAdapterTheater = new VideosAdapter(GetVideosAdapterTheater, getApplicationContext());
+        theaters_recycleview.setAdapter(recyclerViewAdapterTheater);
+        recyclerViewAdapterTheater.notifyDataSetChanged();
+
+    }
+
+
+
 
     private void GetVideosTheater() {
         viewDialog.showDialog();
@@ -159,6 +234,8 @@ public class VideosActivity extends AppCompatActivity implements SwipeRefreshLay
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));
+                getVideosAdapterTheater.setInfo(json.getString("info"));
+
 
             } catch (JSONException e) {
                 e.printStackTrace();

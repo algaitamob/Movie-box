@@ -11,5 +11,12 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="description">Media Controls</string>
+    <string name="section_format">Section</string>
+
+    <string name="mp3_file_title_dw"></string>
+    <string name="image_file_title_dw"></string>
+    <string name="pdf_file_title_dw"></string>
+    <string name="video_file_title_dw"></string>
+    <string name="status_downloading_dw"></string>
 
 </resources>

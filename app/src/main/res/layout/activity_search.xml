@@ -14,6 +14,61 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <include layout="@layout/toolbar2"/>
+        <View
+            android:layout_width="45dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="7.5dp"
+            android:layout_marginLeft="17dp"/>
+
+
+        <LinearLayout
+            android:id="@+id/shape"
+            android:layout_width="337dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/roundshape"
+            android:elevation="4dp"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:fontFamily="sans-serif"
+                android:hint="Search..."
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:id="@+id/btn_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="18dp"
+                android:src="@drawable/ic_search"
+                android:tint="@color/black" />
+            <!--            <ImageView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:src="@drawable/head"-->
+            <!--                android:layout_marginLeft="5dp"-->
+            <!--                android:layout_marginRight="17dp"-->
+            <!--                android:layout_marginTop="5dp"-->
+            <!--                android:layout_marginBottom="5dp"-->
+            <!--                />-->
+
+        </LinearLayout>
+
+
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"

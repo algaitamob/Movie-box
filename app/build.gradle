@@ -6,7 +6,7 @@ android {
         applicationId "com.algaita"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 6
+        versionCode 7
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
@@ -80,6 +80,42 @@ dependencies {
     implementation 'com.github.wooplr:Spotlight:1.2.3'
 
 
+
+
+
+//    New Player
+//    implementation 'fm.jiecao:jiecaovideoplayer:5.7'
+
+//    implementation 'com.henryblue.mxvideoplayer:xvideoplayer:1.2.1'
+//    implementation 'com.github.marcinmoskala:VideoPlayView:0.0.2'
+    implementation 'com.github.khizar1556.MKVideoPlayer:mkvideoplayer:0.1.5'
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
+
+
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+//    implementation 'com.google.android.gms:play-services:10.2.1'
+
+//    implementation 'com.github.bumptech.glide:glide:4.2.0'
+//
+//    annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7', changing: true
+//    implementation 'com.github.bumptech.glide:glide:4.8.0'
+//    annotationProcessor 'com.github.bumptechtech.glide:compiler:4.8.0'
+    implementation 'com.mikhaellopez:circularimageview:3.2.0'          // circle image view
+
+
+//    implementation 'com.github.caneryilmaz:ZionFileDownloader:0.1.1'
+
+
+    implementation project(':zionfiledownloader')
+//    implementation 'com.github.Adilhusen:circle-progress-ad-android-:1.0'
+
+    implementation 'jp.co.misyobun.lib.versionupdater:versionupdater:1.4.3'
+
+//    implementation 'com.sergiocasero:notifikationmanager:0.1.0'
 
 
 

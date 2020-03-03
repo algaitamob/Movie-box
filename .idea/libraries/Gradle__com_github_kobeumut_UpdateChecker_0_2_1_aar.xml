@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.kobeumut:UpdateChecker:0.2.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/352f67851d0ce9c475afee613e030f66/UpdateChecker-0.2.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/352f67851d0ce9c475afee613e030f66/UpdateChecker-0.2.1/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.kobeumut/UpdateChecker/0.2.1/5fe141ac2dccf231b9eb0954d8ed9f8a3b9d5dd4/UpdateChecker-0.2.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

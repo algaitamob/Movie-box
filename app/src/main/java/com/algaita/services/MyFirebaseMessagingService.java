@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.algaita.R;
 import com.algaita.activities.BaseActivity;
+import com.algaita.activities.SplashActivity;
 import com.algaita.utils.NotificationUtils;
 import com.algaita.vo.NotificationVO;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -63,7 +64,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String imageUri = remoteMessage.getData().get("image");
 
 
-            final Intent intent = new Intent(this, BaseActivity.class);
+            final Intent intent = new Intent(this, SplashActivity.class);
             NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
             int notificationID = new Random().nextInt(3000);
 
@@ -114,7 +115,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationVO.setTitle(title);
         notificationVO.setMessage(message);
 
-        Intent resultIntent = new Intent(getApplicationContext(), BaseActivity.class);
+        Intent resultIntent = new Intent(getApplicationContext(), SplashActivity.class);
         NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
         notificationUtils.displayNotification(notificationVO, resultIntent);
         notificationUtils.playNotificationSound();
@@ -133,7 +134,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationVO.setAction(action);
         notificationVO.setActionDestination(actionDestination);
 
-        Intent resultIntent = new Intent(getApplicationContext(), BaseActivity.class);
+        Intent resultIntent = new Intent(getApplicationContext(), SplashActivity.class);
 
         NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
         notificationUtils.displayNotification(notificationVO, resultIntent);

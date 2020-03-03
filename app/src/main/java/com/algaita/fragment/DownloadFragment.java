@@ -2,10 +2,13 @@ package com.algaita.fragment;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -25,6 +28,7 @@ import com.algaita.ViewDialog;
 import com.algaita.activities.BaseActivity;
 import com.algaita.activities.PlayerService;
 import com.algaita.activities.RecyclerTouchListener;
+import com.algaita.activities.VideoPlayer;
 import com.algaita.adapters.AdapterVIdeoList;
 import com.algaita.models.ItemVideos;
 
@@ -99,20 +103,43 @@ public class DownloadFragment extends Fragment {
                     @Override
                     public void classOnClick(View v, int position) {
 
-                        new File(arrayList.get(position).getMp3Url()).delete();
 
-                        Toast.makeText(getContext(), "Deleted Successfully!", Toast.LENGTH_LONG).show();
+                        new AlertDialog.Builder(getActivity())
+                                .setIcon(R.drawable.oldicon)
+                                .setTitle(getResources().getString(R.string.app_name))
+                                .setMessage(getResources().getString(R.string.closeMsg))
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        new File(arrayList.get(position).getMp3Url()).delete();
+
+                                        Toast.makeText(getContext(), "Deleted Successfully!", Toast.LENGTH_LONG).show();
 
                                         Intent intent = new Intent(getActivity(), BaseActivity.class);
                                         startActivity(intent);
+
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
+
+
+
+
 
 
                     }
 
                     @Override
                     public void favOnclick(View v, int position) {
-                        Intent intent = new Intent(getActivity(), PlayerService.class);
-                        intent.putExtra("name", arrayList.get(position).getMp3Name());
+                        Intent intent = new Intent(getActivity(), VideoPlayer.class);
+                        intent.putExtra("title", arrayList.get(position).getMp3Name());
                         intent.putExtra("uri", arrayList.get(position).getMp3Url());
                         startActivity(intent);
                     }
@@ -141,7 +168,11 @@ public class DownloadFragment extends Fragment {
 
     private void loadDownloaded() {
 
-        File root = new File("/data/data/" + getActivity().getPackageName() + "/files/");
+//        File root = new File(String.valueOf(Environment.ge);
+
+        File root = new File("/data/user/0/" + getActivity().getPackageName() + "/files");
+//        File root = new File(String.valueOf(Environment.get));
+        Log.d("vallll", String.valueOf(root));
 //        File[] songs = root.listFiles();
         File[] songs = root.listFiles(new FilenameFilter() {
             @Override

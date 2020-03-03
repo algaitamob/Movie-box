@@ -26,6 +26,7 @@ import com.algaita.MySingleton;
 import com.algaita.R;
 import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
+import com.algaita.Welcome;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -352,7 +353,7 @@ public class LoginActivity extends AppCompatActivity {
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
-                Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+                Intent intent = new Intent(LoginActivity.this, BaseActivity.class);
                 startActivity(intent);
                 finish();
 

@@ -32,12 +32,24 @@
                 android:layout_height="17.7dp"
                 android:src="@drawable/menu" />
 
+
+            <ImageView
+                android:layout_marginRight="30dp"
+                android:id="@+id/notify"
+                android:tint="@color/white"
+                android:layout_width="18.7dp"
+                android:layout_height="21dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_bell" />
+
+
             <ImageView
                 android:id="@+id/movie"
                 android:layout_width="18.7dp"
                 android:layout_height="21dp"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/ic_movie" />
+
 
 
         </RelativeLayout>
@@ -96,5 +108,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"></FrameLayout>
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_comment"
+        android:contentDescription="Help"
+        android:layout_margin="16dp" />
 </android.support.design.widget.CoordinatorLayout>

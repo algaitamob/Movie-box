@@ -2,7 +2,10 @@ package com.algaita.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,24 +15,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.algaita.Config;
+import com.algaita.MySingleton;
 import com.algaita.R;
 import com.algaita.ViewDialog;
 import com.algaita.activities.BaseActivity;
+import com.algaita.activities.ComingSoonActivity;
 import com.algaita.activities.LoginActivity;
 //import com.algaita.activities.MainActivity;
 import com.algaita.activities.MovieInfoActivity;
 import com.algaita.activities.RecyclerTouchListener;
+import com.algaita.activities.SeriesActivity;
 import com.algaita.activities.SeriesInfoActivity;
+import com.algaita.activities.VideosActivity;
+import com.algaita.activities.ViewPagerAdapter;
 import com.algaita.adapters.ComingVideosAdapter;
 import com.algaita.adapters.SeriesAdapter;
 import com.algaita.adapters.VideosAdapter;
 import com.algaita.models.ComingVideos;
 import com.algaita.models.Series;
+import com.algaita.models.SeriesVideos;
 import com.algaita.models.Videos;
 import com.algaita.sessions.SessionHandlerUser;
+import com.algaita.utils.SliderUtils;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -42,8 +55,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class HomeFragment extends Fragment{
     private View view;
     private BaseActivity baseActivity;
 
@@ -69,6 +84,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     RecyclerView.Adapter recyclerViewAdapterSeries;
 
     SwipeRefreshLayout mSwipeRefreshLayout;
+    TextView txt_more_vides, txt_more_series, txt_more_coming;
 
 
 
@@ -76,6 +92,23 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     SessionHandlerUser sessionHandlerUser;
     ViewDialog viewDialog;
+
+    int currentPage = 0;
+    Timer timer;
+    final long DELAY_MS = 500;//delay in milliseconds before task is to be executed
+    final long PERIOD_MS = 3000; // time in milliseconds between successive task executions.
+
+
+
+    //    Sliders
+    ViewPager viewPager;
+    LinearLayout sliderDotspanel;
+    private int dotscount;
+    private ImageView[] dots;
+
+    RequestQueue rq;
+    List<SliderUtils> sliderImg;
+    ViewPagerAdapter viewPagerAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,16 +116,19 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         view = inflater.inflate(R.layout.fragment_home, container, false);
         sessionHandlerUser = new SessionHandlerUser(getActivity());
         viewDialog = new ViewDialog(getActivity());
+//
+//        mSwipeRefreshLayout = view.findViewById(R.id.swipe_container);
+//
+//        mSwipeRefreshLayout.setOnRefreshListener(this);
+//        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+//                android.R.color.holo_green_dark,
+//                android.R.color.holo_orange_dark,
+//                android.R.color.holo_blue_dark);
 
-        mSwipeRefreshLayout = view.findViewById(R.id.swipe_container);
-
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_orange_dark,
-                android.R.color.holo_blue_dark);
-
-        //Recycleview
+        txt_more_vides = view.findViewById(R.id.more_videos);
+        txt_more_series = view.findViewById(R.id.more_series);
+        txt_more_coming = view.findViewById(R.id.more_coming);
+                //Recycleview
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
         comingsoon_recycleview =  view.findViewById(R.id.comingsoon_recycleview);
         series_recycleview =  view.findViewById(R.id.series_recycleview);
@@ -198,6 +234,89 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }));
 
 
+        txt_more_vides.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), VideosActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        txt_more_series.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SeriesActivity.class);
+                startActivity(intent);
+            }
+        });
+        txt_more_coming.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ComingSoonActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+
+//        Slider ViewPager
+
+        sliderImg = new ArrayList<>();
+
+        viewPager =  view.findViewById(R.id.viewPager);
+
+        sliderDotspanel = view.findViewById(R.id.SliderDots);
+
+        sendRequest();
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+//                for(int i = 0; i< dotscount; i++){
+//                    dots[i].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.nonactive_dot));
+//                }
+//                dots[position].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.active_dot));
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        try {
+
+            /*After setting the adapter use the timer */
+            final Handler handler = new Handler();
+            final Runnable Update = new Runnable() {
+                public void run() {
+                    if (currentPage == 4-1) {
+                        currentPage = 0;
+                    }
+                    viewPager.setCurrentItem(currentPage++, true);
+                }
+            };
+
+            timer = new Timer(); // This will create a new Thread
+            timer.schedule(new TimerTask() { // task to be scheduled
+                @Override
+                public void run() {
+                    handler.post(Update);
+                }
+            }, DELAY_MS, PERIOD_MS);
+        }catch (Exception e){
+
+
+        }
+
 
         return view;
 
@@ -252,14 +371,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     private void GetVideosTheater() {
-        mSwipeRefreshLayout.setRefreshing(true);
+//        mSwipeRefreshLayout.setRefreshing(true);
         viewDialog.showDialog();
         GetVideosAdapterTheater.clear();
         jsonArrayRequest = new JsonArrayRequest(Config.url + "videos.php", new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 viewDialog.hideDialog();
-                mSwipeRefreshLayout.setRefreshing(false);
+//                mSwipeRefreshLayout.setRefreshing(false);
                 GetCardWebCall(response);
             }
         }, new Response.ErrorListener() {
@@ -267,7 +386,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onErrorResponse(VolleyError error) {
 
                 viewDialog.hideDialog();
-                mSwipeRefreshLayout.setRefreshing(false);
+//                mSwipeRefreshLayout.setRefreshing(false);
 
             }
         });
@@ -360,10 +479,77 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         recyclerViewAdapterComingSoon.notifyDataSetChanged();
     }
 
-    @Override
-    public void onRefresh() {
-        GetSeries();
-        GetVideosTheater();
-        GetvideosComingSoon();
+
+
+
+
+    public void sendRequest(){
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, Config.url + "image_slides.php", null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                for(int i = 0; i < response.length(); i++){
+
+                    SliderUtils sliderUtils = new SliderUtils();
+
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+
+                        sliderUtils.setSliderImageUrl(Config.dir_poster + jsonObject.getString("image_url"));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    sliderImg.add(sliderUtils);
+
+                }
+
+                viewPagerAdapter = new ViewPagerAdapter(sliderImg, getActivity());
+
+                viewPager.setAdapter(viewPagerAdapter);
+
+                dotscount = viewPagerAdapter.getCount();
+                dots = new ImageView[dotscount];
+
+                for(int i = 0; i < dotscount; i++){
+
+                    dots[i] = new ImageView(getActivity());
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.nonactive_dot));
+
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                    params.setMargins(8, 0, 8, 0);
+
+                    sliderDotspanel.addView(dots[i], params);
+
+                }
+
+                dots[0].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.active_dot));
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        MySingleton.getInstance(getActivity()).addToRequestQueue(jsonArrayRequest);
+
     }
+
+//    @Override
+//    public void onRefresh() {
+//        GetSeries();
+//        GetVideosTheater();
+//        GetvideosComingSoon();
+//        sendRequest();
+//    }
+//
+
+
+
+
 }

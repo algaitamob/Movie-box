@@ -9,15 +9,47 @@
 
     <color name="status_bar_color">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="md_white_1000">#ffffff</color>
+    <color name="md_black_1000">#000000</color>
+    <color name="md_blue_grey_700">#000000</color>
+    <color name="md_blue_grey_100">#000000</color>
+
+
 
     <color name="color_white">#ffffff</color>
     <color name="color_video_transparent">#88000000</color>
 
     <color name="color_unplayed">#323232</color>
     <color name="color_buffered">#b2b2b2</color>
+    <color name="red_500">#F44336</color>
+    <color name="green_500">#4CAF50</color>
+<!--    <color name="white">#FFF</color>-->
+<!--    <color name="black">#000</color>-->
 
 
+    <color name="light_gray">#D3D3D3</color>
+
+
+    <color name="colorPrimaryLight">#1E88E5</color>
+
+    <color name="overlay_dark_10">#1A000000</color>
+    <color name="overlay_dark_20">#33000000</color>
+    <color name="overlay_dark_30">#4D000000</color>
+    <color name="overlay_dark_40">#66000000</color>
+    <color name="overlay_dark_50">#80000000</color>
+    <color name="overlay_dark_60">#99000000</color>
+    <color name="overlay_dark_70">#B3000000</color>
+    <color name="overlay_dark_80">#CC000000</color>
+    <color name="overlay_dark_90">#E6000000</color>
+
+    <color name="overlay_light_10">#1AFFFFFF</color>
+    <color name="overlay_light_20">#33FFFFFF</color>
     <color name="overlay_light_30">#4DFFFFFF</color>
+    <color name="overlay_light_40">#66FFFFFF</color>
+    <color name="overlay_light_50">#8FFFFFF0</color>
+    <color name="overlay_light_60">#99FFFFFF</color>
+    <color name="overlay_light_70">#B3FFFFFF</color>
+    <color name="overlay_light_80">#CCFFFFFF</color>
     <color name="overlay_light_90">#E6FFFFFF</color>
 
     <color name="grey_5">#f2f2f2</color>

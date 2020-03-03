@@ -184,6 +184,10 @@
         </FrameLayout>
 
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -193,7 +197,7 @@
 
 
             <customfonts.MyTextView_PTSans_Bold
-                android:visibility="gone"
+
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -205,7 +209,7 @@
                 />
 
             <View
-                android:visibility="gone"
+
 
                 android:layout_width="47.7dp"
                 android:layout_height="3dp"
@@ -213,7 +217,7 @@
                 android:background="@drawable/gradient"/>
 
             <customfonts.MyTextView_PTSans_Regular
-                android:visibility="gone"
+
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -284,13 +288,13 @@
             </android.support.v7.widget.RecyclerView>
 
 
+
         </LinearLayout>
 
 
 
 
-
-
+        </ScrollView>
 
 
     </LinearLayout>

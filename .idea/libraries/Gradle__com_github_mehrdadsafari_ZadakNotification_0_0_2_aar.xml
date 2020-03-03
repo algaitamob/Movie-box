@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.mehrdadsafari:ZadakNotification:0.0.2@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/317befc65e8557c9240f56e0a285f58d/ZadakNotification-0.0.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/317befc65e8557c9240f56e0a285f58d/ZadakNotification-0.0.2/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.mehrdadsafari/ZadakNotification/0.0.2/d9c8474096802732acd909fcca59471dd52020e6/ZadakNotification-0.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

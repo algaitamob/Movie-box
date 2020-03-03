@@ -23,6 +23,10 @@
     <dimen name="size_two_hundred">200dp</dimen>
 
 
+    <dimen name="spacing_xsmall">2dp</dimen>
+    <dimen name="spacing_xxlarge">50dp</dimen>
+    <dimen name="spacing_xxxlarge">55dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
     <!--<dimen name="fab_margin">16dp</dimen>-->
 
     <!-- Default screen margins, per the Android Design guidelines. -->

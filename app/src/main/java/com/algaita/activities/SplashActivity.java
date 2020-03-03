@@ -1,6 +1,7 @@
 package com.algaita.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
 import com.algaita.RequestHandler;
+import com.algaita.Welcome;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -60,9 +62,16 @@ public class SplashActivity extends AppCompatActivity {
 
                         CheckSession(android_id);
                     }else{
-                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(i);
-                        finish();
+
+
+                        Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                        if(Build.VERSION.SDK_INT>20){
+                            ActivityOptions options =
+                                    ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this);
+                            startActivity(i,options.toBundle());
+                        }else {
+                            startActivity(i);
+                        }
 
                     }
 
@@ -93,9 +102,14 @@ public class SplashActivity extends AppCompatActivity {
                         try {
                             if (response.getInt("status") == 0) {
 
-                                Intent intent = new Intent(SplashActivity.this, BaseActivity.class);
-                                startActivity(intent);
-                                finish();
+                                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                                if(Build.VERSION.SDK_INT>20){
+                                    ActivityOptions options =
+                                            ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this);
+                                    startActivity(i,options.toBundle());
+                                }else {
+                                    startActivity(i);
+                                }
 
                             } else if(response.getInt("status") == 1) {
 

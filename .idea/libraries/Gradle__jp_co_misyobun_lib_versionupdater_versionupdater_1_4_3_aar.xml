@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: jp.co.misyobun.lib.versionupdater:versionupdater:1.4.3@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2736b516f9d589c0f8a7b3899105f11f/versionupdater-1.4.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2736b516f9d589c0f8a7b3899105f11f/versionupdater-1.4.3/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/jp.co.misyobun.lib.versionupdater/versionupdater/1.4.3/187af38153a2fb851c1dd3d55f5010bfad8fe908/versionupdater-1.4.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/jp.co.misyobun.lib.versionupdater/versionupdater/1.4.3/fa69787d52b0a7681c38ccf7ae9758a37feb0b8c/versionupdater-1.4.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

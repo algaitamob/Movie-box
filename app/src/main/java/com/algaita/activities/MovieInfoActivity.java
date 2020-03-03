@@ -2,24 +2,34 @@ package com.algaita.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -29,7 +39,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -41,8 +53,11 @@ import android.widget.VideoView;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -67,15 +82,24 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.cnrylmz.zionfiledownloader.DownloadFile;
+import com.cnrylmz.zionfiledownloader.FILE_TYPE;
+import com.cnrylmz.zionfiledownloader.ZionDownloadFactory;
+import com.cnrylmz.zionfiledownloader.ZionDownloadListener;
+import com.khizar1556.mkvideoplayer.MKPlayer;
 import com.wooplr.spotlight.SpotlightView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class MovieInfoActivity extends AppCompatActivity {
+    private MKPlayer player;
+
+    Activity context;
     CoordinatorLayout layout_bg;
     ProgressBar progressBar = null;
     private final static int REQUEST_ID_MULTIPLE_PERMISSIONS = 0x2;
@@ -96,16 +120,30 @@ public class MovieInfoActivity extends AppCompatActivity {
     private Runnable runnable;
     TextView txttitle, txtrelease_date, txtprice, txtdescription, txtinfo, total_download, total_watch, btn_trailer, btn_buy, btn_download, btn_watch;
     ImageView poster, poster_bg;
+    FloatingActionButton btn_feedback;
     SessionHandlerUser sessionHandlerUser;
     private BottomSheetBehavior mBehavior;
     private BottomSheetDialog mBottomSheetDialog;
     private View bottom_sheet;
     ViewDialog viewDialog;
     private ImageView play;
+
+//    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
+//    int id = 1;
+
+    private NotificationManager mNotificationManager;
+    private NotificationCompat.Builder build;
+    final int id = 101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_info);
+
+        player=new MKPlayer(this);
+
+        context = this;
         sessionHandlerUser = new SessionHandlerUser(this);
         viewDialog = new ViewDialog(this);
         progressBar =  findViewById(R.id.progressbar);
@@ -122,6 +160,16 @@ public class MovieInfoActivity extends AppCompatActivity {
         total_watch = findViewById(R.id.total_watch);
         play = findViewById(R.id.play);
         img_play = findViewById(R.id.play);
+        btn_feedback = findViewById(R.id.feedback);
+
+        btn_feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogFeedback();
+            }
+        });
+
+        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
         cast_recycleview =  findViewById(R.id.cast_recycleview);
         cast_recycleview.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
@@ -152,47 +200,99 @@ public class MovieInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = getIntent();
-                poster_bg.setVisibility(View.GONE);
-                videoView.setVisibility(View.VISIBLE);
-                img_play.setVisibility(View.GONE);
-
-                try {
-                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
-                    videoView.setVideoURI(uri);
-                    videoView.requestFocus();
-                    DisplayMetrics metrics = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(metrics);
-                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
-                    progressBar.setVisibility(View.VISIBLE);
-                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            // TODO Auto-generated method stub
-                            mp.start();
-                            mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                                @Override
-                                public void onVideoSizeChanged(MediaPlayer mp, int arg1,
-                                                               int arg2) {
-                                    // TODO Auto-generated method stub
-                        progressBar.setVisibility(View.GONE);
-                                    mp.start();
-                                }
-                            });
+//                poster_bg.setVisibility(View.GONE);
+//                videoView.setVisibility(View.VISIBLE);
+//                img_play.setVisibility(View.GONE);
+//
+//                try {
+//                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
+//                    videoView.setVideoURI(uri);
+//                    videoView.requestFocus();
+//                    DisplayMetrics metrics = new DisplayMetrics();
+//                    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
+//                    progressBar.setVisibility(View.VISIBLE);
+//                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                        @Override
+//                        public void onPrepared(MediaPlayer mp) {
+//                            // TODO Auto-generated method stub
+//                            mp.start();
+//                            mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+//                                @Override
+//                                public void onVideoSizeChanged(MediaPlayer mp, int arg1,
+//                                                               int arg2) {
+//                                    // TODO Auto-generated method stub
+//                        progressBar.setVisibility(View.GONE);
+//                                    mp.start();
+//                                }
+//                            });
+//                        }
+//                    });
+//                    videoView.start();
+//
+//                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                        @Override
+//                        public void onCompletion(MediaPlayer mp) {
+//                            img_play.setVisibility(View.VISIBLE);
+//
+//                        }
+//                    });
+//                }catch (Exception e){
+//
+//                    e.printStackTrace();
+//                }
+                player.onComplete(new Runnable() {
+                    @Override
+                    public void run() {
+                        //callback when video is finish
+                        Toast.makeText(getApplicationContext(), "video play completed",Toast.LENGTH_SHORT).show();
+                    }
+                }).onInfo(new MKPlayer.OnInfoListener() {
+                    @Override
+                    public void onInfo(int what, int extra) {
+                        switch (what) {
+                            case IMediaPlayer.MEDIA_INFO_BUFFERING_START:
+                                //do something when buffering start
+                                break;
+                            case IMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                                //do something when buffering end
+                                break;
+                            case IMediaPlayer.MEDIA_INFO_NETWORK_BANDWIDTH:
+                                //download speed
+                                break;
+                            case IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+                                //do something when video rendering
+                                break;
                         }
-                    });
-                    videoView.start();
+                    }
+                }).onError(new MKPlayer.OnErrorListener() {
+                    @Override
+                    public void onError(int what, int extra) {
+                        Toast.makeText(getApplicationContext(), "video play error",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                player.setPlayerCallbacks(new MKPlayer.playerCallbacks() {
+                    @Override
+                    public void onNextClick() {
+                        String url = getIntent().getStringExtra("trailer_url");
 
-                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            img_play.setVisibility(View.VISIBLE);
+                        player.play(url);
+                        player.setTitle(getIntent().getStringExtra("title"));
+                    }
 
-                        }
-                    });
-                }catch (Exception e){
+                    @Override
+                    public void onPreviousClick() {
+                        String url = getIntent().getStringExtra("trailer_url");
 
-                    e.printStackTrace();
-                }
+                        player.play(url);
+                        player.setTitle(getIntent().getStringExtra("title"));
+                /*String url = ((EditText) findViewById(R.id.et_url)).getText().toString();
+                MKPlayerActivity.configPlayer(videoplayer.this).setTitle(url).play(url);*/
+                    }
+                });
+                String url=getIntent().getStringExtra("uri");
+                player.play(url);
+                player.setTitle(getIntent().getStringExtra("title"));
 
             }
         });
@@ -257,8 +357,9 @@ public class MovieInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String type = "watch";
                 Update(type);
-                Intent intent = new Intent(MovieInfoActivity.this, PlayerService.class);
+                Intent intent = new Intent(MovieInfoActivity.this, VideoPlayer.class);
                 intent.putExtra("uri", getIntent().getStringExtra("video_url"));
+                intent.putExtra("title", getIntent().getStringExtra("title"));
                 startActivity(intent);
 
             }
@@ -269,6 +370,26 @@ public class MovieInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkPermissions();
+//
+//                mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                mBuilder = new NotificationCompat.Builder(MovieInfoActivity.this);
+//                mBuilder.setContentTitle(getIntent().getStringExtra("title"))
+//                        .setContentText("Download in progress")
+//                        .setSmallIcon(R.drawable.applogo);
+
+//                new Downloader(getIntent().getStringExtra("video_url")).execute();
+
+//                            new DownloadMaterial().execute(getIntent().getStringExtra("video_url"));
+//                NewDownloader(getIntent().getStringExtra("video_url"));
+//
+//                mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                mBuilder = new NotificationCompat.Builder(MovieInfoActivity.this);
+//                mBuilder.setContentTitle("Download")
+//                        .setContentText("Download in progress")
+//                        .setSmallIcon(R.drawable.applogo);
+//
+//                new Downloader().execute(getIntent().getStringExtra("video_url"));
+
             }
         });
 
@@ -315,7 +436,44 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     }
 
-//  ButtomSheetPayment
+    private void NewDownloader(String video_url) {
+        Toast.makeText(getApplicationContext(), "Download Started!", Toast.LENGTH_LONG).show();
+        ZionDownloadFactory factory = new ZionDownloadFactory(this, video_url, getIntent().getStringExtra("title"));
+        DownloadFile downloadFile = factory.downloadFile(FILE_TYPE.VIDEO);
+        downloadFile.start(new ZionDownloadListener() {
+            @Override
+            public void OnSuccess(String dataPath) {
+                // the file saved in your device..
+                //dataPath--> android/{your app package}/files/Download
+                Toast.makeText(getApplicationContext(), getIntent().getStringExtra("title") + "Downloaded Successfully!", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void OnFailed(String message) {
+                Toast.makeText(getApplicationContext(), "Download Failed", Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void OnPaused(String message) {
+                Toast.makeText(getApplicationContext(), "Download Pause", Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void OnPending(String message) {
+
+            }
+
+            @Override
+            public void OnBusy() {
+
+                Toast.makeText(getApplicationContext(), "Download of " + getIntent().getStringExtra("title") + "started!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    //  ButtomSheetPayment
     private void showBottomSheetDialog() {
         if (mBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -534,7 +692,17 @@ public class MovieInfoActivity extends AppCompatActivity {
                         listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
         } else {
-            new DownloadFileFromURL().execute(getIntent().getStringExtra("video_url"));
+//            BackTasks bt=new BackTasks();
+//            bt.execute(getIntent().getStringExtra("video_url"));
+//            NewDownloader(getIntent().getStringExtra("video_url"));
+
+//            mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//            mBuilder = new NotificationCompat.Builder(MovieInfoActivity.this);
+//            mBuilder.setContentTitle("Download")
+//                    .setContentText("Download in progress")
+//                    .setSmallIcon(R.drawable.applogo);
+            new DownloadFileFromURL().execute(getIntent().getStringExtra("trailer_url"));
+
 
         }
 
@@ -545,9 +713,19 @@ public class MovieInfoActivity extends AppCompatActivity {
         int permissionLocation = ContextCompat.checkSelfPermission(MovieInfoActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+//            mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//            mBuilder = new NotificationCompat.Builder(MovieInfoActivity.this);
+//            mBuilder.setContentTitle("Download")
+//                    .setContentText("Download in progress")
+//                    .setSmallIcon(R.drawable.applogo);
+            new DownloadFileFromURL().execute(getIntent().getStringExtra("trailer_url"));
 
-            new DownloadFileFromURL().execute(getIntent().getStringExtra("video_url"));
-
+//            BackTask bt=new BackTask();
+//            bt.execute(getIntent().getStringExtra("video_url"));
+//            new SeriesInfoActivity.DownloadFileFromURL().execute(getIntent().getStringExtra("video_url"));
+//            BackTasks bt=new BackTasks();
+//            bt.execute(getIntent().getStringExtra("video_url"));
+//            NewDownloader(getIntent().getStringExtra("video_url"));
 
         }
     }
@@ -611,23 +789,22 @@ public class MovieInfoActivity extends AppCompatActivity {
     /**
      * Background Async Task to download file
      * */
-    class DownloadFileFromURL extends AsyncTask<String, String, String> {
-
-        /**
-         * Before starting background thread
-         * Show Progress Bar Dialog
-         * */
-        @Override
-        protected void onPreExecute() {
+    private class BackTasks extends AsyncTask<String,Integer,Void>{
+        NotificationManager mNotifyManager;
+        NotificationCompat.Builder mBuilder;
+        protected void onPreExecute(){
             super.onPreExecute();
-            showDialog(progress_bar_type);
+            mNotifyManager =(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mBuilder = new NotificationCompat.Builder(context);
+            mBuilder.setContentTitle("File Download")
+                    .setContentText("Download in progress")
+                    .setSmallIcon(R.drawable.oldicon);
+            Toast.makeText(context, "Downloading the file... The download progress is on notification bar.", Toast.LENGTH_LONG).show();
+
         }
 
-        /**
-         * Downloading file in background thread
-         * */
-        @Override
-        protected String doInBackground(String... f_url) {
+
+        protected Void doInBackground(String...f_url){
             int count;
             try {
                 URL url = new URL(f_url[0]);
@@ -653,7 +830,7 @@ public class MovieInfoActivity extends AppCompatActivity {
 
                 while ((count = input.read(data)) != -1) {
                     total += count;
-                    publishProgress(""+(int)((total*100)/lenghtOfFile));
+                    publishProgress((int)((total*100)/lenghtOfFile));
                     output.write(data, 0, count);
                 }
                 output.flush();
@@ -667,33 +844,20 @@ public class MovieInfoActivity extends AppCompatActivity {
             return null;
         }
 
-        /**
-         * Updating progress bar
-         * */
-        protected void onProgressUpdate(String... progress) {
-            pDialog.setProgress(Integer.parseInt(progress[0]));
+
+        protected void onProgressUpdate(Integer... progress) {
+
+            mBuilder.setProgress(100, progress[0], false);
+            // Displays the progress bar on notification
+            mNotifyManager.notify(0, mBuilder.build());
         }
 
-        /**
-         * After completing background task
-         * Dismiss the progress dialog
-         * **/
-        @Override
-        protected void onPostExecute(String file_url) {
-            dismissDialog(progress_bar_type);
-            String type = "downloads";
-            Update(type);
-
-            View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
-            TextView text = layout.findViewById(R.id.text);
-            text.setText(getIntent().getStringExtra("title") + "  - Downloaded Successfully!");
-            Toast toast = new Toast(getApplicationContext());
-            toast.setDuration(Toast.LENGTH_LONG);
-            toast.setView(layout);
-            toast.show();
-
+        protected void onPostExecute(Void result){
+            mBuilder.setContentText("Download complete");
+            // Removes the progress bar
+            mBuilder.setProgress(0,0,false);
+            mNotifyManager.notify(0, mBuilder.build());
         }
-
 
 
     }
@@ -771,6 +935,84 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
 
+    private void showDialogFeedback() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_feedback);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        final EditText text;
+        text = dialog.findViewById(R.id.message);
+
+        ((View) dialog.findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                SendFeedBack(text.getText().toString());
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+    }
+
+
+
+    private void SendFeedBack(String toString) {
+        viewDialog.showDialog();
+        class chargee extends AsyncTask<Bitmap,Void,String> {
+
+            RequestHandler rh = new RequestHandler();
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                viewDialog.hideDialog();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                viewDialog.hideDialog();
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText(s);
+                Toast toast = new Toast(getApplicationContext());
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+                data.put("message", toString);
+                data.put("userid", String.valueOf(sessionHandlerUser.getUserDetail().getUserid()));
+                String result = rh.sendPostRequest(Config.url + "feedback.php",data);
+
+                return result;
+            }
+        }
+
+        chargee ui = new chargee();
+        ui.execute();
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -782,6 +1024,144 @@ public class MovieInfoActivity extends AppCompatActivity {
             startActivity(getIntent());
         }
     }
+
+
+
+
+    /**
+     * Background Async Task to download file
+     * */
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+        private Context mContext;
+        private int NOTIFICATION_ID = 1;
+        private Notification mNotification;
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showNotificationn();
+            showDialog(progress_bar_type);
+        }
+
+
+        @Override
+        protected String doInBackground(String... f_url) {
+            int count;
+            try {
+                URL url = new URL(f_url[0]);
+                URLConnection conection = url.openConnection();
+                conection.connect();
+
+                int lenghtOfFile = conection.getContentLength();
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+
+                Toast.makeText(getApplicationContext(), lenghtOfFile, Toast.LENGTH_LONG).show();
+                String folder = "/data/data/" + getPackageName() + "/files/";
+
+                File directory = new File(folder);
+
+
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
+
+
+
+                byte data[] = new byte[1024];
+
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+
+                    total += count;
+                    publishProgress(""+(int)((total*100)/lenghtOfFile));
+                    output.write(data, 0, count);
+                }
+                output.flush();
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+
+            return null;
+        }
+
+
+        protected void onProgressUpdate(String... progress) {
+            pDialog.setProgress(Integer.parseInt(progress[0]));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        URL myUrl = new URL(getIntent().getStringExtra("video_url"));
+                        URLConnection urlConnection = myUrl.openConnection();
+                        urlConnection.connect();
+                        int file_size = urlConnection.getContentLength();
+                        Toast.makeText(getApplicationContext(), file_size, Toast.LENGTH_LONG).show();
+                        Log.i("sasa", "file_size = " + file_size);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        @Override
+        protected void onPostExecute(String file_url) {
+            dismissDialog(progress_bar_type);
+            String type = "downloads";
+            Update(type);
+            View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
+            TextView text = layout.findViewById(R.id.text);
+            text.setText(getIntent().getStringExtra("title") + "  - Downloaded Successfully!");
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+    public void showNotificationn(){
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this, "11");
+
+        builder
+                .setSmallIcon(R.drawable.applogo)
+                .setContentTitle("Image Downloaded")
+                .setContentText("The image file downloaded successfully");
+
+        Intent notificationIntent = new Intent(MovieInfoActivity.this,
+                BaseActivity.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, builder.build());
+
+    }
+
 
 
 

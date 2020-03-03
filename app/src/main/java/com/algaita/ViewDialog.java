@@ -23,7 +23,7 @@ public class ViewDialog {
         dialog  = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //...set cancelable false so that it's never get hidden
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         //...that's the layout i told you will inflate later
         dialog.setContentView(R.layout.loader);
 //        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);

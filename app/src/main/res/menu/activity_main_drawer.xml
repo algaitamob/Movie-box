@@ -37,6 +37,14 @@
         android:title="Transactions"/>
 
 
+
+    <item
+        android:iconTint="@color/white"
+        android:icon="@drawable/ic_bell"
+        android:id="@+id/nav_notification"
+        android:title="Notifications"/>
+
+
     <item
         android:icon="@drawable/ic_share"
         android:id="@+id/nav_share"
