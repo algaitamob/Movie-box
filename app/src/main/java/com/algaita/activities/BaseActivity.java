@@ -3,6 +3,7 @@ package com.algaita.activities;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Slide;
 import android.view.Gravity;
@@ -374,36 +376,35 @@ public class BaseActivity extends AppCompatActivity {
                 return;
             }
         }
-//        clickDone();
-        finish();
+        clickDone();
+//        finish();
     }
 //
-//    public void clickDone() {
-//        new AlertDialog.Builder(this)
-//                .setIcon(R.drawable.oldicon)
-//                .setTitle(getResources().getString(R.string.app_name))
-//                .setMessage(getResources().getString(R.string.closeMsg))
-//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                        Intent i = new Intent();
-//                        i.setAction(Intent.ACTION_MAIN);
-//                        i.addCategory(Intent.CATEGORY_HOME);
-//                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        startActivity(i);
-//
-//                        finish();
-//                    }
-//                })
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                })
-//                .show();
-//    }
+    public void clickDone() {
+        new AlertDialog.Builder(this)
+                .setIcon(R.drawable.oldicon)
+                .setTitle(getResources().getString(R.string.app_name))
+                .setMessage(getResources().getString(R.string.closeMsg))
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent i = new Intent();
+                        i.setAction(Intent.ACTION_MAIN);
+                        i.addCategory(Intent.CATEGORY_HOME);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
 
     private void CheckBalance() {
         String url_ = Config.user_wallet+"?userid="+ sessionHandlerUser.getUserDetail().getUserid();
@@ -470,8 +471,6 @@ public class BaseActivity extends AppCompatActivity {
         dialog.getWindow().setAttributes(lp);
     }
 
-
-
     private void showDialogHelp() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
@@ -535,7 +534,6 @@ public class BaseActivity extends AppCompatActivity {
         ui.execute();
     }
 
-//
     private void showT5(){
         new SpotlightView.Builder(this)
                 .introAnimationDuration(400)
@@ -559,8 +557,6 @@ public class BaseActivity extends AppCompatActivity {
                 .show();
     }
 
-
-
     private void showT(){
         new SpotlightView.Builder(this)
                 .introAnimationDuration(400)
@@ -583,8 +579,6 @@ public class BaseActivity extends AppCompatActivity {
                 .usageId("2") //UNIQUE ID
                 .show();
     }
-
-
 
     public void setAnimation() {
         if (Build.VERSION.SDK_INT > 20) {

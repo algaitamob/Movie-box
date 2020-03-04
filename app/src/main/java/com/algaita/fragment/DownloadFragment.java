@@ -107,7 +107,7 @@ public class DownloadFragment extends Fragment {
                         new AlertDialog.Builder(getActivity())
                                 .setIcon(R.drawable.oldicon)
                                 .setTitle(getResources().getString(R.string.app_name))
-                                .setMessage(getResources().getString(R.string.closeMsg))
+                                .setMessage("Are you sure you want to delete?")
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -170,8 +170,10 @@ public class DownloadFragment extends Fragment {
 
 //        File root = new File(String.valueOf(Environment.ge);
 
-        File root = new File("/data/user/0/" + getActivity().getPackageName() + "/files");
+        File root = new File("/data/data/" + getActivity().getPackageName() + "/files/");
 //        File root = new File(String.valueOf(Environment.get));
+//        String folder = "/data/data/" + getPackageName() + "/files/";
+
         Log.d("vallll", String.valueOf(root));
 //        File[] songs = root.listFiles();
         File[] songs = root.listFiles(new FilenameFilter() {

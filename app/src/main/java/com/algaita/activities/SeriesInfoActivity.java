@@ -3,7 +3,9 @@ package com.algaita.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.Notification;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -60,6 +62,7 @@ import com.cnrylmz.zionfiledownloader.DownloadFile;
 import com.cnrylmz.zionfiledownloader.FILE_TYPE;
 import com.cnrylmz.zionfiledownloader.ZionDownloadFactory;
 import com.cnrylmz.zionfiledownloader.ZionDownloadListener;
+import com.khizar1556.mkvideoplayer.MKPlayer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +71,7 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -75,7 +79,11 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.danmaku.ijk.media.player.IMediaPlayer;
+
 public class SeriesInfoActivity extends AppCompatActivity {
+
+    private MKPlayer player;
 
 
     // Progress Dialog
@@ -130,6 +138,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_series_info);
         sessionHandlerUser = new SessionHandlerUser(this);
         viewDialog = new ViewDialog(this);
+        player=new MKPlayer(this);
+
         final Intent intent = getIntent();
         txttitle = findViewById(R.id.title);
         txtdescription = findViewById(R.id.description);
@@ -203,113 +213,70 @@ public class SeriesInfoActivity extends AppCompatActivity {
         }
 
 
-        play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = getIntent();
-                poster_bg.setVisibility(View.GONE);
-                videoView.setVisibility(View.VISIBLE);
-                play.setVisibility(View.GONE);
-
-                try {
-                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
-                    videoView.setVideoURI(uri);
-                    videoView.requestFocus();
-
-
-                    DisplayMetrics metrics = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(metrics);
-                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
-
-
-                    progressBar.setVisibility(View.VISIBLE);
-                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            // TODO Auto-generated method stub
-                            mp.start();
-                            mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                                @Override
-                                public void onVideoSizeChanged(MediaPlayer mp, int arg1,
-                                                               int arg2) {
-                                    // TODO Auto-generated method stub
-                                    progressBar.setVisibility(View.GONE);
-                                    mp.start();
-                                }
-                            });
-                        }
-                    });
-
-                    videoView.start();
-
-                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-//                           Toast.makeText(getApplicationContext(), "Video completed", Toast.LENGTH_LONG).show();
-                            img_play.setVisibility(View.VISIBLE);
-
-                        }
-                    });
-                }catch (Exception e){
-
-                    e.printStackTrace();
-                }
-
-
-            }
-        });
+//        play.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = getIntent();
+//                poster_bg.setVisibility(View.GONE);
+//                videoView.setVisibility(View.VISIBLE);
+//                play.setVisibility(View.GONE);
+//
+//                try {
+//                    Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
+//                    videoView.setVideoURI(uri);
+//                    videoView.requestFocus();
+//
+//
+//                    DisplayMetrics metrics = new DisplayMetrics();
+//                    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
+//
+//
+//                    progressBar.setVisibility(View.VISIBLE);
+//                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                        @Override
+//                        public void onPrepared(MediaPlayer mp) {
+//                            // TODO Auto-generated method stub
+//                            mp.start();
+//                            mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+//                                @Override
+//                                public void onVideoSizeChanged(MediaPlayer mp, int arg1,
+//                                                               int arg2) {
+//                                    // TODO Auto-generated method stub
+//                                    progressBar.setVisibility(View.GONE);
+//                                    mp.start();
+//                                }
+//                            });
+//                        }
+//                    });
+//
+//                    videoView.start();
+//
+//                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                        @Override
+//                        public void onCompletion(MediaPlayer mp) {
+////                           Toast.makeText(getApplicationContext(), "Video completed", Toast.LENGTH_LONG).show();
+//                            img_play.setVisibility(View.VISIBLE);
+//
+//                        }
+//                    });
+//                }catch (Exception e){
+//
+//                    e.printStackTrace();
+//                }
+//
+//
+//            }
+//        });
 
         btn_trailer = findViewById(R.id.trailer);
         btn_trailer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = getIntent();
-                poster_bg.setVisibility(View.GONE);
-                videoView.setVisibility(View.VISIBLE);
-                play.setVisibility(View.GONE);
-
-
-                try {
-                   Uri uri = Uri.parse(intent.getStringExtra("trailer_url"));
-                   videoView.setVideoURI(uri);
-                   videoView.requestFocus();
-
-                    DisplayMetrics metrics = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(metrics);
-                    videoView.setLayoutParams(new RelativeLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
-
-
-                    progressBar.setVisibility(View.VISIBLE);
-                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            // TODO Auto-generated method stub
-                            mp.start();
-                            mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                                @Override
-                                public void onVideoSizeChanged(MediaPlayer mp, int arg1,
-                                                               int arg2) {
-                                    // TODO Auto-generated method stub
-                                    progressBar.setVisibility(View.GONE);
-                                    mp.start();
-                                }
-                            });
-                        }
-                    });
-                    videoView.start();
-
-                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-//                           Toast.makeText(getApplicationContext(), "Video completed", Toast.LENGTH_LONG).show();
-                            img_play.setVisibility(View.VISIBLE);
-
-                        }
-                    });
-               }catch (Exception e){
-
-                   e.printStackTrace();
-               }
+                Intent intent = new Intent(SeriesInfoActivity.this, VideoPlayer.class);
+                intent.putExtra("uri", getIntent().getStringExtra("trailer_url"));
+                intent.putExtra("title", getIntent().getStringExtra("title"));
+                startActivity(intent);
 
             }
         });
@@ -703,8 +670,9 @@ public class SeriesInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                NewDownloader(video_url, title);
-//                new DownloadFileFromURL().execute(video_url);
+//                NewDownloader(video_url, title);
+
+                new DownloadFileFromURL().execute(video_url);
             }
         });
 
@@ -761,93 +729,107 @@ public class SeriesInfoActivity extends AppCompatActivity {
     /**
      * Background Async Task to download file
      * */
-//    static class DownloadFileFromURL extends AsyncTask<String, String, String> {
-//
-//        /**
-//         * Before starting background thread
-//         * Show Progress Bar Dialog
-//         * */
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            showDialog(progress_bar_type);
-//        }
-//
-//        /**
-//         * Downloading file in background thread
-//         * */
-//        @Override
-//        protected String doInBackground(String... f_url) {
-//            int count;
-//            try {
-//                URL url = new URL(f_url[0]);
-//                URLConnection conection = url.openConnection();
-//                conection.connect();
-//                int lenghtOfFile = conection.getContentLength();
-//
-//                InputStream input = new BufferedInputStream(url.openStream(), 8192);
-//
-//
-//                String folder = "/data/data/" + getPackageName() + "/files/";
-//
-//                File directory = new File(folder);
-//
-//
-//                if (!directory.exists()) {
-//                    directory.mkdirs();
-//                }
-//
-//                OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
-//
-//                byte data[] = new byte[1024];
-//
-//                long total = 0;
-//
-//                while ((count = input.read(data)) != -1) {
-//                    total += count;
-//                    publishProgress(""+(int)((total*100)/lenghtOfFile));
-//
-//                    output.write(data, 0, count);
-//                }
-//
-//                output.flush();
-//
-//                output.close();
-//                input.close();
-//
-//            } catch (Exception e) {
-//                Log.e("Error: ", e.getMessage());
-//            }
-//
-//            return null;
-//        }
-//
-//        /**
-//         * Updating progress bar
-//         * */
-//        protected void onProgressUpdate(String... progress) {
-//            // setting progress percentage
-//            pDialog.setProgress(Integer.parseInt(progress[0]));
-//        }
-//
-//        /**
-//         * After completing background task
-//         * Dismiss the progress dialog
-//         * **/
-//        @Override
-//        protected void onPostExecute(String file_url) {
-//            dismissDialog(progress_bar_type);
-//
-//            View layout = getLayoutInflater().inflate(R.layout.toast_custom, (ViewGroup) findViewById(R.id.custom_toast_layout_id));
-//            TextView text = layout.findViewById(R.id.text);
-//            text.setText(getIntent().getStringExtra("title") + "  - Downloaded Successfully!");
-//            Toast toast = new Toast(getApplicationContext());
-//            toast.setDuration(Toast.LENGTH_LONG);
-//            toast.setView(layout);
-//            toast.show();
-//        }
-//
-//    }
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+        private Context mContext;
+        private int NOTIFICATION_ID = 1;
+        private Notification mNotification;
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            showNotificationn();
+            showDialog(progress_bar_type);
+        }
+
+
+        @Override
+        protected String doInBackground(String... f_url) {
+            int count;
+            try {
+                URL url = new URL(f_url[0]);
+                URLConnection conection = url.openConnection();
+                conection.connect();
+
+                int lenghtOfFile = conection.getContentLength();
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+
+                Toast.makeText(getApplicationContext(), lenghtOfFile, Toast.LENGTH_LONG).show();
+                String folder = "/data/data/" + getPackageName() + "/files/";
+
+                File directory = new File(folder);
+
+
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
+
+
+
+                byte data[] = new byte[1024];
+
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+
+                    total += count;
+                    publishProgress(""+(int)((total*100)/lenghtOfFile));
+                    output.write(data, 0, count);
+                }
+                output.flush();
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+
+            return null;
+        }
+
+
+        protected void onProgressUpdate(String... progress) {
+            pDialog.setProgress(Integer.parseInt(progress[0]));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        URL myUrl = new URL(getIntent().getStringExtra("video_url"));
+                        URLConnection urlConnection = myUrl.openConnection();
+                        urlConnection.connect();
+                        int file_size = urlConnection.getContentLength();
+                        Toast.makeText(getApplicationContext(), file_size, Toast.LENGTH_LONG).show();
+                        Log.i("sasa", "file_size = " + file_size);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        @Override
+        protected void onPostExecute(String file_url) {
+            dismissDialog(progress_bar_type);
+            String type = "downloads";
+//            Update(type);
+            View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
+            TextView text = layout.findViewById(R.id.text);
+            text.setText(getIntent().getStringExtra("title") + "  - Downloaded Successfully!");
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
+        }
+
+
+
+    }
+
 //
 
 //    @Override
@@ -872,44 +854,44 @@ public class SeriesInfoActivity extends AppCompatActivity {
         }
     }
 
-
-
-    private void NewDownloader(String video_url, String title) {
-        Toast.makeText(getApplicationContext(), "Download Started!", Toast.LENGTH_LONG).show();
-        ZionDownloadFactory factory = new ZionDownloadFactory(this, video_url, title);
-        DownloadFile downloadFile = factory.downloadFile(FILE_TYPE.VIDEO);
-        downloadFile.start(new ZionDownloadListener() {
-            @Override
-            public void OnSuccess(String dataPath) {
-                // the file saved in your device..
-                //dataPath--> android/{your app package}/files/Download
-                Toast.makeText(getApplicationContext(), title + "Downloaded Successfully!", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void OnFailed(String message) {
-                Toast.makeText(getApplicationContext(), "Download Failed", Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void OnPaused(String message) {
-                Toast.makeText(getApplicationContext(), "Download Pause", Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void OnPending(String message) {
-
-            }
-
-            @Override
-            public void OnBusy() {
-
-                Toast.makeText(getApplicationContext(), "Download of " + title + "started!", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
+//
+//
+//    private void NewDownloader(String video_url, String title) {
+//        Toast.makeText(getApplicationContext(), "Download Started!", Toast.LENGTH_LONG).show();
+//        ZionDownloadFactory factory = new ZionDownloadFactory(this, video_url, title);
+//        DownloadFile downloadFile = factory.downloadFile(FILE_TYPE.VIDEO);
+//        downloadFile.start(new ZionDownloadListener() {
+//            @Override
+//            public void OnSuccess(String dataPath) {
+//                // the file saved in your device..
+//                //dataPath--> android/{your app package}/files/Download
+//                Toast.makeText(getApplicationContext(), title + "Downloaded Successfully!", Toast.LENGTH_LONG).show();
+//            }
+//
+//            @Override
+//            public void OnFailed(String message) {
+//                Toast.makeText(getApplicationContext(), "Download Failed", Toast.LENGTH_LONG).show();
+//
+//            }
+//
+//            @Override
+//            public void OnPaused(String message) {
+//                Toast.makeText(getApplicationContext(), "Download Pause", Toast.LENGTH_LONG).show();
+//
+//            }
+//
+//            @Override
+//            public void OnPending(String message) {
+//
+//            }
+//
+//            @Override
+//            public void OnBusy() {
+//
+//                Toast.makeText(getApplicationContext(), "Download of " + title + "started!", Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
 
 
 }

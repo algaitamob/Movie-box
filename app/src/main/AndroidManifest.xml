@@ -25,7 +25,7 @@
         android:roundIcon="@drawable/oldicon"
         android:largeHeap="false"
         android:theme="@style/AppTheme">
-        <activity android:name="com.algaita.activities.LoginActivity">
+        <activity android:name="com.algaita.activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +37,7 @@
         <activity android:name=".music.PlayerMusicSongList"/>
         <activity android:name=".music.Downloads"/>
         <!--        <activity android:name="com.algaita.activities.MainActivity"/>-->
-<!--        <activity android:name=".activities.LoginActivity"/>-->
+        <activity android:name=".activities.LoginActivity"/>
         <activity android:name=".activities.SignupActivity"/>
         <activity android:name=".activities.PaymetWeb"/>
         <activity android:name=".activities.AddWalletBalanceActivity"/>

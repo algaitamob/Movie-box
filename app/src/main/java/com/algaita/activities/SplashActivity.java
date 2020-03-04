@@ -55,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
                 try {
                     // Thread will sleep for 5 seconds
                     sleep(6*500);
-
+//
                     if (sessionHandlerUser.isLoggedIn()){
                         String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                                 Settings.Secure.ANDROID_ID);
@@ -63,16 +63,16 @@ public class SplashActivity extends AppCompatActivity {
                         CheckSession(android_id);
                     }else{
 
-
                         Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-                        if(Build.VERSION.SDK_INT>20){
-                            ActivityOptions options =
-                                    ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this);
-                            startActivity(i,options.toBundle());
-                        }else {
-                            startActivity(i);
-                        }
+//                        if(Build.VERSION.SDK_INT>20){
+//                            ActivityOptions options =
+//                                    ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this);
+//                            startActivity(i,options.toBundle());
+//                        }else {
+//                            startActivity(i);
+//                        }
 
+                    startActivity(i);
                     }
 
                 } catch (Exception e) {
@@ -103,13 +103,7 @@ public class SplashActivity extends AppCompatActivity {
                             if (response.getInt("status") == 0) {
 
                                 Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-                                if(Build.VERSION.SDK_INT>20){
-                                    ActivityOptions options =
-                                            ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this);
-                                    startActivity(i,options.toBundle());
-                                }else {
-                                    startActivity(i);
-                                }
+                                startActivity(i);
 
                             } else if(response.getInt("status") == 1) {
 

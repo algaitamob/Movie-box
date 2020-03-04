@@ -21,7 +21,7 @@
             <ImageView
                 android:id="@+id/poster_bg"
                 android:layout_width="match_parent"
-                android:layout_height="185dp"
+                android:layout_height="175dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/barazanabanner" />
 
@@ -29,6 +29,17 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="175dp">
+
+                <include
+                    android:visibility="gone"
+                    layout="@layout/mk_player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentBottom="true"/>
+
 
 
                 <VideoView
@@ -55,6 +66,7 @@
             </RelativeLayout>
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/play"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -184,10 +196,13 @@
         </FrameLayout>
 
 
+
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -197,12 +212,10 @@
 
 
             <customfonts.MyTextView_PTSans_Bold
-
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:textColor="#263238"
+                android:textColor="@color/white"
                 android:lineSpacingExtra="-11sp"
                 android:gravity="center_horizontal"
                 android:text="Description"
@@ -219,15 +232,14 @@
             <customfonts.MyTextView_PTSans_Regular
 
                 android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12.7sp"
-                android:textColor="#9d9d9d"
+                android:layout_width="match_parent"
+                android:layout_height="117dp"
+                android:layout_marginTop="21.7dp"
                 android:layout_marginRight="34.7dp"
                 android:lineSpacingExtra="5sp"
                 android:text="@string/desc"
-                android:layout_marginTop="21.7dp"
-                />
+                android:textColor="#9d9d9d"
+                android:textSize="12.7sp" />
 
             <customfonts.MyTextView_PTSans_Bold
                 android:layout_width="100dp"
@@ -243,19 +255,16 @@
                 android:layout_height="3dp"
                 android:layout_marginTop="4.3dp"
                 android:background="@drawable/gradient"/>
+
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/movie_recycleview"
-                android:clipToPadding="false"
-                android:paddingTop="16.7dp"
-                android:paddingLeft="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingTop="16.7dp">
 
             </android.support.v7.widget.RecyclerView>
-
-
-
-
 
             <View
                 android:visibility="gone"
@@ -278,12 +287,12 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/cast_recycleview"
-                android:clipToPadding="false"
-                android:paddingTop="16.7dp"
-                android:paddingLeft="20dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="74dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingTop="16.7dp">
 
             </android.support.v7.widget.RecyclerView>
 
