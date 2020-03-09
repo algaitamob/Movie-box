@@ -160,7 +160,7 @@ public class NotificationFragment extends Fragment  implements SwipeRefreshLayou
                 json = array.getJSONObject(i);
 //                getVideosAdapterTheater.setTitle(json.getString("title"));
                 getVideosAdapterTheater.setTitle(json.getString("title"));
-                getVideosAdapterTheater.setOndate(json.getString("ondate"));
+                getVideosAdapterTheater.setOndate(json.getString("ontime"));
                 getVideosAdapterTheater.setId(json.getString("id"));
                 getVideosAdapterTheater.setMessage(json.getString("message"));
 

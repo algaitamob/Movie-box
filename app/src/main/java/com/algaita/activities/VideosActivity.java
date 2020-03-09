@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.algaita.Config;
 import com.algaita.R;
@@ -145,6 +146,8 @@ public class VideosActivity extends AppCompatActivity implements SwipeRefreshLay
 
                 viewDialog.hideDialog();
                 mSwipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getApplicationContext(), "No result found!", Toast.LENGTH_LONG).show();
+
 
             }
         });
