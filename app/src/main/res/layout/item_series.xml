@@ -16,7 +16,7 @@
 
         <ImageView
             android:id="@+id/poster"
-            android:layout_width="172dp"
+            android:layout_width="155dp"
             android:layout_height="206dp"
             android:scaleType="fitXY" />
 
@@ -27,7 +27,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="12sp"
         android:layout_marginTop="16dp"
         android:textColor="@color/white"
         android:lineSpacingExtra="-11sp"

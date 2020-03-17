@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AlgaitaDub.iml" filepath="$PROJECT_DIR$/AlgaitaDub.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AlgaitaDub.iml" filepath="$PROJECT_DIR$/AlgaitaDub.iml" group="AlgaitaDub" />
+      <module fileurl="file://$PROJECT_DIR$/dmaudiostreamer/AlgaitaDub-dmaudiostreamer.iml" filepath="$PROJECT_DIR$/dmaudiostreamer/AlgaitaDub-dmaudiostreamer.iml" group="AlgaitaDub/dmaudiostreamer" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="AlgaitaDub/app" />
       <module fileurl="file://$PROJECT_DIR$/dmaudiostreamer/dmaudiostreamer.iml" filepath="$PROJECT_DIR$/dmaudiostreamer/dmaudiostreamer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/zionfiledownloader/zionfiledownloader.iml" filepath="$PROJECT_DIR$/zionfiledownloader/zionfiledownloader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zionfiledownloader/zionfiledownloader.iml" filepath="$PROJECT_DIR$/zionfiledownloader/zionfiledownloader.iml" group="AlgaitaDub/zionfiledownloader" />
     </modules>
   </component>
 </project>

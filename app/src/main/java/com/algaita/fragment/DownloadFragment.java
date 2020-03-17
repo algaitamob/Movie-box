@@ -170,7 +170,7 @@ public class DownloadFragment extends Fragment {
 
 //        File root = new File(String.valueOf(Environment.ge);
 
-        File root = new File("/data/data/" + getActivity().getPackageName() + "/files/");
+        File root = new File("/data/data/" + getActivity().getPackageName() + "");
 //        File root = new File(String.valueOf(Environment.get));
 //        String folder = "/data/data/" + getPackageName() + "/files/";
 

@@ -35,6 +35,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -297,9 +298,18 @@ public class MovieInfoActivity extends AppCompatActivity {
             }
         });
         btn_trailer = findViewById(R.id.trailer);
-        if (getIntent().getStringExtra("trailer_url").isEmpty()){
+        String t = getIntent().getStringExtra("trailer_url");
+//        Log.d("mytrailer", t);
+//        if (t.equals("")){
+//            btn_trailer.setVisibility(View.GONE);
+//        }
+
+
+        if (t.contains("null")) {
             btn_trailer.setVisibility(View.GONE);
+//            return; // or break, continue, throw
         }
+
         btn_trailer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -307,7 +317,6 @@ public class MovieInfoActivity extends AppCompatActivity {
                 intent.putExtra("uri", getIntent().getStringExtra("trailer_url"));
                 intent.putExtra("title", getIntent().getStringExtra("title"));
                 startActivity(intent);
-
             }
         });
         btn_buy = findViewById(R.id.buy);
@@ -730,104 +739,6 @@ public class MovieInfoActivity extends AppCompatActivity {
     /**
      * Showing Dialog
      * */
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case progress_bar_type:
-                pDialog = new ProgressDialog(this);
-                pDialog.setMessage("Downloading... Please wait...");
-                pDialog.setIndeterminate(false);
-                pDialog.setMax(100);
-                pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                pDialog.setCancelable(false);
-                pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                pDialog.show();
-                return pDialog;
-            default:
-                return null;
-        }
-    }
-
-    /**
-     * Background Async Task to download file
-     * */
-    private class BackTasks extends AsyncTask<String,Integer,Void>{
-        NotificationManager mNotifyManager;
-        NotificationCompat.Builder mBuilder;
-        protected void onPreExecute(){
-            super.onPreExecute();
-            mNotifyManager =(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            mBuilder = new NotificationCompat.Builder(context);
-            mBuilder.setContentTitle("File Download")
-                    .setContentText("Download in progress")
-                    .setSmallIcon(R.drawable.oldicon);
-            Toast.makeText(context, "Downloading the file... The download progress is on notification bar.", Toast.LENGTH_LONG).show();
-
-        }
-
-
-        protected Void doInBackground(String...f_url){
-            int count;
-            try {
-                URL url = new URL(f_url[0]);
-                URLConnection conection = url.openConnection();
-                conection.connect();
-                int lenghtOfFile = conection.getContentLength();
-                InputStream input = new BufferedInputStream(url.openStream(), 8192);
-
-                String folder = "/data/data/" + getPackageName() + "/files/";
-
-                File directory = new File(folder);
-
-
-                if (!directory.exists()) {
-                    directory.mkdirs();
-                }
-
-                OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
-
-                byte data[] = new byte[1024];
-
-                long total = 0;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    publishProgress((int)((total*100)/lenghtOfFile));
-                    output.write(data, 0, count);
-                }
-                output.flush();
-                output.close();
-                input.close();
-
-            } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
-            }
-
-            return null;
-        }
-
-
-        protected void onProgressUpdate(Integer... progress) {
-
-            mBuilder.setProgress(100, progress[0], false);
-            // Displays the progress bar on notification
-            mNotifyManager.notify(0, mBuilder.build());
-        }
-
-        protected void onPostExecute(Void result){
-            mBuilder.setContentText("Download complete");
-            // Removes the progress bar
-            mBuilder.setProgress(0,0,false);
-            mNotifyManager.notify(0, mBuilder.build());
-        }
-
-
-    }
 
     private void Update(String type) {
         class chargee extends AsyncTask<Bitmap,Void,String> {
@@ -995,56 +906,74 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
 
-    /**
-     * Background Async Task to download file
-     * */
-    class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
+
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+        /**
+         * Before starting background thread
+         * Show Progress Bar Dialog
+         * */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            showNotificationn();
             showDialog(progress_bar_type);
+
         }
 
-
+        /**
+         * Downloading file in background thread
+         * */
         @Override
         protected String doInBackground(String... f_url) {
             int count;
             try {
+
+                File folder = new File("/data/data/com.algaita/files");
+                boolean success = true;
+                if (!folder.exists()) {
+                    success = folder.mkdir();
+                }
+                if (success) {
+                    // Do something on success
+                } else {
+                    // Do something else on failure
+                }
                 URL url = new URL(f_url[0]);
                 URLConnection conection = url.openConnection();
                 conection.connect();
-
+                // this will be useful so that you can show a tipical 0-100% progress bar
                 int lenghtOfFile = conection.getContentLength();
+
+//                Log.d("mysize", StorageUnits.format(lenghtOfFile));
+
+//                Toast.makeText(getApplicationContext(),"Download Size: " + StorageUnits.format(lenghtOfFile), Toast.LENGTH_LONG).show();
+
+
+                // download the file
                 InputStream input = new BufferedInputStream(url.openStream(), 8192);
 
-
-                Toast.makeText(getApplicationContext(), lenghtOfFile, Toast.LENGTH_LONG).show();
-                String folder = "/data/data/" + getPackageName() + "/files/";
-
-                File directory = new File(folder);
-
-
-                if (!directory.exists()) {
-                    directory.mkdirs();
-                }
-
-                OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
-
-
+                // Output stream
+                //extension must change (mp3,mp4,zip,apk etc.)
+                OutputStream output = new FileOutputStream(folder+getIntent().getStringExtra("title") + ".mp4");
 
                 byte data[] = new byte[1024];
 
                 long total = 0;
 
                 while ((count = input.read(data)) != -1) {
-
                     total += count;
+                    // publishing the progress....
+                    // After this onProgressUpdate will be called
                     publishProgress(""+(int)((total*100)/lenghtOfFile));
+
+                    // writing data to file
                     output.write(data, 0, count);
                 }
+
+                // flushing output
                 output.flush();
+
+                // closing streams
                 output.close();
                 input.close();
 
@@ -1056,73 +985,52 @@ public class MovieInfoActivity extends AppCompatActivity {
         }
 
 
+        /**
+         * Updating progress bar
+         * */
         protected void onProgressUpdate(String... progress) {
+            // setting progress percentage
             pDialog.setProgress(Integer.parseInt(progress[0]));
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        URL myUrl = new URL(getIntent().getStringExtra("video_url"));
-                        URLConnection urlConnection = myUrl.openConnection();
-                        urlConnection.connect();
-                        int file_size = urlConnection.getContentLength();
-                        Toast.makeText(getApplicationContext(), file_size, Toast.LENGTH_LONG).show();
-                        Log.i("sasa", "file_size = " + file_size);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
         }
 
+        /**
+         * After completing background task
+         * Dismiss the progress dialog
+         * **/
         @Override
         protected void onPostExecute(String file_url) {
+            // dismiss the dialog after the file was downloaded
             dismissDialog(progress_bar_type);
-            String type = "downloads";
-            Update(type);
-            View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
-            TextView text = layout.findViewById(R.id.text);
-            text.setText(getIntent().getStringExtra("title") + "  - Downloaded Successfully!");
-            Toast toast = new Toast(getApplicationContext());
-            toast.setDuration(Toast.LENGTH_LONG);
-            toast.setView(layout);
-            toast.show();
+            Toast.makeText(getApplicationContext(),getIntent().getStringExtra("title")+" downloaded.", Toast.LENGTH_LONG).show();
         }
 
 
 
     }
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case progress_bar_type: // we set this to 0
+                pDialog = new ProgressDialog(this);
+                pDialog.setMessage("Downloading, please wait...");
+                pDialog.setIndeterminate(false);
+                pDialog.setMax(100);
+                pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                pDialog.setCancelable(false);
+                pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                pDialog.show();
+                return pDialog;
+            default:
+                return null;
+        }
+    }
 
 
-
-
-//
-//
-//
-//    public void showNotificationn(){
-//        NotificationCompat.Builder builder =
-//                new NotificationCompat.Builder(this, "11");
-//
-//        builder
-//                .setSmallIcon(R.drawable.applogo)
-//                .setContentTitle("Image Downloaded")
-//                .setContentText("The image file downloaded successfully");
-//
-//        Intent notificationIntent = new Intent(MovieInfoActivity.this,
-//                BaseActivity.class);
-//        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-//                0, notificationIntent,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//        builder.setContentIntent(pendingIntent);
-//
-//
-//        NotificationManager notificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
-//        notificationManager.notify(0, builder.build());
-//
-//    }
-//
 
 
 

@@ -130,6 +130,14 @@ public class BaseActivity extends AppCompatActivity {
         tvWalletBalance = navHeader.findViewById(R.id.tvWalletBalance);
         CheckBalance();
 
+        if (sessionHandlerUser.isLoggedIn()){
+
+        }else{
+            Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

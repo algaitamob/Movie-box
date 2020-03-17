@@ -96,6 +96,7 @@ public class ComingSoonActivity extends AppCompatActivity implements SwipeRefres
                 intent.putExtra("downloads", GetVideosAdapterTheater.get(position).getDownlaod());
                 intent.putExtra("watch", GetVideosAdapterTheater.get(position).getWatch());
                 intent.putExtra("poster", GetVideosAdapterTheater.get(position).getPoster());
+                intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "coming");
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());

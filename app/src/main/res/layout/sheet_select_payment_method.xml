@@ -146,11 +146,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="CREDIT CARD"
-                        android:textSize="8sp"
+                        android:text="Debit card/Bank transfer"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textColor="@color/grey_90" />
+                        android:textColor="@color/grey_90"
+                        android:textSize="8sp" />
 
                 </LinearLayout>
 
