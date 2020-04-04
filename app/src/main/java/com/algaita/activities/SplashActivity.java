@@ -24,8 +24,10 @@ import com.algaita.R;
 import com.algaita.RequestHandler;
 import com.algaita.Welcome;
 import com.algaita.sessions.SessionHandlerUser;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -136,15 +138,20 @@ public class SplashActivity extends AppCompatActivity {
                         AlertDialog alertDialog = new AlertDialog.Builder(SplashActivity.this).create();
                         alertDialog.setTitle("Error");
                         alertDialog.setMessage("Network Connection Error!");
-                        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "GO IT!", new DialogInterface.OnClickListener() {
+                        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OFFLINE MODE!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 //                                alertDialog.dismiss();
+                                Intent intent = new Intent(SplashActivity.this, BaseActivity.class);
+                                startActivity(intent);
                                 finish();
                             }
                         });
                         alertDialog.show();
                     }
                 });
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsArrayRequest.setRetryPolicy(policy);
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
         return true;
     }

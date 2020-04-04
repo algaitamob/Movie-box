@@ -1,6 +1,9 @@
 package com.algaita.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -42,9 +45,11 @@ import com.algaita.models.SeriesVideos;
 import com.algaita.models.Videos;
 import com.algaita.sessions.SessionHandlerUser;
 import com.algaita.utils.SliderUtils;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
@@ -86,6 +91,8 @@ public class HomeFragment extends Fragment{
     SwipeRefreshLayout mSwipeRefreshLayout;
     TextView txt_more_vides, txt_more_series, txt_more_coming;
 
+
+    boolean connected = false;
 
 
     //
@@ -147,10 +154,27 @@ public class HomeFragment extends Fragment{
         GetSeriesAdapter = new ArrayList<>();
 
 
+        ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
 
-        GetvideosComingSoon();
-        GetVideosTheater();
-        GetSeries();
+        }
+        else {
+            connected = false;
+        }
+
+
+
+
+        if (connected == true){
+            GetvideosComingSoon();
+            GetVideosTheater();
+            GetSeries();
+        }
+
+
         theaters_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getContext(), theaters_recycleview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -268,7 +292,9 @@ public class HomeFragment extends Fragment{
 
         sliderDotspanel = view.findViewById(R.id.SliderDots);
 
-        sendRequest();
+        if (connected == true){
+            sendRequest();
+        }
 
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -536,6 +562,9 @@ public class HomeFragment extends Fragment{
             }
         });
 
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsonArrayRequest.setRetryPolicy(policy);
         MySingleton.getInstance(getActivity()).addToRequestQueue(jsonArrayRequest);
 
     }

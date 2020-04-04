@@ -371,7 +371,15 @@
             android:layout_height="3dp"
             android:layout_marginTop="4.3dp"
             android:background="@drawable/gradient"/>
-
+        <customfonts.MyTextView_PTSans_Bold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#ffffff"
+            android:lineSpacingExtra="-11sp"
+            android:gravity="center_horizontal"
+            android:text="Movie Info"
+            />
         <customfonts.MyTextView_PTSans_Regular
             android:id="@+id/info"
             android:layout_width="wrap_content"

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -44,6 +45,7 @@ import android.widget.VideoView;
 import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
+import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
 import com.algaita.adapters.CastAdapter;
 import com.algaita.adapters.SeriesVideosAdapter;
@@ -77,6 +79,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -690,6 +693,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
         bbtn_watch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String type = "watch";
+                Update(type);
                 Intent intent = new Intent(SeriesInfoActivity.this, VideoPlayer.class);
                 intent.putExtra("uri", video_url);
                 intent.putExtra("title", title);
@@ -710,108 +715,62 @@ public class SeriesInfoActivity extends AppCompatActivity {
     }
 
 
-    class DownloadFileFromURL extends AsyncTask<String, String, String> {
-        /**
-         * Before starting background thread
-         * Show Progress Bar Dialog
-         * */
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showDialog(progress_bar_type);
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0 && resultCode == RESULT_OK){
+            // refresh
+            finish();
+            startActivity(getIntent());
         }
-
-        /**
-         * Downloading file in background thread
-         * */
-        @Override
-        protected String doInBackground(String... f_url) {
-            int count;
-            try {
-
-                File folder = new File("/data/data/com.algaita/files");
-                boolean success = true;
-                if (!folder.exists()) {
-                    success = folder.mkdir();
-                }
-                if (success) {
-                    // Do something on success
-                } else {
-                    // Do something else on failure
-                }
-                URL url = new URL(f_url[0]);
-                URLConnection conection = url.openConnection();
-                conection.connect();
-                // this will be useful so that you can show a tipical 0-100% progress bar
-                int lenghtOfFile = conection.getContentLength();
-                Toast.makeText(getApplicationContext(),"Download Size: " + StorageUnits.format(lenghtOfFile), Toast.LENGTH_LONG).show();
+    }
 
 
-                // download the file
-                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+    private void Update(String type) {
+        class chargee extends AsyncTask<Bitmap,Void,String> {
 
-                // Output stream
-                //extension must change (mp3,mp4,zip,apk etc.)
-                OutputStream output = new FileOutputStream(folder+getIntent().getStringExtra("title") + ".mp4");
+            RequestHandler rh = new RequestHandler();
 
-                byte data[] = new byte[1024];
-
-                long total = 0;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    // publishing the progress....
-                    // After this onProgressUpdate will be called
-                    publishProgress(""+(int)((total*100)/lenghtOfFile));
-
-                    // writing data to file
-                    output.write(data, 0, count);
-                }
-
-                // flushing output
-                output.flush();
-
-                // closing streams
-                output.close();
-                input.close();
-
-            } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
             }
 
-            return null;
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+                data.put("type", type);
+                data.put("videoid", getIntent().getStringExtra("id"));
+                String result = rh.sendPostRequest(Config.url + "update_download_watch_series.php",data);
+
+                return result;
+            }
         }
 
-
-        /**
-         * Updating progress bar
-         * */
-        protected void onProgressUpdate(String... progress) {
-            // setting progress percentage
-            pDialog.setProgress(Integer.parseInt(progress[0]));
-        }
-
-        /**
-         * After completing background task
-         * Dismiss the progress dialog
-         * **/
-        @Override
-        protected void onPostExecute(String file_url) {
-            // dismiss the dialog after the file was downloaded
-            dismissDialog(progress_bar_type);
-            Toast.makeText(getApplicationContext(),getIntent().getStringExtra("title")+" downloaded.", Toast.LENGTH_LONG).show();
-        }
-
-
-
+        chargee ui = new chargee();
+        ui.execute();
     }
+
+
+
+
+    /**
+     * Showing Dialog
+     * */
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-            case progress_bar_type: // we set this to 0
+            case progress_bar_type:
                 pDialog = new ProgressDialog(this);
-                pDialog.setMessage("Downloading, please wait...");
+                pDialog.setMessage("Downloading... Please wait...");
                 pDialog.setIndeterminate(false);
                 pDialog.setMax(100);
                 pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -828,68 +787,96 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 return null;
         }
     }
-//
 
-//    @Override
-//    public void onRestart()
-//    {
-//        super.onRestart();
-//        finish();
-//        startActivity(getIntent());
-//    }
-//
+    /**
+     * Background Async Task to download file
+     * */
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 0 && resultCode == RESULT_OK){
-            // refresh
-            finish();
-            startActivity(getIntent());
+        /**
+         * Before starting background thread
+         * Show Progress Bar Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showDialog(progress_bar_type);
         }
-    }
 
-//
-//
-//    private void NewDownloader(String video_url, String title) {
-//        Toast.makeText(getApplicationContext(), "Download Started!", Toast.LENGTH_LONG).show();
-//        ZionDownloadFactory factory = new ZionDownloadFactory(this, video_url, title);
-//        DownloadFile downloadFile = factory.downloadFile(FILE_TYPE.VIDEO);
-//        downloadFile.start(new ZionDownloadListener() {
-//            @Override
-//            public void OnSuccess(String dataPath) {
-//                // the file saved in your device..
-//                //dataPath--> android/{your app package}/files/Download
-//                Toast.makeText(getApplicationContext(), title + "Downloaded Successfully!", Toast.LENGTH_LONG).show();
-//            }
-//
-//            @Override
-//            public void OnFailed(String message) {
-//                Toast.makeText(getApplicationContext(), "Download Failed", Toast.LENGTH_LONG).show();
-//
-//            }
-//
-//            @Override
-//            public void OnPaused(String message) {
-//                Toast.makeText(getApplicationContext(), "Download Pause", Toast.LENGTH_LONG).show();
-//
-//            }
-//
-//            @Override
-//            public void OnPending(String message) {
-//
-//            }
-//
-//            @Override
-//            public void OnBusy() {
-//
-//                Toast.makeText(getApplicationContext(), "Download of " + title + "started!", Toast.LENGTH_LONG).show();
-//            }
-//        });
-//    }
+        /**
+         * Downloading file in background thread
+         * */
+        @Override
+        protected String doInBackground(String... f_url) {
+            int count;
+            try {
+                URL url = new URL(f_url[0]);
+                URLConnection conection = url.openConnection();
+                conection.connect();
+                int lenghtOfFile = conection.getContentLength();
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+                String folder = "/data/data/" + getPackageName() + "/files/";
+
+                File directory = new File(folder);
+
+
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
+
+                byte data[] = new byte[1024];
+
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress(""+(int)((total*100)/lenghtOfFile));
+                    output.write(data, 0, count);
+                }
+                output.flush();
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+
+            return null;
+        }
+
+        /**
+         * Updating progress bar
+         * */
+        protected void onProgressUpdate(String... progress) {
+            pDialog.setProgress(Integer.parseInt(progress[0]));
+        }
+
+        /**
+         * After completing background task
+         * Dismiss the progress dialog
+         * **/
+        @Override
+        protected void onPostExecute(String file_url) {
+            dismissDialog(progress_bar_type);
+            String type = "downloads";
+            Update(type);
+
+            View layout = getLayoutInflater().inflate(R.layout.toast_custom, findViewById(R.id.custom_toast_layout_id));
+            TextView text = layout.findViewById(R.id.text);
+            text.setText(getIntent().getStringExtra("title") + "  - Downloaded Successfully!");
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
+
+        }
+
+
+
+    }
 
 
 }

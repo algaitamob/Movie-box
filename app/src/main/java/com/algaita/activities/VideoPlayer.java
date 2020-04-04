@@ -11,9 +11,6 @@ import com.khizar1556.mkvideoplayer.MKPlayer;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
-/**
- * Created by khizar1556 on 10/6/2017.
- */
 
 public class VideoPlayer extends AppCompatActivity {
     private MKPlayer player;

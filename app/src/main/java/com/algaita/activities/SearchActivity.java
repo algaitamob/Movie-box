@@ -97,6 +97,7 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                 intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "out");
+                intent.putExtra("info", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
                 startActivity(intent);
             }
@@ -157,6 +158,8 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));
+                getVideosAdapterTheater.setInfo(json.getString("info"));
+
 
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -28,8 +28,10 @@ import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
 import com.algaita.Welcome;
 import com.algaita.sessions.SessionHandlerUser;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -169,6 +171,9 @@ public class LoginActivity extends AppCompatActivity {
                         toast.show();
                     }
                 });
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsArrayRequest.setRetryPolicy(policy);
         // Access the RequestQueue through your singleton class.
         MySingleton.getInstance(this).addToRequestQueue(jsArrayRequest);
     }
@@ -297,6 +302,9 @@ public class LoginActivity extends AppCompatActivity {
                         alertDialog.show();
                     }
                 });
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsArrayRequest.setRetryPolicy(policy);
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
         return true;
     }

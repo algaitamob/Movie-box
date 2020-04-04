@@ -110,7 +110,8 @@ public class VideosActivity extends AppCompatActivity implements SwipeRefreshLay
                 intent.putExtra("watch", GetVideosAdapterTheater.get(position).getWatch());
                 intent.putExtra("poster", GetVideosAdapterTheater.get(position).getPoster());
                 intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
-                intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
+                intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getInfo());
+                intent.putExtra("info", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "out");
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
                 startActivity(intent);

@@ -2,17 +2,16 @@ package com.algaita.fragment;
 
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -103,11 +102,10 @@ public class DownloadFragment extends Fragment {
                     @Override
                     public void classOnClick(View v, int position) {
 
-
                         new AlertDialog.Builder(getActivity())
                                 .setIcon(R.drawable.oldicon)
                                 .setTitle(getResources().getString(R.string.app_name))
-                                .setMessage("Are you sure you want to delete?")
+                                .setMessage(getResources().getString(R.string.closeMsg))
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -118,7 +116,6 @@ public class DownloadFragment extends Fragment {
 
                                         Intent intent = new Intent(getActivity(), BaseActivity.class);
                                         startActivity(intent);
-
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -131,15 +128,13 @@ public class DownloadFragment extends Fragment {
 
 
 
-
-
-
                     }
 
                     @Override
                     public void favOnclick(View v, int position) {
                         Intent intent = new Intent(getActivity(), VideoPlayer.class);
-                        intent.putExtra("title", arrayList.get(position).getMp3Name());
+                        intent.putExtra("name", arrayList.get(position).getMp3Name());
+//                        Log.d("link", arrayList.get(position).getMp3Url());
                         intent.putExtra("uri", arrayList.get(position).getMp3Url());
                         startActivity(intent);
                     }
@@ -162,19 +157,13 @@ public class DownloadFragment extends Fragment {
         if (isVisibleToUser) {
             // Refresh your fragment here
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-            Log.i("IsRefresh", "Yes");
+//            Log.i("IsRefresh", "Yes");
         }
     }
 
     private void loadDownloaded() {
 
-//        File root = new File(String.valueOf(Environment.ge);
-
-        File root = new File("/data/data/" + getActivity().getPackageName() + "");
-//        File root = new File(String.valueOf(Environment.get));
-//        String folder = "/data/data/" + getPackageName() + "/files/";
-
-        Log.d("vallll", String.valueOf(root));
+        File root = new File("/data/data/" + getActivity().getPackageName() + "/files/");
 //        File[] songs = root.listFiles();
         File[] songs = root.listFiles(new FilenameFilter() {
             @Override
