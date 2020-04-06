@@ -1,7 +1,7 @@
 package com.algaita.models;
 
 public class Series {
-    String id, title, poster, cover, trailer_url, release_date, description, total_episode;
+    String id, title, poster, cover, trailer_url, release_date, description, total_episode, size;
 
     public void setTitle(String title) {
         this.title = title;
@@ -66,5 +66,14 @@ public class Series {
 
     public void setTotal_episode(String total_episode) {
         this.total_episode = total_episode;
+    }
+
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 }

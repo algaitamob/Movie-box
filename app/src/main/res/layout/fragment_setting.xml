@@ -76,7 +76,7 @@
                             android:layout_width="@dimen/spacing_middle"
                             android:layout_height="wrap_content" />
 
-                        <android.support.v7.widget.SwitchCompat
+                        <androidx.appcompat.widget.SwitchCompat
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="true"
@@ -141,8 +141,29 @@
                         android:textSize="15sp" />
 
                 </LinearLayout>
+
+
+
             </LinearLayout>
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="30dp" />
+
+
+            <Button
+                android:id="@+id/btn_deactivate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/gradient_roundshape"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="Delete My Account"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
 
             </LinearLayout>
 

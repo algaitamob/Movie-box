@@ -7,15 +7,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +24,6 @@ import android.widget.Toast;
 
 import com.algaita.R;
 import com.algaita.ViewDialog;
-import com.algaita.activities.BaseActivity;
-import com.algaita.activities.PlayerService;
 import com.algaita.activities.RecyclerTouchListener;
 import com.algaita.activities.VideoPlayer;
 import com.algaita.adapters.AdapterVIdeoList;
@@ -105,7 +103,7 @@ public class DownloadFragment extends Fragment {
                         new AlertDialog.Builder(getActivity())
                                 .setIcon(R.drawable.oldicon)
                                 .setTitle(getResources().getString(R.string.app_name))
-                                .setMessage(getResources().getString(R.string.closeMsg))
+                                .setMessage("are you sure you want to delete this video?")
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -114,8 +112,10 @@ public class DownloadFragment extends Fragment {
 
                                         Toast.makeText(getContext(), "Deleted Successfully!", Toast.LENGTH_LONG).show();
 
-                                        Intent intent = new Intent(getActivity(), BaseActivity.class);
-                                        startActivity(intent);
+                                        arrayList.clear();
+                                        checkPermissions();
+//                                        Intent intent = new Intent(getActivity(), BaseActivity.class);
+//                                        startActivity(intent);
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

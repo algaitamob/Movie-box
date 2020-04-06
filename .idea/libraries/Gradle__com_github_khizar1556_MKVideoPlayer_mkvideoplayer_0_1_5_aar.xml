@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.khizar1556.MKVideoPlayer:mkvideoplayer:0.1.5@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/32e664a8e911903de488fafb52f9f8f9/mkvideoplayer-0.1.5/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/32e664a8e911903de488fafb52f9f8f9/mkvideoplayer-0.1.5/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/18b0bf0d6d6d1e14a3007c42531e14bc/jetified-mkvideoplayer-0.1.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/18b0bf0d6d6d1e14a3007c42531e14bc/jetified-mkvideoplayer-0.1.5/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

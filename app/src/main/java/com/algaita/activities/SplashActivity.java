@@ -1,18 +1,19 @@
 package com.algaita.activities;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -22,7 +23,6 @@ import com.algaita.Config;
 import com.algaita.MySingleton;
 import com.algaita.R;
 import com.algaita.RequestHandler;
-import com.algaita.Welcome;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -39,6 +39,8 @@ import java.util.HashMap;
 public class SplashActivity extends AppCompatActivity {
 
     SessionHandlerUser sessionHandlerUser;
+    boolean connected = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,7 @@ public class SplashActivity extends AppCompatActivity {
 
         sessionHandlerUser = new SessionHandlerUser(this);
 
+//        CheckNetwork();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
             w.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -59,22 +62,20 @@ public class SplashActivity extends AppCompatActivity {
                     sleep(6*500);
 //
                     if (sessionHandlerUser.isLoggedIn()){
-                        String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
-                                Settings.Secure.ANDROID_ID);
+                       if(isNetworkAvailable() == true) {
+                           String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                                   Settings.Secure.ANDROID_ID);
 
-                        CheckSession(android_id);
+                           CheckSession(android_id);
+                       }else{
+                           Intent i = new Intent(SplashActivity.this, BaseActivity.class);
+                           startActivity(i);
+                       }
                     }else{
 
                         Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-//                        if(Build.VERSION.SDK_INT>20){
-//                            ActivityOptions options =
-//                                    ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this);
-//                            startActivity(i,options.toBundle());
-//                        }else {
-//                            startActivity(i);
-//                        }
 
-                    startActivity(i);
+                        startActivity(i);
                     }
 
                 } catch (Exception e) {
@@ -147,6 +148,9 @@ public class SplashActivity extends AppCompatActivity {
                             }
                         });
                         alertDialog.show();
+//                        Intent intent = new Intent(SplashActivity.this, BaseActivity.class);
+//                        startActivity(intent);
+//                        finish();
                     }
                 });
         int socketTimeout = 30000;
@@ -196,6 +200,17 @@ public class SplashActivity extends AppCompatActivity {
 
         regdevice ui = new regdevice();
         ui.execute();
+    }
+
+
+
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 }
 

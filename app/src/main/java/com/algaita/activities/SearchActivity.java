@@ -1,18 +1,14 @@
 package com.algaita.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,7 +93,8 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                 intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "out");
-                intent.putExtra("info", GetVideosAdapterTheater.get(position).getRelease_date());
+                intent.putExtra("info", GetVideosAdapterTheater.get(position).getInfo());
+                intent.putExtra("size", GetVideosAdapterTheater.get(position).getSize());
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
                 startActivity(intent);
             }
@@ -159,6 +156,7 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));
                 getVideosAdapterTheater.setInfo(json.getString("info"));
+                getVideosAdapterTheater.setSize(json.getString("size"));
 
 
             } catch (JSONException e) {

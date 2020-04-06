@@ -2,7 +2,7 @@ package com.algaita.models;
 
 public class SeriesVideos {
 
-    String id, title, release_date, video_url, price;
+    String id, title, release_date, video_url, price, size;
 
     public void setId(String id) {
         this.id = id;
@@ -42,5 +42,13 @@ public class SeriesVideos {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getSize() {
+        return size;
     }
 }

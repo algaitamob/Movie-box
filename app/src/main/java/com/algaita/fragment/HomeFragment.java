@@ -6,21 +6,19 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.algaita.Config;
 import com.algaita.MySingleton;
@@ -28,7 +26,6 @@ import com.algaita.R;
 import com.algaita.ViewDialog;
 import com.algaita.activities.BaseActivity;
 import com.algaita.activities.ComingSoonActivity;
-import com.algaita.activities.LoginActivity;
 //import com.algaita.activities.MainActivity;
 import com.algaita.activities.MovieInfoActivity;
 import com.algaita.activities.RecyclerTouchListener;
@@ -41,7 +38,6 @@ import com.algaita.adapters.SeriesAdapter;
 import com.algaita.adapters.VideosAdapter;
 import com.algaita.models.ComingVideos;
 import com.algaita.models.Series;
-import com.algaita.models.SeriesVideos;
 import com.algaita.models.Videos;
 import com.algaita.sessions.SessionHandlerUser;
 import com.algaita.utils.SliderUtils;
@@ -71,6 +67,7 @@ public class HomeFragment extends Fragment{
     RecyclerView theaters_recycleview;
     RecyclerView comingsoon_recycleview;
     RecyclerView series_recycleview;
+    RecyclerView free_recycleview;
     RequestQueue requestQueue;
     JsonArrayRequest jsonArrayRequest;
 
@@ -88,11 +85,16 @@ public class HomeFragment extends Fragment{
     Series getSeriesAdapter;
     RecyclerView.Adapter recyclerViewAdapterSeries;
 
+    // Free Recycler
+    List<Videos> GetVideosAdapterFree;
+    Videos getVideosAdapterFree;
+    RecyclerView.Adapter recyclerViewAdapterFree;
+
+
     SwipeRefreshLayout mSwipeRefreshLayout;
     TextView txt_more_vides, txt_more_series, txt_more_coming;
 
 
-    boolean connected = false;
 
 
     //
@@ -139,42 +141,30 @@ public class HomeFragment extends Fragment{
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
         comingsoon_recycleview =  view.findViewById(R.id.comingsoon_recycleview);
         series_recycleview =  view.findViewById(R.id.series_recycleview);
+        free_recycleview =  view.findViewById(R.id.free_recycleview);
 
 //        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         theaters_recycleview.setLayoutManager(new GridLayoutManager(getContext(), 2));
         comingsoon_recycleview.setLayoutManager(new GridLayoutManager(getContext(), 2));
         series_recycleview.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        free_recycleview.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
 //        series_recycleview.setLayoutManager(layoutManager);
         theaters_recycleview.setItemAnimator(new DefaultItemAnimator());
         comingsoon_recycleview.setItemAnimator(new DefaultItemAnimator());
         series_recycleview.setItemAnimator(new DefaultItemAnimator());
+        free_recycleview.setItemAnimator(new DefaultItemAnimator());
         GetVideosAdapterTheater = new ArrayList<>();
         GetVideosAdapterComingsoon = new ArrayList<>();
         GetSeriesAdapter = new ArrayList<>();
+        GetVideosAdapterFree = new ArrayList<>();
 
-
-        ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
-            connected = true;
-
-        }
-        else {
-            connected = false;
-        }
-
-
-
-
-        if (connected == true){
+        if (isNetworkAvailable() == true){
             GetvideosComingSoon();
             GetVideosTheater();
             GetSeries();
+            GetVideosFree();
         }
-
-
         theaters_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getContext(), theaters_recycleview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -189,12 +179,41 @@ public class HomeFragment extends Fragment{
                 intent.putExtra("poster", GetVideosAdapterTheater.get(position).getPoster());
                 intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
                 intent.putExtra("info", GetVideosAdapterTheater.get(position).getInfo());
+                intent.putExtra("size", GetVideosAdapterTheater.get(position).getSize());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "out");
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
 //                Toast.makeText(getActivity(), GetVideosAdapterTheater.get(position).getPoster(), Toast.LENGTH_LONG).show();
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+
+        }));
 
 
+        free_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getContext(), free_recycleview, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(getContext(), MovieInfoActivity.class);
+                intent.putExtra("title", GetVideosAdapterFree.get(position).getTitle());
+                intent.putExtra("description", GetVideosAdapterFree.get(position).getDescription());
+                intent.putExtra("trailer_url", GetVideosAdapterFree.get(position).getTrailer_url());
+                intent.putExtra("video_url", GetVideosAdapterFree.get(position).getVideo_url());
+                intent.putExtra("price", GetVideosAdapterFree.get(position).getPrice());
+                intent.putExtra("downloads", GetVideosAdapterFree.get(position).getDownloads());
+                intent.putExtra("watch", GetVideosAdapterFree.get(position).getWatch());
+                intent.putExtra("poster", GetVideosAdapterFree.get(position).getPoster());
+                intent.putExtra("cover", GetVideosAdapterFree.get(position).getCover());
+                intent.putExtra("info", GetVideosAdapterFree.get(position).getInfo());
+                intent.putExtra("size", GetVideosAdapterFree.get(position).getSize());
+                intent.putExtra("release_date", GetVideosAdapterFree.get(position).getRelease_date());
+                intent.putExtra("status", "out");
+                intent.putExtra("id", GetVideosAdapterFree.get(position).getVideoid());
+//                Toast.makeText(getActivity(), GetVideosAdapterTheater.get(position).getPoster(), Toast.LENGTH_LONG).show();
                 startActivity(intent);
             }
 
@@ -207,7 +226,6 @@ public class HomeFragment extends Fragment{
         comingsoon_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getContext(), comingsoon_recycleview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-
                 Intent intent = new Intent(getContext(), MovieInfoActivity.class);
                 intent.putExtra("title", GetVideosAdapterComingsoon.get(position).getTitle());
                 intent.putExtra("description", GetVideosAdapterComingsoon.get(position).getDescription());
@@ -219,6 +237,7 @@ public class HomeFragment extends Fragment{
                 intent.putExtra("poster", GetVideosAdapterComingsoon.get(position).getPoster());
                 intent.putExtra("cover", GetVideosAdapterComingsoon.get(position).getCover());
                 intent.putExtra("info", GetVideosAdapterComingsoon.get(position).getInfo());
+                intent.putExtra("size", GetVideosAdapterComingsoon.get(position).getSize());
                 intent.putExtra("release_date", GetVideosAdapterComingsoon.get(position).getRelease_date());
                 intent.putExtra("status", "coming");
                 intent.putExtra("id", GetVideosAdapterComingsoon.get(position).getVideoid());
@@ -246,6 +265,7 @@ public class HomeFragment extends Fragment{
                 intent.putExtra("cover", GetSeriesAdapter.get(position).getCover());
                 intent.putExtra("release_date", GetSeriesAdapter.get(position).getRelease_date());
                 intent.putExtra("id", GetSeriesAdapter.get(position).getId());
+                intent.putExtra("size", GetSeriesAdapter.get(position).getSize());
                 startActivity(intent);
 
             }
@@ -292,7 +312,7 @@ public class HomeFragment extends Fragment{
 
         sliderDotspanel = view.findViewById(R.id.SliderDots);
 
-        if (connected == true){
+        if (isNetworkAvailable() == true){
             sendRequest();
         }
 
@@ -381,6 +401,7 @@ public class HomeFragment extends Fragment{
                 getSeriesAdapter.setCover(Config.dir_poster +  json.getString("cover"));
                 getSeriesAdapter.setRelease_date(json.getString("release_date"));
                 getSeriesAdapter.setId(json.getString("id"));
+                getSeriesAdapter.setSize(json.getString("size"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -440,6 +461,7 @@ public class HomeFragment extends Fragment{
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));
                 getVideosAdapterTheater.setInfo(json.getString("info"));
+                getVideosAdapterTheater.setSize(json.getString("size"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -450,6 +472,65 @@ public class HomeFragment extends Fragment{
         recyclerViewAdapterTheater = new VideosAdapter(GetVideosAdapterTheater, getContext());
         theaters_recycleview.setAdapter(recyclerViewAdapterTheater);
         recyclerViewAdapterTheater.notifyDataSetChanged();
+
+    }
+
+
+    private void GetVideosFree() {
+//        mSwipeRefreshLayout.setRefreshing(true);
+//        viewDialog.showDialog();
+        GetVideosAdapterFree.clear();
+        jsonArrayRequest = new JsonArrayRequest(Config.url + "free_videos.php", new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+//                viewDialog.hideDialog();
+//                mSwipeRefreshLayout.setRefreshing(false);
+                GetCardWebCall1(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+//                viewDialog.hideDialog();
+//                mSwipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
+        requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void GetCardWebCall1(JSONArray array) {
+        for (int i = 0; i < array.length(); i++){
+            getVideosAdapterFree = new Videos();
+            JSONObject json = null;
+
+            try {
+                json = array.getJSONObject(i);
+                getVideosAdapterFree.setTitle(json.getString("title"));
+                getVideosAdapterFree.setDescription(json.getString("description"));
+                getVideosAdapterFree.setTrailer_url(Config.dir_video +json.getString("trailer_url"));
+                getVideosAdapterFree.setVideo_url(Config.dir_video  + json.getString("video_url"));
+                getVideosAdapterFree.setPrice(json.getString("price"));
+                getVideosAdapterFree.setWatch(json.getString("watch"));
+                getVideosAdapterFree.setDownloads(json.getString("downloads"));
+                getVideosAdapterFree.setPoster(Config.dir_poster + json.getString("poster"));
+                getVideosAdapterFree.setCover(Config.dir_poster + json.getString("cover"));
+                getVideosAdapterFree.setRelease_date(json.getString("release_date"));
+                getVideosAdapterFree.setStatus(Integer.parseInt(json.getString("sstatus")));
+                getVideosAdapterFree.setVideoid(json.getString("id"));
+                getVideosAdapterFree.setInfo(json.getString("info"));
+                getVideosAdapterFree.setSize(json.getString("size"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            GetVideosAdapterFree.add(getVideosAdapterFree);
+        }
+
+        recyclerViewAdapterFree = new VideosAdapter(GetVideosAdapterFree, getContext());
+        free_recycleview.setAdapter(recyclerViewAdapterFree);
+        recyclerViewAdapterFree.notifyDataSetChanged();
 
     }
 
@@ -493,6 +574,7 @@ public class HomeFragment extends Fragment{
                 getVideosAdapterComingsoon.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterComingsoon.setVideoid(json.getString("id"));
                 getVideosAdapterComingsoon.setInfo(json.getString("info"));
+                getVideosAdapterComingsoon.setSize(json.getString("size"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -577,6 +659,15 @@ public class HomeFragment extends Fragment{
 //        sendRequest();
 //    }
 //
+
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
+    }
 
 
 

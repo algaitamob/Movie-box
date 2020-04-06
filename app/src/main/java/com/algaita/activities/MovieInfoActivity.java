@@ -4,39 +4,32 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +39,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -54,15 +46,13 @@ import android.widget.VideoView;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -85,10 +75,9 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.cnrylmz.zionfiledownloader.DownloadFile;
-import com.cnrylmz.zionfiledownloader.FILE_TYPE;
-import com.cnrylmz.zionfiledownloader.ZionDownloadFactory;
-import com.cnrylmz.zionfiledownloader.ZionDownloadListener;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.khizar1556.mkvideoplayer.MKPlayer;
 import com.wooplr.spotlight.SpotlightView;
 
@@ -96,8 +85,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import tv.danmaku.ijk.media.player.IMediaPlayer;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import static android.view.View.GONE;
 
 public class MovieInfoActivity extends AppCompatActivity {
     private MKPlayer player;
@@ -121,7 +109,7 @@ public class MovieInfoActivity extends AppCompatActivity {
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     private Handler handler;
     private Runnable runnable;
-    TextView txttitle, txtrelease_date, txtprice, txtdescription, txtinfo, total_download, total_watch, btn_trailer, btn_buy, btn_download, btn_watch;
+    TextView txttitle, txtrelease_date, txtprice, txtdescription, txtinfo, total_download, total_watch, total_size, btn_trailer, btn_buy, btn_download, btn_watch, btn_play;
     ImageView poster, poster_bg;
     FloatingActionButton btn_feedback;
     SessionHandlerUser sessionHandlerUser;
@@ -138,11 +126,41 @@ public class MovieInfoActivity extends AppCompatActivity {
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder build;
     final int id = 101;
+    private AdView mAdView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_info);
+
+//        // Initialize the Mobile Ads SDK.
+//        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+//            @Override
+//            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+//        });
+//
+//        // Set your test devices. Check your logcat output for the hashed device ID to
+//        // get test ads on a physical device. e.g.
+//        // "Use RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("ABCDEF012345"))
+//        // to get test ads on this device."
+//        MobileAds.setRequestConfiguration(
+//                new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("ABCDEF012345"))
+//                        .build());
+//
+//        // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
+//        // values/strings.xml.
+//        adView = findViewById(R.id.ad_view);
+//
+//        // Create an ad request.
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//
+//        // Start loading the ad in the background.
+//        adView.loadAd(adRequest);
+
+        mAdView = findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         player=new MKPlayer(this);
 
@@ -161,9 +179,11 @@ public class MovieInfoActivity extends AppCompatActivity {
         poster_bg = findViewById(R.id.poster_bg);
         total_download = findViewById(R.id.total_download);
         total_watch = findViewById(R.id.total_watch);
+        total_size = findViewById(R.id.total_size);
         play = findViewById(R.id.play);
         img_play = findViewById(R.id.play);
         btn_feedback = findViewById(R.id.feedback);
+        btn_play = findViewById(R.id.btn_play);
 
         btn_feedback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,7 +328,7 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
         if (t.contains("null")) {
-            btn_trailer.setVisibility(View.GONE);
+            btn_trailer.setVisibility(GONE);
 //            return; // or break, continue, throw
         }
 
@@ -373,10 +393,12 @@ public class MovieInfoActivity extends AppCompatActivity {
 
 
         if(getIntent().getStringExtra("price").startsWith("0")){
-            btn_buy.setVisibility(View.GONE);
+            btn_buy.setVisibility(GONE);
             btn_download.setVisibility(View.VISIBLE);
             btn_watch.setVisibility(View.VISIBLE);
-            btn_trailer.setVisibility(View.GONE);
+            btn_trailer.setVisibility(GONE);
+            CheckFile();
+
         }else{
             CheckVideoStatus();
 
@@ -407,8 +429,21 @@ public class MovieInfoActivity extends AppCompatActivity {
         txtinfo.setText(intent.getStringExtra("info"));
         total_watch.setText(intent.getStringExtra("watch"));
         total_download.setText(intent.getStringExtra("downloads"));
+        total_size.setText("SIZE: "+intent.getStringExtra("size"));
         txtprice.setText("₦" + intent.getStringExtra("price"));
 
+
+
+
+        btn_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(MovieInfoActivity.this, VideoPlayer.class);
+                intent1.putExtra("uri",  "/data/data/" + getPackageName() + "/files/" + getIntent().getStringExtra("title") + ".mp4");
+                intent1.putExtra("title", getIntent().getStringExtra("title"));
+                startActivity(intent1);
+            }
+        });
         bottom_sheet = findViewById(R.id.bottom_sheet);
         mBehavior = BottomSheetBehavior.from(bottom_sheet);
 
@@ -599,12 +634,14 @@ public class MovieInfoActivity extends AppCompatActivity {
                             if (response.getInt("status") == 0) {
 
                                 if (response.getString("video_status").contains("YES")){
-                                    btn_buy.setVisibility(View.GONE);
+                                    btn_buy.setVisibility(GONE);
                                     btn_download.setVisibility(View.VISIBLE);
                                     btn_watch.setVisibility(View.VISIBLE);
-                                    btn_trailer.setVisibility(View.GONE);
+                                    btn_trailer.setVisibility(GONE);
+                                    CheckFile();
                                 }else {
 
+                                    CheckFile();
 
                                 }
 
@@ -993,6 +1030,20 @@ public class MovieInfoActivity extends AppCompatActivity {
     }
 
 
+
+
+
+    public void CheckFile() {
+
+        String folder = "/data/data/" + getPackageName() + "/files/" + getIntent().getStringExtra("title") + ".mp4";
+        File file = new File(folder);
+        if (file.exists()) {
+            btn_download.setVisibility(GONE);
+            btn_play.setVisibility(View.VISIBLE);
+            btn_watch.setVisibility(GONE);
+        }
+
+    }
 
 
 }

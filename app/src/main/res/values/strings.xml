@@ -5,7 +5,7 @@
     <string name="please_wait">Please wait...</string>
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
-    <string name="closeMsg">Are your sure you want to close Algaita Movie Box?</string>
+    <string name="closeMsg">Are you sure you want to close Algaita Movie Box?</string>
 
 
     <string name="action_settings">Settings</string>
@@ -18,5 +18,13 @@
     <string name="pdf_file_title_dw"></string>
     <string name="video_file_title_dw"></string>
     <string name="status_downloading_dw"></string>
+
+    <!-- AdMob ad unit IDs -->
+    <string name="admob_app_id">ca-app-pub-3679342895736161~8283883500</string>
+    <string name="banner_home_footer">ca-app-pub-3679342895736161/1348893775</string>
+    <string name="interstitial_full_screen">ca-app-pub-3679342895736161/7150765232</string>
+    <string name="rewarded_video">ca-app-pub-XXXXXXXX~XXXXXXXXXXX</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-3679342895736161/1348893775</string>
 
 </resources>

@@ -3,10 +3,9 @@ package customfonts;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 
-public class MyTextView_Poppins_Regular extends android.support.v7.widget.AppCompatTextView {
+public class MyTextView_Poppins_Regular extends androidx.appcompat.widget.AppCompatTextView {
 
     public MyTextView_Poppins_Regular(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

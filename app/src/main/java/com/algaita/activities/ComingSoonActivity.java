@@ -2,11 +2,11 @@ package com.algaita.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,9 +15,7 @@ import com.algaita.Config;
 import com.algaita.R;
 import com.algaita.ViewDialog;
 import com.algaita.adapters.ComingVideosAdapter;
-import com.algaita.adapters.VideosAdapter;
 import com.algaita.models.ComingVideos;
-import com.algaita.models.Videos;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -100,6 +98,7 @@ public class ComingSoonActivity extends AppCompatActivity implements SwipeRefres
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("status", "coming");
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getVideoid());
+                intent.putExtra("size", GetVideosAdapterTheater.get(position).getSize());
                 startActivity(intent);
             }
 
@@ -162,6 +161,7 @@ public class ComingSoonActivity extends AppCompatActivity implements SwipeRefres
                 getVideosAdapterTheater.setStatus(Integer.parseInt(json.getString("sstatus")));
                 getVideosAdapterTheater.setVideoid(json.getString("id"));
                 getVideosAdapterTheater.setInfo(json.getString("info"));
+                getVideosAdapterTheater.setSize(json.getString("size"));
 
 
             } catch (JSONException e) {

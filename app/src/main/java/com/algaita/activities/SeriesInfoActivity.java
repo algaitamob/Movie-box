@@ -3,31 +3,27 @@ package com.algaita.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +33,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -60,10 +55,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.cnrylmz.zionfiledownloader.DownloadFile;
-import com.cnrylmz.zionfiledownloader.FILE_TYPE;
-import com.cnrylmz.zionfiledownloader.ZionDownloadFactory;
-import com.cnrylmz.zionfiledownloader.ZionDownloadListener;
 import com.khizar1556.mkvideoplayer.MKPlayer;
 
 import org.json.JSONArray;
@@ -73,7 +64,6 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -82,18 +72,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import tv.danmaku.ijk.media.player.IMediaPlayer;
+import static android.view.View.GONE;
 
 public class SeriesInfoActivity extends AppCompatActivity {
 
     private MKPlayer player;
 
 
+    String act_title;
     // Progress Dialog
     private ProgressDialog pDialog;
     ProgressBar progressBar = null;
     ImageView img_play;
-    Button bbtn_buy, bbtn_download, bbtn_watch;
+    Button bbtn_buy, bbtn_download, bbtn_watch, bbtn_play;
 
     // Progress dialog type (0 - for Horizontal progress bar)
     public static final int progress_bar_type = 0;
@@ -151,6 +142,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
         poster = findViewById(R.id.poster);
         poster_bg = findViewById(R.id.poster_bg);
         play = findViewById(R.id.play);
+//        total_size = findViewById(R.id.total_size);
         progressBar =  findViewById(R.id.progressbar);
 
         checkPermissions();
@@ -165,12 +157,13 @@ public class SeriesInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
 
-                String id, title, price, video_url;
+                String id, title, price, video_url, size;
                 id = GetSeriesAdapter.get(position).getId();
                 title = GetSeriesAdapter.get(position).getTitle();
                 price = GetSeriesAdapter.get(position).getPrice();
                 video_url = GetSeriesAdapter.get(position).getVideo_url();
-                CheckVideoStatus(id, title, price, video_url);
+                size = GetSeriesAdapter.get(position).getSize();
+                CheckVideoStatus(id, title, price, video_url, size);
             }
 
             @Override
@@ -312,6 +305,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
         txttitle.setText(intent.getStringExtra("title"));
         txtdescription.setText(intent.getStringExtra("description"));
         txtprice.setText(intent.getStringExtra("total_episode"));
+//        total_size.setText("SIZE: " + intent.getStringExtra("size"));
 
 
         bottom_sheet = findViewById(R.id.bottom_sheet);
@@ -423,7 +417,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
 
-    private void CheckVideoStatus(String id, String title, String price, String video_url) {
+    private void CheckVideoStatus(String id, String title, String price, String video_url, String size) {
         viewDialog.showDialog();
         Intent intent = getIntent();
         String url_ = Config.url+"check_series.php?userid="+ sessionHandlerUser.getUserDetail().getUserid() + "&videoid=" + id;
@@ -444,10 +438,10 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 //                                    bbtn_download.setVisibility(View.GONE);
 //                                    bbtn_buy.setVisibility(View.VISIBLE);
-                                    showDialogPay(id, title, price, type, video_url);
+                                    showDialogPay(id, title, price, type, video_url, size);
                                 }else {
                                     String type = "NO";
-                                    showDialogPay(id, title, price, type, video_url);
+                                    showDialogPay(id, title, price, type, video_url, size);
 
 
                                 }
@@ -466,7 +460,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                             viewDialog.hideDialog();
                         String type = "NO";
-                        showDialogPay(id, title, price, type, video_url);
+                        showDialogPay(id, title, price, type, video_url, size);
                     }
                 });
         MySingleton.getInstance(this).addToRequestQueue(jsArrayRequest);
@@ -616,6 +610,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 getSeriesAdapter.setVideo_url(Config.dir_video + json.getString("video_url"));
                 getSeriesAdapter.setRelease_date(json.getString("release_date"));
                 getSeriesAdapter.setId(json.getString("id"));
+                getSeriesAdapter.setSize(json.getString("size"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -631,7 +626,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
 
-    private void showDialogPay(String id, String title, String price, String type, String video_url) {
+    private void showDialogPay(String id, String title, String price, String type, String video_url, String size) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
         dialog.setContentView(R.layout.dialog_series_check_payment);
@@ -648,25 +643,46 @@ public class SeriesInfoActivity extends AppCompatActivity {
         bbtn_buy = dialog.findViewById(R.id.btn_buy);
         bbtn_download = dialog.findViewById(R.id.btn_download);
         bbtn_watch = dialog.findViewById(R.id.btn_watch);
+        bbtn_play = dialog.findViewById(R.id.btn_play);
 
-        name.setText(getIntent().getStringExtra("title") + " - " + title);
+        name.setText(getIntent().getStringExtra("title") + " - " + title + "   SIZE: " + size);
+
+
+        String folder = "/data/data/" + getPackageName() + "/files/" + title + ".mp4";
+            File file = new File(folder);
+
 
         if (price.startsWith("0")){
+
                 bbtn_download.setVisibility(View.VISIBLE);
                 bbtn_buy.setVisibility(View.GONE);
+            if (file.exists()) {
+                bbtn_download.setVisibility(GONE);
+                bbtn_play.setVisibility(View.VISIBLE);
+//                bbtn_watch.setVisibility(GONE);
+            }
         }else{
 
             if (type.contains("YES")){
                 bbtn_download.setVisibility(View.VISIBLE);
                 bbtn_watch.setVisibility(View.VISIBLE);
                 bbtn_buy.setVisibility(View.GONE);
+                if (file.exists()) {
+                    bbtn_download.setVisibility(GONE);
+                    bbtn_play.setVisibility(View.VISIBLE);
+                    bbtn_watch.setVisibility(GONE);
+                }
+
             }else{
                 bbtn_download.setVisibility(View.GONE);
                 bbtn_watch.setVisibility(View.GONE);
                 bbtn_buy.setVisibility(View.VISIBLE);
+                if (file.exists()) {
+                    bbtn_download.setVisibility(GONE);
+                    bbtn_play.setVisibility(View.VISIBLE);
+                    bbtn_watch.setVisibility(GONE);
+                }
             }
-
-
 
         }
 
@@ -679,6 +695,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
             }
         });
 
+        act_title = title;
         bbtn_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -688,6 +705,17 @@ public class SeriesInfoActivity extends AppCompatActivity {
                 new DownloadFileFromURL().execute(video_url);
             }
         });
+        bbtn_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(SeriesInfoActivity.this, VideoPlayer.class);
+                intent1.putExtra("uri",  "/data/data/" + getPackageName() + "/files/" + title + ".mp4");
+                intent1.putExtra("title", title);
+                startActivity(intent1);
+            }
+        });
+
+
 
 
         bbtn_watch.setOnClickListener(new View.OnClickListener() {
@@ -825,7 +853,7 @@ public class SeriesInfoActivity extends AppCompatActivity {
                     directory.mkdirs();
                 }
 
-                OutputStream output = new FileOutputStream(folder + getIntent().getStringExtra("title") + ".mp4");
+                OutputStream output = new FileOutputStream(folder + act_title + ".mp4");
 
                 byte data[] = new byte[1024];
 
@@ -877,6 +905,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
 
 
     }
+
+
 
 
 }

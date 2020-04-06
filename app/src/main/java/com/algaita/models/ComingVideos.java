@@ -3,7 +3,7 @@ package com.algaita.models;
 public class ComingVideos {
     int status;
 
-    String title, description, info, trailer_url, video_url, price, release_date, poster, cover, videoid, watch, downlaod;
+    String title, description, info, trailer_url, video_url, price, release_date, poster, cover, videoid, watch, downlaod, size;
 
     public int getStatus() {
         return status;
@@ -110,5 +110,11 @@ public class ComingVideos {
         this.downlaod = downlaod;
     }
 
+    public String getSize() {
+        return size;
+    }
 
+    public void setSize(String size) {
+        this.size = size;
+    }
 }

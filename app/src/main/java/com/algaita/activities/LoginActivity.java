@@ -9,9 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -26,7 +25,6 @@ import com.algaita.MySingleton;
 import com.algaita.R;
 import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
-import com.algaita.Welcome;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -332,8 +330,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Bitmap... params) {
                 HashMap<String,String> data = new HashMap<>();
-                data.put("phone", phone);
-                String result = rh.sendPostRequest(Config.url + "forget_password.php",data);
+                data.put("email", phone);
+                String result = rh.sendPostRequest(Config.url + "forget_password.php?email=" + phone,data);
                 return result;
             }
         }

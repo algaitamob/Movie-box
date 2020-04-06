@@ -5,7 +5,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 
 
-public class MyTextView_PTSans_Bold extends android.support.v7.widget.AppCompatTextView {
+public class MyTextView_PTSans_Bold extends androidx.appcompat.widget.AppCompatTextView {
 
     public MyTextView_PTSans_Bold(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

@@ -2,11 +2,11 @@ package com.algaita.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,9 +16,7 @@ import com.algaita.Config;
 import com.algaita.R;
 import com.algaita.ViewDialog;
 import com.algaita.adapters.SeriesAdapter;
-import com.algaita.adapters.VideosAdapter;
 import com.algaita.models.Series;
-import com.algaita.models.Videos;
 import com.algaita.sessions.SessionHandlerUser;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -109,6 +107,7 @@ public class SeriesActivity extends AppCompatActivity implements SwipeRefreshLay
                 intent.putExtra("cover", GetVideosAdapterTheater.get(position).getCover());
                 intent.putExtra("release_date", GetVideosAdapterTheater.get(position).getRelease_date());
                 intent.putExtra("id", GetVideosAdapterTheater.get(position).getId());
+                intent.putExtra("size", GetVideosAdapterTheater.get(position).getSize());
                 startActivity(intent);
             }
 
@@ -165,6 +164,7 @@ public class SeriesActivity extends AppCompatActivity implements SwipeRefreshLay
                 getVideosAdapterTheater.setCover(Config.dir_poster +  json.getString("cover"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setId(json.getString("id"));
+                getVideosAdapterTheater.setSize(json.getString("size"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -221,6 +221,7 @@ public class SeriesActivity extends AppCompatActivity implements SwipeRefreshLay
                 getVideosAdapterTheater.setCover(Config.dir_poster +  json.getString("cover"));
                 getVideosAdapterTheater.setRelease_date(json.getString("release_date"));
                 getVideosAdapterTheater.setId(json.getString("id"));
+                getVideosAdapterTheater.setSize(json.getString("size"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -239,6 +240,8 @@ public class SeriesActivity extends AppCompatActivity implements SwipeRefreshLay
     public void onRefresh() {
         GetVideosTheater();
     }
+
+
 }
 
 

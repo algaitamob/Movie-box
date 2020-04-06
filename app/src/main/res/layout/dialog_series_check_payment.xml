@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:paddingTop="@dimen/spacing_large">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="320dp"
             android:layout_height="0dp"
             android:layout_margin="@dimen/spacing_large"
@@ -21,7 +21,7 @@
             app:cardCornerRadius="6dp"
             app:cardElevation="6dp">
 
-            <android.support.v4.widget.NestedScrollView
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -88,6 +88,21 @@
                                 android:textSize="15sp"
                                 android:background="@drawable/gradient_roundshape"/>
 
+                            <Button
+                                android:visibility="gone"
+                                android:id="@+id/btn_play"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Play Download"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:paddingTop="5dp"
+                                android:paddingBottom="5dp"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
+                                android:background="@drawable/gradient_roundshape"/>
+
 
                             <Button
                                 android:id="@+id/btn_buy"
@@ -115,7 +130,7 @@
                             android:id="@+id/btn_watch"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="WATCH"
+                            android:text="STREAM"
                             android:layout_marginTop="10dp"
                             android:layout_marginLeft="20dp"
                             android:layout_marginRight="20dp"
@@ -129,7 +144,7 @@
                     </LinearLayout>
 
 
-                    <android.support.v7.widget.CardView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_mlarge"
@@ -139,11 +154,11 @@
 
                 </LinearLayout>
 
-            </android.support.v4.widget.NestedScrollView>
+            </androidx.core.widget.NestedScrollView>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -153,7 +168,7 @@
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_close">
 
-        </android.support.design.widget.FloatingActionButton>
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
     </LinearLayout>
 

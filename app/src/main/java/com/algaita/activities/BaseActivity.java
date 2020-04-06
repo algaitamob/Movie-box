@@ -8,18 +8,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -65,7 +67,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import io.sentry.Sentry;
 import io.sentry.android.AndroidSentryClientFactory;
-import jp.misyobun.lib.versionupdater.MSBVersionUpdater;
 
 
 public class BaseActivity extends AppCompatActivity {
@@ -101,6 +102,8 @@ public class BaseActivity extends AppCompatActivity {
     SessionHandlerUser sessionHandlerUser;
     private LinearLayout llProfileClick, shape;
     private FloatingActionButton fab;
+//    boolean connected = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +112,7 @@ public class BaseActivity extends AppCompatActivity {
         AppUpdater appUpdater = new AppUpdater(this);
         appUpdater.start();
 
+//        CheckNetwork();
         fab = findViewById(R.id.fab);
         Sentry.init("https://8363b9dd7a5f4c71a6aac7e0b5e4d79b@sentry.io/1522542", new AndroidSentryClientFactory(this));
         mContext = BaseActivity.this;
@@ -173,14 +177,26 @@ public class BaseActivity extends AppCompatActivity {
 //        });
         if (savedInstanceState == null) {
             if (type != null) {
+                    if (isNetworkAvailable() == true){
+                        navItemIndex = 0;
+                        CURRENT_TAG = TAG_HOME;
+                        loadHomeFragment(new HomeFragment(), CURRENT_TAG);
+                    }else{
+                        navItemIndex = 1;
+                        CURRENT_TAG = TAG_DOWNLOADS;
+                        loadHomeFragment(new DownloadFragment(), CURRENT_TAG);
+                    }
+
+            } else {
+                if (isNetworkAvailable() == true){
                     navItemIndex = 0;
                     CURRENT_TAG = TAG_HOME;
                     loadHomeFragment(new HomeFragment(), CURRENT_TAG);
-
-            } else {
-                navItemIndex = 0;
-                CURRENT_TAG = TAG_HOME;
-                loadHomeFragment(new HomeFragment(), CURRENT_TAG);
+                }else{
+                    navItemIndex = 1;
+                    CURRENT_TAG = TAG_DOWNLOADS;
+                    loadHomeFragment(new DownloadFragment(), CURRENT_TAG);
+                }
             }
         }
         btn_search.setOnClickListener(new View.OnClickListener() {
@@ -247,6 +263,31 @@ public class BaseActivity extends AppCompatActivity {
             }
         };
 
+
+
+        if (mPendingRunnable != null) {
+            mHandler.post(mPendingRunnable);
+        }
+        drawer.closeDrawers();
+        invalidateOptionsMenu();
+    }
+
+    private void loadDownloadFragment(final Fragment fragment, final String TAG) {
+        Runnable mPendingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                        android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.frame, fragment, TAG);
+                fragmentTransaction.commitAllowingStateLoss();
+                ivFilter.setVisibility(View.VISIBLE);
+
+            }
+        };
+
+
+
         if (mPendingRunnable != null) {
             mHandler.post(mPendingRunnable);
         }
@@ -282,7 +323,11 @@ public class BaseActivity extends AppCompatActivity {
                     case R.id.nav_home:
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_HOME;
-                        fragmentTransaction.replace(R.id.frame, new HomeFragment());
+                        if (isNetworkAvailable() == true) {
+                            fragmentTransaction.replace(R.id.frame, new HomeFragment());
+                        }else{
+                            fragmentTransaction.replace(R.id.frame, new DownloadFragment());
+                        }
                         break;
                     case R.id.nav_downloads:
                         navItemIndex = 1;
@@ -347,9 +392,15 @@ public class BaseActivity extends AppCompatActivity {
                         break;
 
                     default:
-                        navItemIndex = 0;
-                        CURRENT_TAG = TAG_HOME;
-                        fragmentTransaction.replace(R.id.frame, new HomeFragment());
+                        if (isNetworkAvailable() == true){
+                            navItemIndex = 0;
+                            CURRENT_TAG = TAG_HOME;
+                            fragmentTransaction.replace(R.id.frame, new HomeFragment());
+                        }else{
+                            navItemIndex = 0;
+                            CURRENT_TAG = TAG_HOME;
+                            fragmentTransaction.replace(R.id.frame, new DownloadFragment());
+                        }
                         break;
 
                 }
@@ -382,7 +433,12 @@ public class BaseActivity extends AppCompatActivity {
             if (navItemIndex != 0) {
                 navItemIndex = 0;
                 CURRENT_TAG = TAG_HOME;
-                loadHomeFragment(new HomeFragment(), CURRENT_TAG);
+                if (isNetworkAvailable() == true) {
+                    loadHomeFragment(new HomeFragment(), CURRENT_TAG);
+                }else{
+                    loadHomeFragment(new DownloadFragment(), CURRENT_TAG);
+
+                }
                 return;
             }
         }
@@ -603,6 +659,15 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().setEnterTransition(slide);
         }
 
+    }
+
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 
 

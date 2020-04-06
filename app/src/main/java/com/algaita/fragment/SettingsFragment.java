@@ -1,10 +1,13 @@
 package com.algaita.fragment;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import com.algaita.R;
 import com.algaita.RequestHandler;
 import com.algaita.ViewDialog;
 import com.algaita.activities.BaseActivity;
+import com.algaita.activities.LoginActivity;
 import com.algaita.sessions.SessionHandlerUser;
 
 import java.util.HashMap;
@@ -31,7 +35,7 @@ public class SettingsFragment extends Fragment {
     ViewDialog viewDialog;
 
     private EditText et_oldpass, et_newpass;
-    private Button btn_save;
+    private Button btn_save, btn_deactivate;
     private String oldpass, newpass;
     private final static String KEY_EMPTY = "";
 
@@ -46,6 +50,7 @@ public class SettingsFragment extends Fragment {
         et_oldpass = view.findViewById(R.id.oldpass);
         et_newpass = view.findViewById(R.id.newpass);
         btn_save = view.findViewById(R.id.btn_save);
+        btn_deactivate = view.findViewById(R.id.btn_deactivate);
 
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +61,33 @@ public class SettingsFragment extends Fragment {
                 if (validateInputs()){
                     ChangePass(oldpass, newpass);
                 }
+            }
+        });
+
+        btn_deactivate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setIcon(R.drawable.oldicon)
+                        .setTitle(getResources().getString(R.string.app_name))
+                        .setMessage("Are you sure you want to delete this account?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+                                DeleteAccount();
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+
             }
         });
         return view;
@@ -102,6 +134,51 @@ public class SettingsFragment extends Fragment {
         }
 
         change ui = new change();
+        ui.execute();
+    }
+
+
+
+    private void DeleteAccount() {
+        class regdevice extends AsyncTask<Bitmap,Void,String> {
+
+            RequestHandler rh = new RequestHandler();
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+//                viewDialog.hideDialog();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                View layout = getLayoutInflater().inflate(R.layout.toast_custom, view.findViewById(R.id.custom_toast_layout_id));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText(s);
+                Toast toast = new Toast(getContext());
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+
+                session.logoutUser();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                HashMap<String,String> data = new HashMap<>();
+
+                data.put("userid", String.valueOf(session.getUserDetail().getUserid()));
+                String result = rh.sendPostRequest(Config.url + "delete_account.php",data);
+
+                return result;
+            }
+        }
+
+        regdevice ui = new regdevice();
         ui.execute();
     }
 
