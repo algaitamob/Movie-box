@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -103,14 +104,16 @@ public class BaseActivity extends AppCompatActivity {
     private LinearLayout llProfileClick, shape;
     private FloatingActionButton fab;
 //    boolean connected = false;
+    private String verison = "1";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setAnimation();
         setContentView(R.layout.activity_base);
-        AppUpdater appUpdater = new AppUpdater(this);
-        appUpdater.start();
+//        AppUpdater appUpdater = new AppUpdater(this);
+//        appUpdater.start();
 
 //        CheckNetwork();
         fab = findViewById(R.id.fab);
@@ -244,6 +247,10 @@ public class BaseActivity extends AppCompatActivity {
                                      }
                                  }
         );
+
+
+
+        checkUpdates();
 
     }
 
@@ -669,6 +676,68 @@ public class BaseActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
     }
+
+
+
+
+    private void checkUpdates() {
+        viewDialog.showDialog();
+        String url_ = Config.url + "update.php";
+        JSONObject request = new JSONObject();
+        JsonObjectRequest jsArrayRequest = new JsonObjectRequest
+                (Request.Method.POST, url_, request, new Response.Listener<JSONObject>() {
+                    @SuppressLint("ResourceAsColor")
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        viewDialog.hideDialog();
+                        try {
+                            if (response.getInt("status") == 0) {
+                                if(response.getString("updates").contains("1")){
+                                    if(response.getString("version").contains(verison)){
+                                        AlertDialog alertDialog = new AlertDialog.Builder(BaseActivity.this).create();
+                                        alertDialog.setTitle("Attention!");
+                                        alertDialog.setMessage("New Update Available! Update Algaita Movie Box App now");
+                                        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "UPDATE APP", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+//                                        finish();
+//                                        startActivity(getIntent());
+                                                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                                                try {
+                                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                                } catch (android.content.ActivityNotFoundException anfe) {
+                                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                                }
+
+
+                                            }
+                                        });
+                                        alertDialog.show();
+                                    }
+
+                                }else{
+//                                    loadDashboard();
+
+                                }
+
+
+                            } else {
+
+//                                loadDashboard();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        viewDialog.hideDialog();
+                    }
+                });
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsArrayRequest);
+    }
+
 
 
 }

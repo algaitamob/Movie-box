@@ -47,7 +47,7 @@
         <activity android:name=".music.PaymetWeb"/>
         <activity android:name=".music.PlayerMusicAlbumGrid"/>
         <activity android:name=".activities.ComingSoonActivity"/>
-
+        <activity android:name=".activities.FreeVideosActivity"/>
         <activity android:name=".music.ChargeWallet"/>
         <activity android:name=".Welcome"/>
         <activity android:name=".activities.PlayerService"
@@ -119,7 +119,7 @@
         <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3679342895736161~8283883500"/>
+            android:value="ca-app-pub-7803700300545861~3517043491"/>
 
     </application>
 

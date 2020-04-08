@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
+import com.google.android.gms.ads.MobileAds;
+
 public class MyApplicationContext extends Application {
     private Context context;
 
@@ -14,6 +16,8 @@ public class MyApplicationContext extends Application {
         super.onCreate();
         context = getApplicationContext();
         setupActivityListener();
+        MobileAds.initialize(this,"ca-app-pub-7803700300545861~3517043491");
+
     }
 
     private void setupActivityListener() {

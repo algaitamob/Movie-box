@@ -18,6 +18,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -128,39 +132,50 @@ public class MovieInfoActivity extends AppCompatActivity {
     final int id = 101;
     private AdView mAdView;
 
+    private InterstitialAd mInterstitialAd;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_info);
 
-//        // Initialize the Mobile Ads SDK.
-//        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-//            @Override
-//            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-//        });
-//
-//        // Set your test devices. Check your logcat output for the hashed device ID to
-//        // get test ads on a physical device. e.g.
-//        // "Use RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("ABCDEF012345"))
-//        // to get test ads on this device."
-//        MobileAds.setRequestConfiguration(
-//                new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("ABCDEF012345"))
-//                        .build());
-//
-//        // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
-//        // values/strings.xml.
-//        adView = findViewById(R.id.ad_view);
-//
-//        // Create an ad request.
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//
-//        // Start loading the ad in the background.
-//        adView.loadAd(adRequest);
 
-        mAdView = findViewById(R.id.ad_view);
+        mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-7803700300545861/7367824445");
 
         player=new MKPlayer(this);
 
@@ -353,12 +368,66 @@ public class MovieInfoActivity extends AppCompatActivity {
         btn_watch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String type = "watch";
-                Update(type);
-                Intent intent = new Intent(MovieInfoActivity.this, VideoPlayer.class);
-                intent.putExtra("uri", getIntent().getStringExtra("video_url"));
-                intent.putExtra("title", getIntent().getStringExtra("title"));
-                startActivity(intent);
+
+                if(getIntent().getStringExtra("price").startsWith("0")) {
+
+                    mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    }
+
+                    mInterstitialAd.setAdListener(new AdListener() {
+                        @Override
+                        public void onAdLoaded() {
+                            // Code to be executed when an ad finishes loading.
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(int errorCode) {
+                            String type = "watch";
+                            Update(type);
+                            Intent intent = new Intent(MovieInfoActivity.this, VideoPlayer.class);
+                            intent.putExtra("uri", getIntent().getStringExtra("video_url"));
+                            intent.putExtra("title", getIntent().getStringExtra("title"));
+                            startActivity(intent);
+
+                            // Code to be executed when an ad request fails.
+                        }
+
+                        @Override
+                        public void onAdOpened() {
+                            // Code to be executed when the ad is displayed.
+                        }
+
+                        @Override
+                        public void onAdLeftApplication() {
+                            // Code to be executed when the user has left the app.
+                        }
+
+                        @Override
+                        public void onAdClosed() {
+                            String type = "watch";
+                            Update(type);
+                            Intent intent = new Intent(MovieInfoActivity.this, VideoPlayer.class);
+                            intent.putExtra("uri", getIntent().getStringExtra("video_url"));
+                            intent.putExtra("title", getIntent().getStringExtra("title"));
+                            startActivity(intent);
+                            // Code to be executed when when the interstitial ad is closed.
+                        }
+                    });
+
+
+                }else{
+                    String type = "watch";
+                    Update(type);
+                    Intent intent = new Intent(MovieInfoActivity.this, VideoPlayer.class);
+                    intent.putExtra("uri", getIntent().getStringExtra("video_url"));
+                    intent.putExtra("title", getIntent().getStringExtra("title"));
+                    startActivity(intent);
+
+                }
+
+
 
             }
         });
@@ -368,31 +437,13 @@ public class MovieInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkPermissions();
-//
-//                mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//                mBuilder = new NotificationCompat.Builder(MovieInfoActivity.this);
-//                mBuilder.setContentTitle(getIntent().getStringExtra("title"))
-//                        .setContentText("Download in progress")
-//                        .setSmallIcon(R.drawable.applogo);
-
-//                new Downloader(getIntent().getStringExtra("video_url")).execute();
-
-//                            new DownloadMaterial().execute(getIntent().getStringExtra("video_url"));
-//                NewDownloader(getIntent().getStringExtra("video_url"));
-//
-//                mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//                mBuilder = new NotificationCompat.Builder(MovieInfoActivity.this);
-//                mBuilder.setContentTitle("Download")
-//                        .setContentText("Download in progress")
-//                        .setSmallIcon(R.drawable.applogo);
-//
-//                new Downloader().execute(getIntent().getStringExtra("video_url"));
 
             }
         });
 
 
         if(getIntent().getStringExtra("price").startsWith("0")){
+            mAdView.setVisibility(View.VISIBLE);
             btn_buy.setVisibility(GONE);
             btn_download.setVisibility(View.VISIBLE);
             btn_watch.setVisibility(View.VISIBLE);
@@ -421,6 +472,7 @@ public class MovieInfoActivity extends AppCompatActivity {
             countDownStart();
             btn_buy.setText("Coming Soon!");
             btn_buy.setEnabled(false);
+            btn_watch.setVisibility(GONE);
         }else{
             txtrelease_date.setText(intent.getStringExtra("release_date"));
         }
@@ -438,10 +490,58 @@ public class MovieInfoActivity extends AppCompatActivity {
         btn_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(MovieInfoActivity.this, VideoPlayer.class);
-                intent1.putExtra("uri",  "/data/data/" + getPackageName() + "/files/" + getIntent().getStringExtra("title") + ".mp4");
-                intent1.putExtra("title", getIntent().getStringExtra("title"));
-                startActivity(intent1);
+
+                if(getIntent().getStringExtra("price").startsWith("0")) {
+
+                    mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    }
+
+                    mInterstitialAd.setAdListener(new AdListener() {
+                        @Override
+                        public void onAdLoaded() {
+                            // Code to be executed when an ad finishes loading.
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(int errorCode) {
+                            Intent intent1 = new Intent(MovieInfoActivity.this, VideoPlayer.class);
+                            intent1.putExtra("uri", "/data/data/" + getPackageName() + "/files/" + getIntent().getStringExtra("title") + ".mp4");
+                            intent1.putExtra("title", getIntent().getStringExtra("title"));
+                            startActivity(intent1);
+
+                            // Code to be executed when an ad request fails.
+                        }
+
+                        @Override
+                        public void onAdOpened() {
+                            // Code to be executed when the ad is displayed.
+                        }
+
+                        @Override
+                        public void onAdLeftApplication() {
+                            // Code to be executed when the user has left the app.
+                        }
+
+                        @Override
+                        public void onAdClosed() {
+                            Intent intent1 = new Intent(MovieInfoActivity.this, VideoPlayer.class);
+                            intent1.putExtra("uri", "/data/data/" + getPackageName() + "/files/" + getIntent().getStringExtra("title") + ".mp4");
+                            intent1.putExtra("title", getIntent().getStringExtra("title"));
+                            startActivity(intent1);
+                            // Code to be executed when when the interstitial ad is closed.
+                        }
+                    });
+
+
+                }else{
+                    Intent intent1 = new Intent(MovieInfoActivity.this, VideoPlayer.class);
+                    intent1.putExtra("uri", "/data/data/" + getPackageName() + "/files/" + getIntent().getStringExtra("title") + ".mp4");
+                    intent1.putExtra("title", getIntent().getStringExtra("title"));
+                    startActivity(intent1);
+
+                }
             }
         });
         bottom_sheet = findViewById(R.id.bottom_sheet);
@@ -1022,12 +1122,19 @@ public class MovieInfoActivity extends AppCompatActivity {
             toast.setDuration(Toast.LENGTH_LONG);
             toast.setView(layout);
             toast.show();
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0, 0);
 
         }
 
 
 
     }
+
+
+
 
 
 

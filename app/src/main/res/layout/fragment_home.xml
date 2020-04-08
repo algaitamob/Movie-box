@@ -102,6 +102,18 @@
                     android:textColor="#ffffff"
                     android:textSize="12sp" />
 
+
+                <com.google.android.gms.ads.AdView
+                    xmlns:ads="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/adView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    ads:adSize="BANNER"
+                    ads:adUnitId="@string/banner_ad_unit_id">
+                </com.google.android.gms.ads.AdView>
+
                 <View style="@style/Divider.Horizontal"/>
 
 
@@ -204,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:lineSpacingExtra="-11sp"
-                    android:text="FREE MOVIE"
+                    android:text="FREE MOVIES"
                     android:textAllCaps="true"
                     android:layout_marginTop="38dp"
                     android:layout_marginLeft="17dp"
@@ -227,7 +239,35 @@
                     android:layout_height="wrap_content">
 
                 </androidx.recyclerview.widget.RecyclerView>
-<!--                <customfonts.MyTextView_PTSans_Bold-->
+
+                <customfonts.MyTextView_PTSans_Bold
+                    android:id="@+id/more_free"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_gravity="right"
+                    android:lineSpacingExtra="-11sp"
+                    android:text="View More"
+                    android:textAllCaps="true"
+                    android:layout_marginRight="23dp"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
+
+                <View style="@style/Divider.Horizontal"/>
+
+                <com.google.android.gms.ads.AdView
+                    xmlns:ads="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/adView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    ads:adSize="BANNER"
+                    ads:adUnitId="@string/banner_ad_unit_id">
+                </com.google.android.gms.ads.AdView>
+
+
+                <!--                <customfonts.MyTextView_PTSans_Bold-->
 <!--                    android:id="@+id/more_coming"-->
 <!--                    android:layout_width="wrap_content"-->
 <!--                    android:layout_height="wrap_content"-->

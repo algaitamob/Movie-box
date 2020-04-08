@@ -27,6 +27,7 @@ import com.algaita.ViewDialog;
 import com.algaita.activities.BaseActivity;
 import com.algaita.activities.ComingSoonActivity;
 //import com.algaita.activities.MainActivity;
+import com.algaita.activities.FreeVideosActivity;
 import com.algaita.activities.MovieInfoActivity;
 import com.algaita.activities.RecyclerTouchListener;
 import com.algaita.activities.SeriesActivity;
@@ -49,6 +50,9 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,7 +96,7 @@ public class HomeFragment extends Fragment{
 
 
     SwipeRefreshLayout mSwipeRefreshLayout;
-    TextView txt_more_vides, txt_more_series, txt_more_coming;
+    TextView txt_more_vides, txt_more_series, txt_more_coming, txt_more_free;
 
 
 
@@ -118,6 +122,10 @@ public class HomeFragment extends Fragment{
     RequestQueue rq;
     List<SliderUtils> sliderImg;
     ViewPagerAdapter viewPagerAdapter;
+
+    private AdView mAdView;
+    private AdView mAdView2;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -134,9 +142,11 @@ public class HomeFragment extends Fragment{
 //                android.R.color.holo_orange_dark,
 //                android.R.color.holo_blue_dark);
 
+
         txt_more_vides = view.findViewById(R.id.more_videos);
         txt_more_series = view.findViewById(R.id.more_series);
         txt_more_coming = view.findViewById(R.id.more_coming);
+        txt_more_free = view.findViewById(R.id.more_free);
                 //Recycleview
         theaters_recycleview =  view.findViewById(R.id.theaters_recycleview);
         comingsoon_recycleview =  view.findViewById(R.id.comingsoon_recycleview);
@@ -165,6 +175,40 @@ public class HomeFragment extends Fragment{
             GetSeries();
             GetVideosFree();
         }
+
+        mAdView = view.findViewById(R.id.adView);
+        mAdView2 = view.findViewById(R.id.adView2);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        mAdView2.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
         theaters_recycleview.addOnItemTouchListener(new RecyclerTouchListener(getContext(), theaters_recycleview, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -297,6 +341,13 @@ public class HomeFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), ComingSoonActivity.class);
+                startActivity(intent);
+            }
+        });
+        txt_more_free.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), FreeVideosActivity.class);
                 startActivity(intent);
             }
         });

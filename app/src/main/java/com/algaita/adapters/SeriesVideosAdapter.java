@@ -16,6 +16,7 @@ import java.util.List;
 
 public class SeriesVideosAdapter extends RecyclerView.Adapter<SeriesVideosAdapter.MyViewHolder> {
     Context context;
+
     public List<SeriesVideos> seriesList;
 
 
@@ -46,8 +47,11 @@ public class SeriesVideosAdapter extends RecyclerView.Adapter<SeriesVideosAdapte
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_series_movie_list, parent, false);
-        return new MyViewHolder(itemView);
+
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_series_movie_list, parent, false);
+            return new MyViewHolder(itemView);
+
+
     }
 
     @Override

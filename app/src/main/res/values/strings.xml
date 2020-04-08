@@ -21,10 +21,10 @@
 
     <!-- AdMob ad unit IDs -->
     <string name="admob_app_id">ca-app-pub-3679342895736161~8283883500</string>
-    <string name="banner_home_footer">ca-app-pub-3679342895736161/1348893775</string>
-    <string name="interstitial_full_screen">ca-app-pub-3679342895736161/7150765232</string>
+    <string name="banner_home_footer">ca-app-pub-3679342895736161~1348893775</string>
+    <string name="interstitial_full_screen">ca-app-pub-3679342895736161~7150765232</string>
     <string name="rewarded_video">ca-app-pub-XXXXXXXX~XXXXXXXXXXX</string>
 
-    <string name="banner_ad_unit_id">ca-app-pub-3679342895736161/1348893775</string>
+    <string name="banner_ad_unit_id">ca-app-pub-7803700300545861/2203961821</string>
 
 </resources>

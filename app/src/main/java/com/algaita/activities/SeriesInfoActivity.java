@@ -14,6 +14,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import androidx.core.app.ActivityCompat;
@@ -124,6 +126,8 @@ public class SeriesInfoActivity extends AppCompatActivity {
     ViewDialog viewDialog;
 
     private ImageView play;
+
+    AdView adview;
 
 
     @Override
@@ -899,6 +903,12 @@ public class SeriesInfoActivity extends AppCompatActivity {
             toast.setDuration(Toast.LENGTH_LONG);
             toast.setView(layout);
             toast.show();
+
+
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0, 0);
 
         }
 
